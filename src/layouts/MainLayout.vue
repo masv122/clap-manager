@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-negative" elevated>
-      <q-toolbar >
+      <q-toolbar>
         <q-btn
           flat
           dense
@@ -10,15 +10,31 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
-        <q-toolbar-title>CLAP Manager</q-toolbar-title>
-        <q-tabs
-          v-model="tab"
-          class="text-white"
-        >
+        <q-toolbar-title shrink>CLAP Manager</q-toolbar-title>
+        <q-input dark dense standout v-model="text" input-class="text-right" class="q-ml-md">
+          <template v-slot:append>
+            <q-icon v-if="text === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
+          </template>
+        </q-input>
+        <q-tabs class="text-white q-ml-auto">
           <q-tab name="home" icon="home" label="Inicio" />
-          <q-tab name="sectores" icon="map" label="Sectores" />
-          <q-tab name="personas" icon="supervised_account" label="Personas" />
-          <q-tab name="pagos" icon="payments" label="Pagos" />
+          <q-route-tab
+            name="sectores"
+            :to="{name: 'Sectores'}"
+            icon="place"
+            label="Sectores"
+            exact
+          />
+          <q-route-tab
+            name="personas"
+            :to="{name: 'Personas'}"
+            icon="supervisor_account"
+            label="Personas"
+            exact
+          />
+          <q-route-tab name="pagos" :to="{name: 'Pagos'}" icon="payments" label="Pagos" exact />
+          <q-tab name="notificacion" icon="notifications" label="Notificaciones" />
         </q-tabs>
       </q-toolbar>
     </q-header>
@@ -47,6 +63,7 @@ export default {
   data() {
     return {
       leftDrawerOpen: false,
+      text: "",
       tab: "mails",
       essentialLinks: [
         {
@@ -93,7 +110,8 @@ export default {
         }
       ]
     };
-  }
+  },
+  created() {}
 };
 </script>
 
