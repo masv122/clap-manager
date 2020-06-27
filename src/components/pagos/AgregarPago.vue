@@ -94,6 +94,24 @@
                 color="negative"
                 label="Monto"
               />
+              <q-input
+                label-color="negative"
+                color="negative"
+                v-model="date"
+                mask="date"
+                :rules="['date']"
+                label="Seleccione fecha"
+              >
+                <template v-slot:append>
+                  <q-icon name="event"
+                color="negative"
+                   class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
               <q-select
                 label="Banco"
                 label-color="negative"
@@ -214,7 +232,8 @@ export default {
         { label: "Pendiente", value: "pendiente" },
         { label: "Confirmado", value: "confirmado" }
       ],
-      step: 1
+      step: 1,
+      date: ""
     };
   },
   computed: {

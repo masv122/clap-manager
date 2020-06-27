@@ -9,9 +9,6 @@
       hide-header
     >
       <template v-slot:top-left>
-        <q-toolbar-title shrink>
-          <q-icon name="place" />Sectores
-        </q-toolbar-title>
       </template>
       <template v-slot:top-right>
         <q-input dense debounce="300" v-model="filter" placeholder="Buscar">
@@ -19,25 +16,12 @@
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn-group rounded class="q-ml-md">
-          <q-btn color="positive" rounded @click="updateAgregarSector" icon="add" label="Agregar" />
-          <q-btn
-            color="amber"
-            rounded
-            @click="updateModificarSector"
-            icon="edit"
-            label="Modificar"
-          />
-          <q-btn color="negative" rounded @click="upateConfirmacionEliminacion" icon="delete" label="Eliminar" />
-          <q-btn color="primary" rounded icon="print" label="Imprimir" />
-        </q-btn-group>
       </template>
     </q-table>
   </div>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
 
 export default {
   name: "TablaSectores",
@@ -128,13 +112,5 @@ export default {
       ]
     };
   },
-  methods: {
-    ...mapMutations("sectores", [
-      "updateAgregarSector",
-      "updateModificarSector"
-    ]),
-      ...mapMutations("global", ["upateConfirmacionEliminacion"]),
-
-  }
 };
 </script>

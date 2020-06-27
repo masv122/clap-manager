@@ -1,10 +1,11 @@
 <template>
-  <div class="q-gutter-md">
-    <q-form @submit.prevent class="q-gutter-md shadow-1 round q-px-md q-pb-md">
-      <div class="text-h5 q-ml-xs q-pt-md">
-        <q-icon name="group" />Asignacion de nucleo
+  <div>
+    <q-form class="q-gutter-md">
+      <div class="text-h6 q-mt-md">
+        <q-icon name="group" class="q-mr-md" />Reasignar Nucleo
+        <q-btn class="float-right" color="negative" icon="add" label="Crear Nucleo" />
       </div>
-      <q-separator color="negative" inset />
+      <q-separator />
       <q-select
         label="Sector"
         :value="model"
@@ -20,7 +21,6 @@
         :options="options"
         @filter="filterFn"
         @input-value="setModel"
-        style="padding-bottom: 32px"
       >
         <template v-slot:no-option>
           <q-item>
@@ -43,7 +43,6 @@
         :options="options"
         @filter="filterFn"
         @input-value="setModel"
-        style="padding-bottom: 32px"
       >
         <template v-slot:no-option>
           <q-item>
@@ -51,20 +50,36 @@
           </q-item>
         </template>
       </q-select>
-      <div class="text-h5 q-ml-xs q-pt-xs">
-        <q-icon name="info" />Datos del nucleo
+      <div class="text-h6 q-mt-md">
+        <q-icon name="info" class="q-mr-md" />Datos Personales
+        <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
-      <q-separator color="negative" inset />
-      <q-field borderless label="Direccion" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline">Direccion</div>
-        </template>
-      </q-field>
-      <q-field borderless label="Nombre" stack-label>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline">Nombre</div>
-        </template>
-      </q-field>
+      <q-separator />
+      <q-input
+        label-color="negative"
+        clearable
+        color="negative"
+        v-model="text"
+        type="text"
+        label="Nombre"
+      />
+      <q-input
+        label-color="negative"
+        clearable
+        color="negative"
+        v-model="text"
+        type="text"
+        label="Apellido"
+      />
+      <q-input
+        label-color="negative"
+        clearable
+        color="negative"
+        v-model="text"
+        type="tel"
+        label="Telefono"
+        mask="(####) ### - ####"
+      />
     </q-form>
   </div>
 </template>
@@ -83,12 +98,13 @@ const stringOptions = [
   return acc;
 }, []);
 export default {
-  name: "AsignarNucleo",
+  name: "ModificarIntegrante",
   data() {
     return {
       model: null,
       stringOptions,
-      options: stringOptions
+      options: stringOptions,
+      text: ""
     };
   },
   methods: {
@@ -106,6 +122,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

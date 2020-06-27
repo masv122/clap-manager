@@ -10,7 +10,7 @@
         <q-toolbar dark class="bg-negative text-white q-mb-md">
           <q-toolbar-title shrink>
             <div class="text-h6">
-              <q-icon name="edit" />Modificar Sector
+              <q-icon name="edit" class="q-mr-md"/>Modificar Sector
             </div>
           </q-toolbar-title>
           <q-btn dense flat icon="close" v-close-popup class="q-ml-auto">
@@ -19,6 +19,11 @@
         </q-toolbar>
         <q-card-section class="q-ma-md">
           <q-form @submit.prevent @reset="onReset" class="q-gutter-md">
+            <div class="text-h6 q-mt-md">
+              <q-icon name="info" class="q-mr-md" />Datos del sector
+              <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
+            </div>
+            <q-separator />
             <q-input
               v-model="text"
               type="text"
@@ -95,12 +100,23 @@
                 </q-item>
               </template>
             </q-select>
+            <div class="text-h6 q-mt-md">
+              <q-icon name="supervised_user_circle" class="q-mr-md" />Reasignar jefe de calle
+              <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
+            </div>
+            <q-separator />
             <TablaJefesDeCalleGrid />
           </q-form>
         </q-card-section>
-        <q-separator/>
+        <q-separator />
         <q-card-actions class="q-ma-md" align="center">
-            <q-btn label="Guardar" icon="save" type="submit" color="primary" class="q-ml-sm full-width" />
+          <q-btn
+            label="Guardar"
+            icon="save"
+            type="submit"
+            color="primary"
+            class="q-ml-sm full-width"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
