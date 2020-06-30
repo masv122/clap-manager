@@ -1,7 +1,7 @@
 {
   "name": "clap-manager",
-  "version": "0.a.4",
-  "description": "A Quasar Framework app",
+  "version": "0.0.4",
+  "description": "Sistema Multiplataforma para la gestion de los concejos comunales",
   "productName": "CLAP Manager APP",
   "author": "Marcel <masv122@gmail.com>",
   "private": true,
