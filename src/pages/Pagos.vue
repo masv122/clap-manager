@@ -1,25 +1,27 @@
 <template>
   <q-page :style-fn="myTweak" padding>
-    <NavPagos />
-    <ModificarPago />
-    <ConfirmacionEliminacion />
-    <AgregarPago />
-    <TablaPagos />
+    <div class="shadow-1 bg-white q-mt-md">
+      <NavPagos />
+      <ModificarPago />
+      <DetallesPago />
+      <ConfirmacionEliminacion />
+      <TablaPagos />
+    </div>
   </q-page>
 </template>
 
 <script>
-import AgregarPago from "components/pagos/AgregarPago.vue";
 import ModificarPago from "components/pagos/ModificarPago.vue";
+import DetallesPago from "components/pagos/DetallesPago.vue";
 import ConfirmacionEliminacion from "components/ConfirmacionEliminacion.vue";
 import NavPagos from "components/pagos/NavPagos.vue";
 import TablaPagos from "components/pagos/TablaPagos.vue";
 export default {
   name: "Pagos",
   components: {
-    AgregarPago,
     ConfirmacionEliminacion,
     ModificarPago,
+    DetallesPago,
     TablaPagos,
     NavPagos
   },

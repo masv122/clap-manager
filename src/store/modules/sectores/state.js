@@ -1,6 +1,7 @@
 export default function () {
   return {
     agregarSector: false,
-    modificarSector: false,
-  }
+    detallesSector: false,
+    modificarSector: false
+  };
 }

@@ -1,10 +1,10 @@
 <template>
   <q-page :style-fn="myTweak" padding>
-    <div class="shadow-1">
+    <div class="shadow-1 bg-white">
+      <NavSectores />
       <ModificarSector />
       <ConfirmacionEliminacion />
-      <AgregarSector />
-      <NavSectores />
+      <DetallesSector />
       <TablaSectores />
     </div>
   </q-page>
@@ -12,16 +12,16 @@
 
 <script>
 import NavSectores from "components/sectores/NavSectores.vue";
+import DetallesSector from "components/sectores/DetallesSector.vue";
 import TablaSectores from "components/sectores/TablaSectores.vue";
-import AgregarSector from "components/sectores/AgregarSector.vue";
 import ModificarSector from "components/sectores/ModificarSector.vue";
 import ConfirmacionEliminacion from "components/ConfirmacionEliminacion.vue";
 export default {
   name: "Sectores",
   components: {
     NavSectores,
+    DetallesSector,
     TablaSectores,
-    AgregarSector,
     ConfirmacionEliminacion,
     ModificarSector
   },

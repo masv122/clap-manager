@@ -5,3 +5,7 @@ export function agregarPago(state) {
 export function modificarPago(state) {
   return state.modificarPago;
 }
+
+export function detallesPago(state) {
+  return state.detallesPago;
+}

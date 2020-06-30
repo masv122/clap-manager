@@ -4,14 +4,13 @@
       <q-card-section class="q-pt-none">
         <div class="q-pa-md">
           <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-            <div class="text-h5 text-negative">Registro</div>
-            <div class="text-subtitle1 text-negative">Registrate para que puedas respaldar tus registros</div>
+            <div class="text-h5 text-negative">Ingresa tus credenciales</div>
             <q-separator />
             <q-input
               v-model="name"
               label-color="negative"
               color="negative"
-              label="Introduzca su cedula"
+              label="Cedula"
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please type something']"
             >
@@ -19,12 +18,13 @@
                 <q-icon name="perm_identity" color="negative" />
               </template>
             </q-input>
+
             <q-input
               label-color="negative"
               color="negative"
               type="password"
               v-model="age"
-              label="Ingrese su contraseña"
+              label="Contraseña"
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please type something']"
             >
@@ -32,36 +32,14 @@
                 <q-icon name="vpn_key" color="negative" />
               </template>
             </q-input>
-            <q-input
-              label-color="negative"
-              color="negative"
-              type="password"
-              v-model="age"
-              label="Vuelva a introduciar su contraseña"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Please type something']"
-            >
-              <template v-slot:prepend>
-                <q-icon name="vpn_key" color="negative" />
-              </template>
-            </q-input>
-            <q-input
-              label-color="negative"
-              color="negative"
-              type="email"
-              v-model="age"
-              label="Ingrese su correo"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Please type something']"
-            >
-              <template v-slot:prepend>
-                <q-icon name="email" color="negative" />
-              </template>
-            </q-input>
+
+            <q-toggle color="negative" v-model="accept" label="Recuerdame" />
+
             <div>
-              <q-btn label="Registrarse" type="submit" class="full-width" color="negative" />
+              <q-btn label="Ingresar" type="submit" class="full-width" color="negative" />
             </div>
-            <q-btn label="¿Ya estas registrado? ingresa" class="full-width" color="negative" flat />
+            <q-btn label="¿No tienes cuenta? registrate" class="full-width" color="negative" flat />
+            <q-btn label="Olvide mi contraseña" class="full-width" color="negative" flat />
           </q-form>
         </div>
       </q-card-section>
@@ -71,7 +49,7 @@
 
 <script>
 export default {
-  name: "Registro",
+  name: "Login",
   data() {
     return {
       name: null,

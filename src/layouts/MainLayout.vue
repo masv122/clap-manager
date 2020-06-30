@@ -1,20 +1,10 @@
 <template>
   <q-layout view="lHr Lpr lFf">
+    <Dialogs/>
     <q-header class="bg-negative" elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-        <q-toolbar-title>CLAP Manager</q-toolbar-title>
-        <q-btn @click="rightDrawerOpen = !rightDrawerOpen" flat round dense icon="notifications" />
-      </q-toolbar>
+      <Header />
       <q-tabs class="text-white q-ml-auto">
-        <q-tab name="home" icon="home" label="Inicio" />
+        <q-route-tab name="home" :to="{name: 'Inicio'}" icon="home" label="Inicio" exact/>
         <q-route-tab name="sectores" :to="{name: 'Sectores'}" icon="place" label="Sectores" exact />
         <q-route-tab
           name="personas"
@@ -27,21 +17,32 @@
       </q-tabs>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-1">
-      <q-list>
-        <q-item-label header class="text-grey-8">Essential Links</q-item-label>
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
-      </q-list>
+    <q-drawer v-model="_leftDrawer" show-if-above bordered>
+      <MenuDrawer />
+      <q-img class="absolute-top" src="~assets/clap_manager_drawer.png" style="height: 150px">
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <q-icon name="account_circle" />
+          </q-avatar>
+          <div class="text-weight-bold">Inicia sesion para almacenar tus registros</div>
+          <div>@rstoenescu</div>
+        </div>
+      </q-img>
+
+      <div class="absolute-bottom flex q-mx-sm q-mb-sm">
+        <div class="text-weight-light q-pt-md">Version: v-0a4</div>
+        <q-btn color="primary" icon="settings" flat round class="q-ml-auto" />
+      </div>
     </q-drawer>
     <q-drawer
-      v-model="rightDrawerOpen"
+      v-model="_rightDrawer"
       :width="200"
       :breakpoint="500"
       side="right"
       overlay
       behavior="mobile"
       bordered
-      content-class="bg-grey-3"
+      content-class="bg-white"
     >
       <q-scroll-area class="fit">
         <q-list v-for="(menuItem, index) in menuList" :key="index">
@@ -51,19 +52,21 @@
             </q-item-section>
             <q-item-section>{{ menuItem.label }}</q-item-section>
           </q-item>
-
           <q-separator v-if="menuItem.separator" />
         </q-list>
       </q-scroll-area>
     </q-drawer>
-    <q-page-container>
+    <q-page-container class="bg-grey-11">
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink.vue";
+import MenuDrawer from "components/MenuDrawer.vue";
+import Header from "components/Header.vue";
+import Dialogs from 'components/Dialogs.vue';
+import { mapMutations, mapGetters } from "vuex";
 const menuList = [
   {
     icon: "inbox",
@@ -105,12 +108,12 @@ const menuList = [
 export default {
   name: "MainLayout",
   components: {
-    EssentialLink
+    MenuDrawer,
+    Header,
+    Dialogs
   },
   data() {
     return {
-      leftDrawerOpen: false,
-      rightDrawerOpen: false,
       text: "",
       tab: "mails",
       essentialLinks: [
@@ -159,6 +162,28 @@ export default {
       ],
       menuList
     };
+  },
+  computed: {
+    ...mapGetters("global", ["leftDrawer", "rightDrawer"]),
+    _leftDrawer: {
+      get() {
+        return this.leftDrawer;
+      },
+      set(value) {
+        this.updateLeftDrawer(value);
+      }
+    },
+    _rightDrawer: {
+      get() {
+        return this.rightDrawer;
+      },
+      set(value) {
+        this.updateRightDrawer(value);
+      }
+    }
+  },
+  methods: {
+    ...mapMutations("global", ["updateLeftDrawer", "updateRightDrawer"])
   },
   created() {}
 };

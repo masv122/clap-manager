@@ -3,7 +3,11 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/Index.vue") },
+      {
+        path: "/inicio",
+        name: "Inicio",
+        component: () => import("pages/Inicio.vue")
+      },
       {
         path: "/sectores",
         name: "Sectores",
@@ -17,8 +21,7 @@ const routes = [
           {
             path: "/personas/integrantes",
             name: "integrantes",
-            component: () =>
-              import("components/personas/TablaIntegrantes.vue")
+            component: () => import("components/personas/TablaIntegrantes.vue")
           },
           {
             path: "/personas/nucleos",
@@ -28,8 +31,7 @@ const routes = [
           {
             path: "/personas/jefes-de-calle",
             name: "jefes de calle",
-            component: () =>
-              import("components/personas/TablaJefesCalle.vue")
+            component: () => import("components/personas/TablaJefesCalle.vue")
           }
         ]
       },
@@ -41,9 +43,38 @@ const routes = [
     ]
   },
   {
-    path: "/login",
-    name: "Login",
-    component: () => import("layouts/Login.vue")
+    path: "/ingreso",
+    name: "Ingreso",
+    component: () => import("layouts/Ingreso.vue"),
+    children: [
+      {
+        path: "/ingreso/login",
+        name: "Login",
+        component: () => import("pages/Login.vue")
+      },
+      {
+        path: "/ingreso/registro",
+        name: "Registro",
+        component: () => import("pages/Registro.vue")
+      }
+    ]
+  },
+  {
+    path: "/usuario",
+    name: "Usuario",
+    component: () => import("layouts/Usuario.vue"),
+    children: [
+      {
+        path: "/usuario/inicio",
+        name: "InicioUsuario",
+        component: () => import("pages/usuario/Inicio.vue")
+      },
+      {
+        path: "/ingreso/registro",
+        name: "Registro",
+        component: () => import("pages/Registro.vue")
+      }
+    ]
   },
 
   // Always leave this as last one,

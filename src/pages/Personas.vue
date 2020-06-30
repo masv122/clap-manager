@@ -1,22 +1,24 @@
 <template>
   <q-page :style-fn="myTweak" padding>
-    <ModificarPersona />
-    <NavPersonas />
-    <ConfirmacionEliminacion />
-    <AgregarPersona />
-    <router-view />
+    <div class="shadow-1 bg-white q-mt-md">
+      <NavPersonas />
+      <ModificarPersona />
+      <ConfirmacionEliminacion />
+      <DetallesPersona />
+      <router-view />
+    </div>
   </q-page>
 </template>
 
 <script>
-import AgregarPersona from "components/personas/AgregarPersona.vue";
+import DetallesPersona from "components/personas/DetallesPersona.vue";
 import ModificarPersona from "components/personas/ModificarPersona.vue";
 import ConfirmacionEliminacion from "components/ConfirmacionEliminacion.vue";
 import NavPersonas from "components/personas/NavPersonas.vue";
 export default {
   name: "Personas",
   components: {
-    AgregarPersona,
+    DetallesPersona,
     ConfirmacionEliminacion,
     ModificarPersona,
     NavPersonas

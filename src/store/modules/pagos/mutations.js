@@ -4,3 +4,6 @@ export function updateAgregarPago(state) {
 export function updateModificarPago(state) {
   state.modificarPago = !state.modificarPago;
 }
+export function updateDetallesPago(state) {
+  state.detallesPago = !state.detallesPago;
+}

@@ -4,12 +4,12 @@
       <div class="col-auto">
         <q-btn-group push rounded>
           <q-btn color="positive" push @click="updateAgregarSector" icon="add" label="Agregar" />
-          <q-btn color="info" push icon="article" label="Detalles" />
+          <q-btn color="info" push @click="updateDetallesSector" icon="article" label="Detalles" />
           <q-btn color="amber" push @click="updateModificarSector" icon="edit" label="Modificar" />
           <q-btn
             color="negative"
             push
-            @click="upateConfirmacionEliminacion"
+            @click="updateConfirmacionEliminacion"
             icon="delete"
             label="Eliminar"
           />
@@ -27,9 +27,10 @@ export default {
   methods: {
     ...mapMutations("sectores", [
       "updateAgregarSector",
+      "updateDetallesSector",
       "updateModificarSector"
     ]),
-    ...mapMutations("global", ["upateConfirmacionEliminacion"])
+    ...mapMutations("global", ["updateConfirmacionEliminacion"])
   }
 };
 </script>

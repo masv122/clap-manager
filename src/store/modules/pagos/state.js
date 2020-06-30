@@ -1,6 +1,7 @@
-export default function () {
+export default function() {
   return {
     agregarPago: false,
     modificarPago: false,
-  }
+    detallesPago: false
+  };
 }

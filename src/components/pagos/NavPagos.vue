@@ -1,14 +1,11 @@
 <template>
-  <div>
-    <q-toolbar class="bg-primary text-white">
-      <q-toolbar-title>
-        <q-icon name="filter_alt" class="q-mr-md" />Filtrar Pagos
-      </q-toolbar-title>
+  <div class="row q-gutter-y-md">
+    <q-toolbar class="col-lg-6">
       <q-select
-        class="q-mr-md"
+        class="q-mx-auto"
         label="Sector"
-        label-color="white"
-        color="white"
+        label-color="negative"
+        color="negative"
         :value="model"
         use-input
         behavior="menu"
@@ -27,9 +24,10 @@
         </template>
       </q-select>
       <q-select
+        class="q-mx-auto"
         label="Nucleo"
-        label-color="white"
-        color="white"
+        label-color="negative"
+        color="negative"
         :value="model"
         use-input
         behavior="menu"
@@ -48,10 +46,35 @@
         </template>
       </q-select>
     </q-toolbar>
+    <q-toolbar class="col-lg-6">
+      <q-btn-group rounded push class="q-mx-auto">
+        <q-btn color="positive" push rounded @click="updateAgregarPago" icon="add" label="Agregar" />
+        <q-btn color="info" push @click="updateDetallesPago" icon="article" label="Detalles" />
+        <q-btn
+          color="amber"
+          push
+          rounded
+          @click="updateModificarPago"
+          icon="edit"
+          label="Modificar"
+        />
+        <q-btn
+          color="negative"
+          rounded
+          push
+          @click="updateConfirmacionEliminacion"
+          icon="delete"
+          label="Eliminar"
+        />
+        <q-btn color="primary" push rounded icon="print" label="Imprimir" />
+      </q-btn-group>
+    </q-toolbar>
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 const stringOptions = [
   "Google",
   "Facebook",
@@ -74,6 +97,12 @@ export default {
     };
   },
   methods: {
+    ...mapMutations("pagos", [
+      "updateAgregarPago",
+      "updateModificarPago",
+      "updateDetallesPago"
+    ]),
+    ...mapMutations("global", ["updateConfirmacionEliminacion"]),
     filterFn(val, update, abort) {
       update(() => {
         const needle = val.toLocaleLowerCase();

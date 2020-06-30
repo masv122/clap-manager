@@ -19,25 +19,12 @@
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn-group rounded class="q-ml-md">
-          <q-btn color="positive" rounded @click="updateAgregarPago" icon="add" label="Agregar" />
-          <q-btn
-            color="amber"
-            rounded
-            @click="updateModificarPago"
-            icon="edit"
-            label="Modificar"
-          />
-          <q-btn color="negative" rounded @click="upateConfirmacionEliminacion" icon="delete" label="Eliminar" />
-          <q-btn color="primary" rounded icon="print" label="Imprimir" />
-        </q-btn-group>
       </template>
     </q-table>
   </div>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
 
 export default {
   name: "TablaPagos",
@@ -129,12 +116,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("pagos", [
-      "updateAgregarPago",
-      "updateModificarPago"
-    ]),
-      ...mapMutations("global", ["upateConfirmacionEliminacion"]),
-
   }
 };
 </script>

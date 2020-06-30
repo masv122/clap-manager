@@ -1,5 +1,7 @@
 export default function () {
   return {
-    confirmacionEliminacion: false
+    confirmacionEliminacion: false,
+    leftDrawer: false,
+    rightDrawer: false
   };
 }

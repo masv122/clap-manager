@@ -26,12 +26,12 @@ export default {
         return this.confirmacionEliminacion;
       },
       set() {
-        this.upateConfirmacionEliminacion();
+        this.updateConfirmacionEliminacion();
       }
     }
   },
   methods: {
-    ...mapMutations("global", ["upateConfirmacionEliminacion"])
+    ...mapMutations("global", ["updateConfirmacionEliminacion"])
   }
 };
 </script>
