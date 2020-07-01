@@ -24,17 +24,20 @@
                 label-color="negative"
                 color="negative"
                 label="Estado"
-                :value="model"
+                v-model="$v.datos.estado.$model"
                 use-input
+                option-value="id"
+                option-label="nombre"
+                emit-value
+                map-options
                 behavior="menu"
                 hide-selected
                 fill-input
-                lazy-rules
-                :rules="[ val => val !== null && val !== '' || 'Seleccione un estado']"
+                error-message="Debe seleccionar un estado"
+                :error="$v.datos.estado.$invalid"
                 input-debounce="0"
-                :options="options"
-                @filter="filterFn"
-                @input-value="setModel"
+                :options="estadosOpt"
+                @filter="filterEstados"
                 style="padding-bottom: 32px"
               >
                 <template v-slot:no-option>
@@ -46,18 +49,21 @@
               <q-select
                 label-color="negative"
                 color="negative"
-                :value="model"
                 use-input
+                v-model="$v.datos.municipio.$model"
+                error-message="Debe seleccionar un municipio"
+                :error="$v.datos.municipio.$invalid"
+                option-value="id"
+                option-label="nombre"
+                emit-value
+                map-options
                 label="Municipio"
                 behavior="menu"
                 hide-selected
                 fill-input
-                lazy-rules
-                :rules="[ val => val !== null && val !== '' || 'Seleccione un municipio']"
                 input-debounce="0"
-                :options="options"
-                @filter="filterFn"
-                @input-value="setModel"
+                :options="municipiosOpt"
+                @filter="filterMunicipio"
                 style="padding-bottom: 32px"
               >
                 <template v-slot:no-option>
@@ -69,18 +75,21 @@
               <q-select
                 label-color="negative"
                 color="negative"
-                :value="model"
                 use-input
+                v-model="$v.datos.parroquia.$model"
+                error-message="Debe seleccionar una parroquia"
+                :error="$v.datos.parroquia.$invalid"
+                option-value="id"
+                option-label="nombre"
+                emit-value
+                map-options
                 label="Parroquia"
                 behavior="menu"
                 hide-selected
                 fill-input
-                lazy-rules
-                :rules="[ val => val !== null && val !== '' || 'Seleccione una parroquia']"
                 input-debounce="0"
-                :options="options"
-                @filter="filterFn"
-                @input-value="setModel"
+                :options="parroquiasOpt"
+                @filter="filterParroquia"
                 style="padding-bottom: 32px"
               >
                 <template v-slot:no-option>
@@ -90,8 +99,10 @@
                 </template>
               </q-select>
               <q-input
-                v-model="text"
+                v-model="$v.datos.nombre.$model"
                 type="text"
+                error-message="Debe escribir un nombre para el sector"
+                :error="$v.datos.nombre.$invalid"
                 label-color="negative"
                 color="negative"
                 label="Ingrese nombre del sector"
@@ -100,6 +111,7 @@
                 <q-btn
                   @click="step = 2"
                   color="primary"
+                  :disable="$v.datos.$invalid"
                   icon-right="chevron_right"
                   label="Siguiente"
                 />
@@ -179,7 +191,12 @@
                   label="Regresar"
                   class="q-ml-sm"
                 />
-                <q-btn color="primary" icon-right="add" label="Agregar" />
+                <q-btn
+                  color="positive"
+                  icon-right="check"
+                  label="Confirmar"
+                  @click="confirmarSector"
+                />
               </q-stepper-navigation>
             </q-step>
           </q-stepper>
@@ -190,20 +207,9 @@
 </template>
 
 <script>
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle"
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + " " + i);
-  }
-  return acc;
-}, []);
-
-import { mapGetters, mapMutations } from "vuex";
+import Sector from "src/class/sector";
+import { mapGetters, mapMutations, mapActions } from "vuex";
+import { required, minLength, between } from "vuelidate/lib/validators";
 import TablaJefesDeCalleGrid from "components/TablaJefesDeCalleGrid.vue";
 export default {
   name: "AgregarSector",
@@ -212,15 +218,61 @@ export default {
   },
   data() {
     return {
-      model: null,
-      stringOptions,
-      options: stringOptions,
+      datos: {
+        estado: null,
+        municipio: null,
+        parroquia: null,
+        nombre: ""
+      },
+      estadosOpt: null,
+      municipiosOpt: null,
+      parroquiasOpt: null,
       text: "",
       step: 1
     };
   },
+  validations: {
+    datos: {
+      estado: {
+        required
+      },
+      municipio: {
+        required
+      },
+      parroquia: {
+        required
+      },
+      nombre: {
+        required
+      }
+    }
+  },
+  watch: {
+    datos: {
+      immediate: true,
+      deep: true,
+      handler(newValue, oldValue) {
+        if (!!newValue.estado) {
+          if (newValue.estado !== oldValue.estado) this.datos.municipio = null;
+          this.municipiosOpt = this.municipiosEnEstado(newValue.estado);
+        }
+        if (!!newValue.municipio) {
+          if (newValue.municipio !== oldValue.municipio)
+            this.datos.parroquia = null;
+          this.parroquiasOpt = this.parroquiasEnMunicipio(newValue.municipio);
+        }
+      }
+    }
+  },
   computed: {
     ...mapGetters("sectores", ["agregarSector"]),
+    ...mapGetters("global", [
+      "estados",
+      "municipios",
+      "municipiosEnEstado",
+      "parroquias",
+      "parroquiasEnMunicipio"
+    ]),
     _agregarSector: {
       get() {
         return this.agregarSector;
@@ -232,20 +284,63 @@ export default {
   },
   methods: {
     ...mapMutations("sectores", ["updateAgregarSector"]),
-    filterFn(val, update, abort) {
+    ...mapActions("sectores", ["guardarSector"]),
+    mostrarValidation() {
+      console.log(this.$v);
+    },
+    filterEstados(val, update, abort) {
       update(() => {
         const needle = val.toLocaleLowerCase();
-        this.options = stringOptions.filter(
-          v => v.toLocaleLowerCase().indexOf(needle) > -1
+        this.estadosOpt = this.estados.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
         );
       });
     },
-    setModel(val) {
-      this.model = val;
+    filterMunicipio(val, update, abort) {
+      const OPTS = !this.datos.estado
+        ? this.municipios
+        : this.municipiosEnEstado(this.datos.estado);
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.municipiosOpt = OPTS.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+    filterParroquia(val, update, abort) {
+      const OPTS = !this.datos.municipio
+        ? this.parroquias
+        : this.parroquiasEnMunicipio(this.datos.municipio);
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.parroquiasOpt = OPTS.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+    async confirmarSector() {
+      const SECTOR = new Sector(
+        this.datos.nombre,
+        this.estados[this.datos.estado].nombre,
+        this.municipios[this.datos.municipio].nombre,
+        this.parroquias[this.datos.parroquia].nombre
+      );
+      const RESULTADO = await this.guardarSector(SECTOR);
+      let mensaje = !!RESULTADO ? "Sector Agregado" : "No se pudo agregar el sector";
+      let icon = !!RESULTADO ? "check" : "close";
+      this.$q.notify({
+        message: mensaje,
+        icon: icon
+      });
     },
     onReset() {
       this.model = null;
     }
+  },
+  async created() {
+    this.estadosOpt = this.estados;
+    this.municipiosOpt = this.municipios;
+    this.parroquiasOpt = this.parroquias;
   }
 };
 </script>
