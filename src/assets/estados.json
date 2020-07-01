@@ -1,0 +1,127 @@
+[
+    {
+        "nombre": "Amazonas",
+        "id": 1,
+        "iso_3166-2": "VE-X"
+    },
+    {
+        "nombre": "Anzoátegui",
+        "id": 2,
+        "iso_3166-2": "VE-B"
+    },
+    {
+        "nombre": "Apure",
+        "id": 3,
+        "iso_3166-2": "VE-C"
+    },
+    {
+        "nombre": "Aragua",
+        "id": 4,
+        "iso_3166-2": "VE-D"
+    },
+    {
+        "nombre": "Barinas",
+        "id": 5,
+        "iso_3166-2": "VE-E"
+    },
+    {
+        "nombre": "Bolívar",
+        "id": 6,
+        "iso_3166-2": "VE-F"
+    },
+    {
+        "nombre": "Carabobo",
+        "id": 7,
+        "iso_3166-2": "VE-G"
+    },
+    {
+        "nombre": "Cojedes",
+        "id": 8,
+        "iso_3166-2": "VE-H"
+    },
+    {
+        "nombre": "Delta Amacuro",
+        "id": 9,
+        "iso_3166-2": "VE-Y"
+    },
+    {
+        "nombre": "Falcón",
+        "id": 10,
+        "iso_3166-2": "VE-I"
+    },
+    {
+        "nombre": "Guárico",
+        "id": 11,
+        "iso_3166-2": "VE-J"
+    },
+    {
+        "nombre": "Lara",
+        "id": 12,
+        "iso_3166-2": "VE-K"
+    },
+    {
+        "nombre": "Mérida",
+        "id": 13,
+        "iso_3166-2": "VE-L"
+    },
+    {
+        "nombre": "Miranda",
+        "id": 14,
+        "iso_3166-2": "VE-M"
+    },
+    {
+        "nombre": "Monagas",
+        "id": 15,
+        "iso_3166-2": "VE-N"
+    },
+    {
+        "nombre": "Nueva Esparta",
+        "id": 16,
+        "iso_3166-2": "VE-O"
+    },
+    {
+        "nombre": "Portuguesa",
+        "id": 17,
+        "iso_3166-2": "VE-P"
+    },
+    {
+        "nombre": "Sucre",
+        "id": 18,
+        "iso_3166-2": "VE-R"
+    },
+    {
+        "nombre": "Táchira",
+        "id": 19,
+        "iso_3166-2": "VE-S"
+    },
+    {
+        "nombre": "Trujillo",
+        "id": 20,
+        "iso_3166-2": "VE-T"
+    },
+    {
+        "nombre": "Vargas",
+        "id": 21,
+        "iso_3166-2": "VE-W"
+    },
+    {
+        "nombre": "Yaracuy",
+        "id": 22,
+        "iso_3166-2": "VE-U"
+    },
+    {
+        "nombre": "Zulia",
+        "id": 23,
+        "iso_3166-2": "VE-V"
+    },
+    {
+        "nombre": "Distrito Capital",
+        "id": 24,
+        "iso_3166-2": "VE-A"
+    },
+    {
+        "nombre": "Dependencias Federales",
+        "id": 25,
+        "iso_3166-2": "VE-Z"
+    }
+]
