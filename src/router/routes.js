@@ -4,6 +4,10 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
+        path: "",
+        redirect: { name: "Inicio" }
+      },
+      {
         path: "/inicio",
         name: "Inicio",
         component: () => import("pages/Inicio.vue")
@@ -15,21 +19,25 @@ const routes = [
       },
       {
         path: "/personas",
-        name: "Personas",
         component: () => import("pages/Personas.vue"),
         children: [
           {
-            path: "/personas/integrantes",
+            path: "",
+            name: "Personas",
+            redirect: { name: "integrantes" }
+          },
+          {
+            path: "integrantes",
             name: "integrantes",
             component: () => import("components/personas/TablaIntegrantes.vue")
           },
           {
-            path: "/personas/nucleos",
+            path: "nucleos",
             name: "nucleos",
             component: () => import("components/personas/TablaNucleos.vue")
           },
           {
-            path: "/personas/jefes-de-calle",
+            path: "jefes-de-calle",
             name: "jefes de calle",
             component: () => import("components/personas/TablaJefesCalle.vue")
           }
@@ -68,13 +76,13 @@ const routes = [
         path: "/usuario/inicio",
         name: "InicioUsuario",
         component: () => import("pages/usuario/Inicio.vue")
-      },
-      {
-        path: "/ingreso/registro",
-        name: "Registro",
-        component: () => import("pages/Registro.vue")
       }
     ]
+  },
+  {
+    path: "/test",
+    name: "test",
+    component: () => import("layouts/test.vue")
   },
 
   // Always leave this as last one,

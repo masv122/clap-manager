@@ -7,3 +7,6 @@ export function detallesSector(state) {
 export function modificarSector(state) {
   return state.modificarSector;
 }
+export function sectores(state) {
+  return state.sectores;
+}

@@ -16,6 +16,7 @@ import DetallesSector from "components/sectores/DetallesSector.vue";
 import TablaSectores from "components/sectores/TablaSectores.vue";
 import ModificarSector from "components/sectores/ModificarSector.vue";
 import ConfirmacionEliminacion from "components/ConfirmacionEliminacion.vue";
+import { mapActions } from "vuex";
 export default {
   name: "Sectores",
   components: {
@@ -28,7 +29,11 @@ export default {
   methods: {
     myTweak(offset) {
       return { minHeight: offset ? `calc(100vh - ${offset}px` : "100vh" };
-    }
+    },
+    ...mapActions("sectores", ["cargarSectores"])
+  },
+  created() {
+    this.cargarSectores();
   }
 };
 </script>

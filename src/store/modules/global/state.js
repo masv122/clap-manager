@@ -1,7 +1,11 @@
-export default function () {
+export default function() {
   return {
     confirmacionEliminacion: false,
     leftDrawer: false,
-    rightDrawer: false
+    rightDrawer: false,
+    estados: [],
+    municipios: [],
+    parroquias: [],
+    bancos: []
   };
 }

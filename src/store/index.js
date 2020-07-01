@@ -23,7 +23,7 @@ export default function(/* { ssrContext } */) {
       sectores,
       personas,
       pagos,
-      global
+      global,
     },
 
     // enable strict mode (adds overhead!)
