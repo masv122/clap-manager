@@ -6,19 +6,19 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
-
+const path = require("path");
 module.exports = function(/* ctx */) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 
     // https://quasar.dev/quasar-cli/prefetch-feature
-    // preFetch: true,
+    preFetch: true,
 
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: ["axios", "pouchdb"],
+    boot: ["axios", "pouchdb/index", "vuelidate"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -41,7 +41,6 @@ module.exports = function(/* ctx */) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history',
       devtool: "source-map",
-
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
@@ -66,6 +65,10 @@ module.exports = function(/* ctx */) {
           loader: "eslint-loader",
           exclude: /node_modules/
         });
+        // cfg.resolve.alias["pouchdb-promise"] = path.join(
+        //   __dirname,
+        //   "/node_modules/pouchdb-promise/lib/index.js"
+        // );
       }
     },
 
@@ -88,7 +91,12 @@ module.exports = function(/* ctx */) {
       importStrategy: "auto",
 
       // Quasar plugins
-      plugins: []
+      plugins: ["Notify"],
+      config: {
+        notify: {
+          /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
+        }
+      }
     },
 
     // animations: 'all', // --- includes all animations
