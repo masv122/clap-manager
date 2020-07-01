@@ -6,7 +6,6 @@
         dense
         round
         icon="menu"
-        aria-label="Menu"
         @click="updateLeftDrawer"
       />
       <q-img
@@ -17,7 +16,7 @@
         width="100px"
       />
       <q-toolbar-title>CLAP Manager</q-toolbar-title>
-      <q-btn color="white" text-color="dark" :to="{name: 'Login'}"  label="Iniciar sesion" />
+      <q-btn color="white" text-color="dark" :to="{name: 'Login'}" v-if="$q.screen.width > 500"  label="Iniciar sesion" />
       <q-btn @click="updateRightDrawer" flat round dense icon="notifications" />
     </q-toolbar>
   </div>
