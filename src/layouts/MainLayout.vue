@@ -1,10 +1,28 @@
 <template>
   <q-layout view="lHr Lpr lFf">
-    <Dialogs/>
+    <Dialogs />
     <q-header class="bg-negative" elevated>
-      <Header />
+      <q-toolbar>
+        <q-btn flat dense round icon="menu" @click="leftDrawer = !leftDrawer" />
+        <q-img
+          src="~assets/clap_manager_icon.png"
+          :ratio="16/9"
+          spinner-color="primary"
+          spinner-size="82px"
+          width="100px"
+        />
+        <q-toolbar-title>CLAP Manager</q-toolbar-title>
+        <q-btn
+          color="white"
+          text-color="dark"
+          :to="{name: 'Login'}"
+          v-if="$q.screen.width > 500"
+          label="Iniciar sesion"
+        />
+        <q-btn @click="rightDrawer = !rightDrawer" flat round dense icon="notifications" />
+      </q-toolbar>
       <q-tabs class="text-white q-ml-auto">
-        <q-route-tab name="home" :to="{name: 'Inicio'}" icon="home" label="Inicio" exact/>
+        <q-route-tab name="home" :to="{name: 'Inicio'}" icon="home" label="Inicio" exact />
         <q-route-tab name="sectores" :to="{name: 'Sectores'}" icon="place" label="Sectores" exact />
         <q-route-tab
           name="personas"
@@ -17,13 +35,20 @@
       </q-tabs>
     </q-header>
 
-    <q-drawer v-model="_leftDrawer" show-if-above bordered>
+    <q-drawer v-model="leftDrawer" show-if-above bordered>
       <MenuDrawer />
       <q-img class="absolute-top" src="~assets/clap_manager_drawer.png" style="height: 150px">
         <div class="absolute-bottom bg-transparent">
           <q-avatar size="56px" class="q-mb-sm">
             <q-icon name="account_circle" />
           </q-avatar>
+          <q-btn
+            color="white"
+            text-color="dark"
+            :to="{name: 'Login'}"
+            v-if="$q.screen.width < 500"
+            label="Iniciar sesion"
+          />
           <div class="text-weight-bold">Inicia sesion para almacenar tus registros</div>
           <div>@rstoenescu</div>
         </div>
@@ -35,7 +60,7 @@
       </div>
     </q-drawer>
     <q-drawer
-      v-model="_rightDrawer"
+      v-model="rightDrawer"
       :width="200"
       :breakpoint="500"
       side="right"
@@ -45,7 +70,7 @@
       content-class="bg-white"
     >
       <q-scroll-area class="fit">
-        <q-list v-for="(menuItem, index) in menuList" :key="index">
+        <!-- <q-list v-for="(menuItem, index) in menuList" :key="index">
           <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple>
             <q-item-section avatar>
               <q-icon :name="menuItem.icon" />
@@ -53,7 +78,7 @@
             <q-item-section>{{ menuItem.label }}</q-item-section>
           </q-item>
           <q-separator v-if="menuItem.separator" />
-        </q-list>
+        </q-list>-->
       </q-scroll-area>
     </q-drawer>
     <q-page-container class="bg-grey-11">
@@ -65,127 +90,30 @@
 <script>
 import MenuDrawer from "components/MenuDrawer.vue";
 import Header from "components/Header.vue";
-import Dialogs from 'components/Dialogs.vue';
-import { mapMutations, mapGetters } from "vuex";
-const menuList = [
-  {
-    icon: "inbox",
-    label: "Inbox",
-    separator: true
-  },
-  {
-    icon: "send",
-    label: "Outbox",
-    separator: false
-  },
-  {
-    icon: "delete",
-    label: "Trash",
-    separator: false
-  },
-  {
-    icon: "error",
-    label: "Spam",
-    separator: true
-  },
-  {
-    icon: "settings",
-    label: "Settings",
-    separator: false
-  },
-  {
-    icon: "feedback",
-    label: "Send Feedback",
-    separator: false
-  },
-  {
-    icon: "help",
-    iconColor: "primary",
-    label: "Help",
-    separator: false
-  }
-];
+import Dialogs from "components/Dialogs.vue";
+import { mapMutations, mapGetters, mapActions } from "vuex";
 export default {
   name: "MainLayout",
   components: {
     MenuDrawer,
-    Header,
+    // Header,
     Dialogs
   },
   data() {
     return {
       text: "",
       tab: "mails",
-      essentialLinks: [
-        {
-          title: "Docs",
-          caption: "quasar.dev",
-          icon: "school",
-          link: "https://quasar.dev"
-        },
-        {
-          title: "Github",
-          caption: "github.com/quasarframework",
-          icon: "code",
-          link: "https://github.com/quasarframework"
-        },
-        {
-          title: "Discord Chat Channel",
-          caption: "chat.quasar.dev",
-          icon: "chat",
-          link: "https://chat.quasar.dev"
-        },
-        {
-          title: "Forum",
-          caption: "forum.quasar.dev",
-          icon: "record_voice_over",
-          link: "https://forum.quasar.dev"
-        },
-        {
-          title: "Twitter",
-          caption: "@quasarframework",
-          icon: "rss_feed",
-          link: "https://twitter.quasar.dev"
-        },
-        {
-          title: "Facebook",
-          caption: "@QuasarFramework",
-          icon: "public",
-          link: "https://facebook.quasar.dev"
-        },
-        {
-          title: "Quasar Awesome",
-          caption: "Community Quasar projects",
-          icon: "favorite",
-          link: "https://awesome.quasar.dev"
-        }
-      ],
-      menuList
+      rightDrawer: false,
+      leftDrawer: false
     };
   },
-  computed: {
-    ...mapGetters("global", ["leftDrawer", "rightDrawer"]),
-    _leftDrawer: {
-      get() {
-        return this.leftDrawer;
-      },
-      set(value) {
-        this.updateLeftDrawer(value);
-      }
-    },
-    _rightDrawer: {
-      get() {
-        return this.rightDrawer;
-      },
-      set(value) {
-        this.updateRightDrawer(value);
-      }
-    }
-  },
+  computed: {},
   methods: {
-    ...mapMutations("global", ["updateLeftDrawer", "updateRightDrawer"])
+    ...mapActions("global", ["loadData"])
   },
-  created() {}
+  async created() {
+    await this.loadData();
+  }
 };
 </script>
 
