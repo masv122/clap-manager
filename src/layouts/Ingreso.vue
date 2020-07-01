@@ -5,9 +5,9 @@
     </q-header>
     <div class="column justify-end">
       <div class="col self-center q-mt-lg">
-    <q-page-container>
-      <router-view />
-    </q-page-container>
+        <q-page-container>
+          <router-view />
+        </q-page-container>
       </div>
     </div>
     <q-footer elevated class="bg-white text-black">
