@@ -5,7 +5,7 @@
       <ModificarSector />
       <ConfirmacionEliminacion />
       <DetallesSector />
-      <TablaSectores />
+      <TablaSectores :loading="loading" />
     </div>
   </q-page>
 </template>
@@ -26,14 +26,21 @@ export default {
     ConfirmacionEliminacion,
     ModificarSector
   },
+  data() {
+    return {
+      loading: false
+    };
+  },
   methods: {
     myTweak(offset) {
       return { minHeight: offset ? `calc(100vh - ${offset}px` : "100vh" };
     },
     ...mapActions("sectores", ["cargarSectores"])
   },
-  created() {
-    this.cargarSectores();
+  async created() {
+    this.loading = true;
+    await this.cargarSectores();
+    this.loading = false;
   }
 };
 </script>

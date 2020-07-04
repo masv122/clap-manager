@@ -5,12 +5,13 @@
       persistent
       transition-show="flip-down"
       transition-hide="flip-up"
+      @show="cargarSector"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
           <q-toolbar-title shrink>
             <div class="text-h6">
-              <q-icon name="edit" class="q-mr-md"/>Modificar Sector
+              <q-icon name="edit" class="q-mr-md" />Modificar Sector
             </div>
           </q-toolbar-title>
           <q-btn dense flat icon="close" v-close-popup class="q-ml-auto">
@@ -18,15 +19,23 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-ma-md">
-          <q-form @submit.prevent @reset="onReset" class="q-gutter-md">
+          <q-form @submit.prevent class="q-gutter-md">
             <div class="text-h6 q-mt-md">
               <q-icon name="info" class="q-mr-md" />Datos del sector
-              <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
+              <q-btn
+                class="float-right"
+                color="negative"
+                icon="redo"
+                @click="cargarSector"
+                label="Restablecer"
+              />
             </div>
             <q-separator />
             <q-input
-              v-model="text"
+              v-model="$v.datos.nombre.$model"
               type="text"
+              error-message="Debe escribir un nombre para el sector"
+              :error="$v.datos.nombre.$invalid"
               label-color="negative"
               color="negative"
               label="Ingrese nombre del sector"
@@ -35,17 +44,20 @@
               label-color="negative"
               color="negative"
               label="Estado"
-              :value="model"
+              v-model="$v.datos.estado.$model"
               use-input
+              option-value="id"
+              option-label="nombre"
+              emit-value
+              map-options
               behavior="menu"
               hide-selected
               fill-input
-              lazy-rules
-              :rules="[ val => val !== null && val !== '' || 'Seleccione un estado']"
+              error-message="Debe seleccionar un estado"
+              :error="$v.datos.estado.$invalid"
               input-debounce="0"
-              :options="options"
-              @filter="filterFn"
-              @input-value="setModel"
+              :options="estadosOpt"
+              @filter="filterEstados"
               style="padding-bottom: 32px"
             >
               <template v-slot:no-option>
@@ -57,18 +69,21 @@
             <q-select
               label-color="negative"
               color="negative"
-              :value="model"
               use-input
+              v-model="$v.datos.municipio.$model"
+              error-message="Debe seleccionar un municipio"
+              :error="$v.datos.municipio.$invalid"
+              option-value="id"
+              option-label="nombre"
+              emit-value
+              map-options
               label="Municipio"
               behavior="menu"
               hide-selected
               fill-input
-              lazy-rules
-              :rules="[ val => val !== null && val !== '' || 'Seleccione un municipio']"
               input-debounce="0"
-              :options="options"
-              @filter="filterFn"
-              @input-value="setModel"
+              :options="municipiosOpt"
+              @filter="filterMunicipio"
               style="padding-bottom: 32px"
             >
               <template v-slot:no-option>
@@ -80,18 +95,21 @@
             <q-select
               label-color="negative"
               color="negative"
-              :value="model"
               use-input
+              v-model="$v.datos.parroquia.$model"
+              error-message="Debe seleccionar una parroquia"
+              :error="$v.datos.parroquia.$invalid"
+              option-value="id"
+              option-label="nombre"
+              emit-value
+              map-options
               label="Parroquia"
               behavior="menu"
               hide-selected
               fill-input
-              lazy-rules
-              :rules="[ val => val !== null && val !== '' || 'Seleccione una parroquia']"
               input-debounce="0"
-              :options="options"
-              @filter="filterFn"
-              @input-value="setModel"
+              :options="parroquiasOpt"
+              @filter="filterParroquia"
               style="padding-bottom: 32px"
             >
               <template v-slot:no-option>
@@ -116,6 +134,7 @@
             type="submit"
             color="primary"
             class="q-ml-sm full-width"
+            @click="confirmacion"
           />
         </q-card-actions>
       </q-card>
@@ -124,20 +143,9 @@
 </template>
 
 <script>
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle"
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + " " + i);
-  }
-  return acc;
-}, []);
-
-import { mapGetters, mapMutations } from "vuex";
+import Sector from "src/class/sector";
+import { mapGetters, mapMutations, mapActions } from "vuex";
+import { required, minLength, between } from "vuelidate/lib/validators";
 import TablaJefesDeCalleGrid from "components/TablaJefesDeCalleGrid.vue";
 export default {
   name: "ModificarSector",
@@ -147,38 +155,155 @@ export default {
   data() {
     return {
       model: null,
-      stringOptions,
-      options: stringOptions,
-      text: ""
+      text: "",
+      datos: {
+        estado: null,
+        municipio: null,
+        parroquia: null,
+        nombre: ""
+      },
+      id: ""
     };
   },
+  watch: {
+    datos: {
+      immediate: true,
+      deep: true,
+      handler(newValue, oldValue) {
+        if (!!newValue.estado) {
+          if (newValue.estado !== oldValue.estado) this.datos.municipio = null;
+          this.municipiosOpt = this.municipiosEnEstado(newValue.estado);
+        }
+        if (!!newValue.municipio) {
+          if (newValue.municipio !== oldValue.municipio)
+            this.datos.parroquia = null;
+          this.parroquiasOpt = this.parroquiasEnMunicipio(newValue.municipio);
+        }
+      }
+    }
+  },
+  validations: {
+    datos: {
+      estado: {
+        required
+      },
+      municipio: {
+        required
+      },
+      parroquia: {
+        required
+      },
+      nombre: {
+        required
+      }
+    }
+  },
   computed: {
-    ...mapGetters("sectores", ["modificarSector"]),
+    ...mapGetters("sectores", ["modificar", "sectorSel"]),
+    ...mapGetters("global", [
+      "estados",
+      "municipios",
+      "municipiosEnEstado",
+      "parroquias",
+      "parroquiasEnMunicipio",
+      "estadoPorNombre",
+      "municipioPorNombre",
+      "parroquiasPorNombre"
+    ]),
     _modificarSector: {
       get() {
-        return this.modificarSector;
+        return this.modificar;
       },
       set() {
-        this.updateModificarSector();
+        this.updateModificar();
       }
     }
   },
   methods: {
-    ...mapMutations("sectores", ["updateModificarSector"]),
-    filterFn(val, update, abort) {
+    ...mapMutations("sectores", ["updateModificar"]),
+    ...mapActions("sectores", ["modificarSector"]),
+    filterEstados(val, update, abort) {
       update(() => {
         const needle = val.toLocaleLowerCase();
-        this.options = stringOptions.filter(
-          v => v.toLocaleLowerCase().indexOf(needle) > -1
+        this.estadosOpt = this.estados.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
         );
       });
     },
-    setModel(val) {
-      this.model = val;
+    filterMunicipio(val, update, abort) {
+      const OPTS = !this.datos.estado
+        ? this.municipios
+        : this.municipiosEnEstado(this.datos.estado);
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.municipiosOpt = OPTS.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
     },
-    onReset() {
-      this.model = null;
+    filterParroquia(val, update, abort) {
+      const OPTS = !this.datos.municipio
+        ? this.parroquias
+        : this.parroquiasEnMunicipio(this.datos.municipio);
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.parroquiasOpt = OPTS.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+    confirmacion() {
+      this.$q
+        .dialog({
+          title: "Confirme",
+          message: "¿Seguro que quiere modificar este sector",
+          cancel: true,
+          persistent: true
+        })
+        .onOk(() => {
+          this.guardarSector();
+        });
+    },
+    cargarSector() {
+      this.datos.nombre = this.sectorSel[0].nombre;
+      this.datos.estado = this.estadoPorNombre(this.sectorSel[0].estado);
+      this.datos.municipio = this.municipioPorNombre(
+        this.sectorSel[0].municipio
+      );
+      this.datos.parroquia = this.parroquiasPorNombre(
+        this.sectorSel[0].parroquia
+      );
+    },
+    async guardarSector() {
+      console.log(this.estados[this.datos.estado.id])
+      try {
+        const SECTOR = new Sector(
+          this.datos.nombre,
+          this.estados[this.datos.estado.id - 1].nombre,
+          this.municipios[this.datos.municipio.id - 1].nombre,
+          this.parroquias[this.datos.parroquia.id - 1].nombre,
+          this.sectorSel[0].id,
+          this.sectorSel[0].rev
+        );
+        const RESULTADO = await this.$db.local.rel.save("sector", SECTOR);
+        let mensaje = !!RESULTADO
+          ? "Sector Modificado"
+          : "No se pudo modificar el sector";
+        let icon = !!RESULTADO ? "check" : "close";
+        this.$q.notify({
+          message: mensaje,
+          icon: icon
+        });
+        if (RESULTADO) this.updateModificar();
+      } catch (error) {
+        alert(error);
+      }
     }
+  },
+  async created() {
+    this.estadosOpt = this.estados;
+    this.municipiosOpt = this.municipios;
+    this.parroquiasOpt = this.parroquias;
   }
 };
 </script>

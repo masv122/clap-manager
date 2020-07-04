@@ -5,6 +5,7 @@
       persistent
       transition-show="flip-down"
       transition-hide="flip-up"
+      @hide="reset"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
@@ -265,7 +266,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("sectores", ["agregarSector"]),
+    ...mapGetters("sectores", ["agregar"]),
     ...mapGetters("global", [
       "estados",
       "municipios",
@@ -275,15 +276,15 @@ export default {
     ]),
     _agregarSector: {
       get() {
-        return this.agregarSector;
+        return this.agregar;
       },
       set(value) {
-        this.updateAgregarSector(value);
+        this.updateAgregar(value);
       }
     }
   },
   methods: {
-    ...mapMutations("sectores", ["updateAgregarSector"]),
+    ...mapMutations("sectores", ["updateAgregar"]),
     ...mapActions("sectores", ["guardarSector"]),
     mostrarValidation() {
       console.log(this.$v);
@@ -319,22 +320,34 @@ export default {
       });
     },
     async confirmarSector() {
-      const SECTOR = new Sector(
-        this.datos.nombre,
-        this.estados[this.datos.estado].nombre,
-        this.municipios[this.datos.municipio].nombre,
-        this.parroquias[this.datos.parroquia].nombre
-      );
-      const RESULTADO = await this.guardarSector(SECTOR);
-      let mensaje = !!RESULTADO ? "Sector Agregado" : "No se pudo agregar el sector";
-      let icon = !!RESULTADO ? "check" : "close";
-      this.$q.notify({
-        message: mensaje,
-        icon: icon
-      });
+      try {
+        const SECTOR = new Sector(
+          this.datos.nombre,
+          this.estados[this.datos.estado - 1].nombre,
+          this.municipios[this.datos.municipio - 1].nombre,
+          this.parroquias[this.datos.parroquia - 1].nombre,
+          null,
+          null
+        );
+        const RESULTADO = await this.$db.local.rel.save("sector", SECTOR);
+        let mensaje = !!RESULTADO
+          ? "Sector Agregado"
+          : "No se pudo agregar el sector";
+        let icon = !!RESULTADO ? "check" : "close";
+        this.$q.notify({
+          message: mensaje,
+          icon: icon
+        });
+        if (RESULTADO) this.updateAgregar();
+      } catch (error) {
+        alert(error);
+      }
     },
-    onReset() {
-      this.model = null;
+    reset() {
+      this.datos.estado = null;
+      this.datos.municipio = null;
+      this.datos.parroquia = null;
+      this.datos.nombre = "";
     }
   },
   async created() {

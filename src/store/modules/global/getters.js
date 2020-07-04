@@ -25,3 +25,12 @@ export const parroquiasEnMunicipio = (state) => (id) => {
 export function bancos(state) {
   return state.bancos;
 }
+export const estadoPorNombre = (state) => (nombre) => {
+  return state.estados.find( e => e.nombre === nombre);
+}
+export const municipioPorNombre = (state) => (nombre) => {
+  return state.municipios.find( e => e.nombre === nombre);
+}
+export const parroquiasPorNombre = (state) => (nombre) => {
+  return state.parroquias.find( e => e.nombre === nombre);
+}

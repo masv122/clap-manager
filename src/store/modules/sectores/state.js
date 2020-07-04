@@ -1,9 +1,10 @@
 export default function () {
   return {
-    agregarSector: false,
-    detallesSector: false,
-    modificarSector: false,
+    agregar: false,
+    detalles: false,
+    modificar: false,
     sectores: [],
     sector: {},
+    sectorSel: [],
   };
 }

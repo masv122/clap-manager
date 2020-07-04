@@ -1,12 +1,21 @@
-export function agregarSector(state) {
-  return state.agregarSector;
+export function agregar(state) {
+  return state.agregar;
 }
-export function detallesSector(state) {
-  return state.detallesSector;
+export function detalles(state) {
+  return state.detalles;
 }
-export function modificarSector(state) {
-  return state.modificarSector;
+export function modificar(state) {
+  return state.modificar;
 }
 export function sectores(state) {
   return state.sectores;
+}
+export function sector(state) {
+  return state.sector;
+}
+export function sectorSel(state) {
+  return state.sectorSel;
+}
+export const buscarIndice = (state) => (id) => {
+  return state.sectores.findIndex(e => e.id === id);
 }

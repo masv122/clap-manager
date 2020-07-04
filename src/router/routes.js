@@ -79,11 +79,6 @@ const routes = [
       }
     ]
   },
-  {
-    path: "/test",
-    name: "test",
-    component: () => import("layouts/test.vue")
-  },
 
   // Always leave this as last one,
   // but you can also remove it

@@ -15,7 +15,7 @@
             align="left"
             icon="add"
             label="Agregar"
-            @click="updateAgregarSector"
+            @click="updateAgregar"
             flat
             class="full-width q-mb-sm q-pl-md"
           />
@@ -132,7 +132,7 @@ import { mapMutations } from "vuex";
 export default {
   name: "MenuDrawer",
   methods: {
-    ...mapMutations("sectores", ["updateAgregarSector"]),
+    ...mapMutations("sectores", ["updateAgregar"]),
     ...mapMutations("personas", ["updateAgregarPersona"]),
     ...mapMutations("pagos", ["updateAgregarPago"]),
   },

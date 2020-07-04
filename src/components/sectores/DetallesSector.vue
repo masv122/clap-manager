@@ -25,22 +25,22 @@
               </div>
               <q-field borderless label="Nombre" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Nombre</div>
+                  <div class="self-center full-width no-outline">{{ sectorSel[0].nombre }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Estado" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Estado</div>
+                  <div class="self-center full-width no-outline">{{ sectorSel[0].estado }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Municipio" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Municipio</div>
+                  <div class="self-center full-width no-outline">{{ sectorSel[0].municipio }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Parroquia" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Parroquia</div>
+                  <div class="self-center full-width no-outline">{{  sectorSel[0].parroquia }}</div>
                 </template>
               </q-field>
             </div>
@@ -97,18 +97,18 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "DetallesSector",
   computed: {
-    ...mapGetters("sectores", ["detallesSector"]),
+    ...mapGetters("sectores", ["detalles", "sectorSel"]),
     _detallesSector: {
       get() {
-        return this.detallesSector;
+        return this.detalles;
       },
       set(value) {
-        this.updateDetallesSector(value);
+        this.updateDetalles(value);
       }
     }
   },
   methods: {
-    ...mapMutations("sectores", ["updateDetallesSector"])
+    ...mapMutations("sectores", ["updateDetalles"])
   }
 };
 </script>
