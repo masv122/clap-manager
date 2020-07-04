@@ -91,7 +91,7 @@ module.exports = function(/* ctx */) {
       importStrategy: "auto",
 
       // Quasar plugins
-      plugins: ["Notify"],
+      plugins: ["Notify", "Dialog"],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
