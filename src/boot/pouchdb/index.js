@@ -15,6 +15,24 @@ class Database {
   }
 }
 
+let events = {
+  sector: {
+    name: "sector",
+    eliminar: "sectores/eliminarSector",
+    guardar: "sectores/guardarSector"
+  },
+  nucleo: {
+    name: "nucleo",
+    eliminar: "nucleos/eliminarNucleos",
+    guardar: "nucleos/guardarNucleos"
+  },
+  integrante: {
+    name: "integrante",
+    eliminar: "integrante/eliminarIntegrante",
+    guardar: "integrante/guardarIntegrante"
+  }
+};
+
 const db = new Database();
 export default async ({ Vue, store, router }) => {
   await db.configure({
@@ -22,12 +40,11 @@ export default async ({ Vue, store, router }) => {
       let { data, _id, _rev, _deleted } = change.doc;
       let parsed = db.local.rel.parseDocID(_id);
       let event = events[parsed.type];
-
       if (_deleted) {
         router.app.$emit(parsed.type, { id: parsed.id, _deleted });
         router.app.$emit(parsed.id, { _deleted });
         if (event) {
-          store.dispatch(event.delete, parsed.id);
+          store.dispatch(event.eliminar, parsed.id);
         }
       } else {
         data.id = parsed.id;
@@ -35,7 +52,7 @@ export default async ({ Vue, store, router }) => {
         router.app.$emit(parsed.type, data);
         router.app.$emit(parsed.id, data);
         if (event) {
-          store.dispatch(event.save, data);
+          store.dispatch(event.guardar, data);
         }
       }
     }
