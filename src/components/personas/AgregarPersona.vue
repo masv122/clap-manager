@@ -21,45 +21,14 @@
           <div class="q-pa-md">
             <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
               <q-step :name="1" title="Complete los datos" icon="info" :done="step > 1">
-                <q-input
-                  label-color="negative"
-                  clearable
-                  color="negative"
-                  v-model="text"
-                  type="text"
-                  label="Nombre"
-                />
-                <q-input
-                  label-color="negative"
-                  clearable
-                  color="negative"
-                  v-model="text"
-                  type="text"
-                  label="Apellido"
-                />
-                <q-input
-                  label-color="negative"
-                  clearable
-                  color="negative"
-                  v-model.number="text"
-                  type="number"
-                  label="Cedula"
-                />
-                <q-input
-                  label-color="negative"
-                  clearable
-                  color="negative"
-                  v-model="text"
-                  type="tel"
-                  label="Telefono"
-                  mask="(####) ### - ####"
-                />
+                <DatosPersonales />
                 <q-stepper-navigation>
                   <q-btn
                     @click="step = 2"
                     color="primary"
                     icon-right="chevron_right"
                     label="Siguiente"
+                    :disable="datosPersonalesInvalidos"
                   />
                 </q-stepper-navigation>
               </q-step>
@@ -72,9 +41,9 @@
                 :done="step > 2"
               >
                 <TipoPersona />
-                <AsignarNucleo v-if="false" />
-                <CrearNucleo v-if="false" />
-                <CrearJefeCalle />
+                <AsignarNucleo v-if="tipoPersona && tipoPersona.value === 'asignar'" />
+                <CrearNucleo v-else-if="tipoPersona && tipoPersona.value === 'crear'" />
+                <CrearJefeCalle v-else-if="tipoPersona && tipoPersona.value === 'jefe'" />
                 <q-stepper-navigation>
                   <q-btn
                     flat
@@ -89,6 +58,7 @@
                     color="primary"
                     icon-right="chevron_right"
                     label="Siguiente"
+                    :disable="datosNucleoInvalidos"
                   />
                 </q-stepper-navigation>
               </q-step>
@@ -96,44 +66,13 @@
               <q-step :name="3" title="Confirme la informacion" icon="check">
                 <div class="row">
                   <div class="col">
-                    <div class="text-h5 q-ml-xl">
-                      <q-icon name="info" />Datos personales
-                    </div>
-                    <q-field borderless label="Nombre" stack-label>
-                      <template v-slot:control>
-                        <div class="self-center full-width no-outline">Nombre</div>
-                      </template>
-                    </q-field>
-                    <q-field borderless label="Apellido" stack-label>
-                      <template v-slot:control>
-                        <div class="self-center full-width no-outline">Apellido</div>
-                      </template>
-                    </q-field>
-                    <q-field borderless label="Cedula" stack-label>
-                      <template v-slot:control>
-                        <div class="self-center full-width no-outline">Cedula</div>
-                      </template>
-                    </q-field>
-                    <q-field borderless label="Telefono" stack-label>
-                      <template v-slot:control>
-                        <div class="self-center full-width no-outline">Telefono</div>
-                      </template>
-                    </q-field>
+                    <DatosPersonalesConfirmacion />
                   </div>
                   <div class="col">
-                    <div class="text-h5 q-ml-xl">
-                      <q-icon name="group" />Datos del Nucleo
-                    </div>
-                    <q-field borderless label="Direccion" stack-label>
-                      <template v-slot:control>
-                        <div class="self-center full-width no-outline">Direccion</div>
-                      </template>
-                    </q-field>
-                    <q-field borderless label="Sector" stack-label>
-                      <template v-slot:control>
-                        <div class="self-center full-width no-outline">Sector</div>
-                      </template>
-                    </q-field>
+                    <DatosNucleoConfirmacion
+                      v-if="tipoPersona && (tipoPersona.value === 'asignar' || tipoPersona.value === 'crear')"
+                    />
+                    <DatosJefeConfirmacion v-else />
                   </div>
                 </div>
                 <q-stepper-navigation>
@@ -145,7 +84,7 @@
                     label="Regresar"
                     class="q-ml-sm"
                   />
-                  <q-btn color="primary" icon-right="add" label="Agregar" />
+                  <q-btn color="positive" icon-right="check" label="Agregar" />
                 </q-stepper-navigation>
               </q-step>
             </q-stepper>
@@ -157,43 +96,48 @@
 </template>
 
 <script>
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle"
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + " " + i);
-  }
-  return acc;
-}, []);
-
 import { mapGetters, mapMutations } from "vuex";
+import { date } from "quasar";
+import DatosPersonales from "components/personas/DatosPersonales.vue";
 import TipoPersona from "components/personas/TipoPersona.vue";
 import AsignarNucleo from "components/personas/AsignarNucleo.vue";
 import CrearNucleo from "components/personas/CrearNucleo.vue";
 import CrearJefeCalle from "components/personas/CrearJefeCalle.vue";
+import DatosPersonalesConfirmacion from "components/personas/DatosPersonalesConfirmacion.vue";
+import DatosNucleoConfirmacion from "components/personas/DatosNucleoConfirmacion.vue";
+import DatosJefeConfirmacion from "components/personas/DatosJefeConfirmacion.vue";
 export default {
   name: "AgregarPersona",
   components: {
+    DatosPersonales,
     TipoPersona,
     AsignarNucleo,
     CrearNucleo,
-    CrearJefeCalle
+    CrearJefeCalle,
+    DatosPersonalesConfirmacion,
+    DatosNucleoConfirmacion,
+    DatosJefeConfirmacion
   },
   data() {
     return {
-      model: null,
-      stringOptions,
-      options: stringOptions,
-      text: "",
       step: 1
     };
   },
+
   computed: {
-    ...mapGetters("personas", ["agregarPersona"]),
+    ...mapGetters("personas", [
+      "agregarPersona",
+      "tipoPersona",
+      "nombreNucleo",
+      "nombre",
+      "apellido",
+      "cedula",
+      "telefono",
+      "fechaNacimiento",
+      "datosPersonalesInvalidos",
+      "datosNucleoInvalidos"
+    ]),
+    ...mapGetters("sectores", ["sectores", "sector"]),
     _agregarPersona: {
       get() {
         return this.agregarPersona;
