@@ -40,7 +40,7 @@ const routes = [
             path: "jefes-de-calle",
             name: "jefes de calle",
             component: () => import("components/personas/TablaJefesCalle.vue")
-          }
+          },
         ]
       },
       {
