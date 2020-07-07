@@ -109,9 +109,14 @@ export default {
   },
   computed: {},
   methods: {
-    ...mapActions("global", ["loadData"])
+    ...mapActions("global", ["loadData"]),
+    ...mapActions("sectores", ["cargarSectores"]),
+    ...mapMutations("sectores", ["updateCargandoSectores"])
   },
   async created() {
+    this.updateCargandoSectores;
+    await this.cargarSectores();
+    this.updateCargandoSectores;
     await this.loadData();
   }
 };

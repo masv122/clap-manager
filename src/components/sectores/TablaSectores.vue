@@ -8,13 +8,13 @@
       :columns="columns"
       row-key="id"
       :filter="filter"
-      :loading="loading"
+      :loading="cargandoSectores"
       selection="single"
       :selected.sync="_sector"
       no-data-label="Sin registro de sectores"
     >
       <template v-slot:loading>
-        <q-inner-loading showing color="primary" />
+        <q-inner-loading showing color="negative" />
       </template>
       <template v-slot:top-right>
         <q-select
@@ -46,12 +46,6 @@
 import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "TablaSectores",
-  props: {
-    loading: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
       filter: "",
@@ -89,7 +83,7 @@ export default {
     ...mapMutations("sectores", ["updateSectorSel"])
   },
   computed: {
-    ...mapGetters("sectores", ["sectores", "sectorSel"]),
+    ...mapGetters("sectores", ["sectores", "sectorSel", "cargandoSectores"]),
     _sector: {
       get() {
         return this.sectorSel;
