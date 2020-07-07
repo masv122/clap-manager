@@ -4,7 +4,8 @@ export default function () {
     detalles: false,
     modificar: false,
     sectores: [],
-    sector: {},
+    sector: null,
     sectorSel: [],
+    cargandoSectores: false,
   };
 }

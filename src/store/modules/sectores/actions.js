@@ -1,16 +1,10 @@
 import { db } from "boot/pouchdb/index";
-
-class Resultado {
-  constructor(indice, sector) {
-    this.indice = indice;
-    this.sector = sector;
-  }
-}
+import Resultado from "../../../class/resultado";
 
 export async function guardarSector({ commit, getters }, sector) {
     const INDICE = getters.buscarIndice(sector.id);
     if (INDICE >= 0) {
-      const RESULTADO = new Resultado(INDICE, sector);
+      const RESULTADO = new Resultado
       commit("modificarSector", RESULTADO);
     } else {
       commit("insertarsector", sector);

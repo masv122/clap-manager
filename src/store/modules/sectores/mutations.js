@@ -20,12 +20,15 @@ export function updateSectorSel(state, sector) {
   state.sectorSel = sector;
 }
 export function modificarSector(state, resultado) {
-  state.sectores[resultado.indice].nombre = resultado.sector.nombre;
-  state.sectores[resultado.indice].estado = resultado.sector.estado;
-  state.sectores[resultado.indice].municipio = resultado.sector.municipio;
-  state.sectores[resultado.indice].parroquia = resultado.sector.parroquia;
-  state.sectores[resultado.indice].rev = resultado.sector.rev;
+  state.sectores[resultado.indice].nombre = resultado.objeto.nombre;
+  state.sectores[resultado.indice].estado = resultado.objeto.estado;
+  state.sectores[resultado.indice].municipio = resultado.objeto.municipio;
+  state.sectores[resultado.indice].parroquia = resultado.objeto.parroquia;
+  state.sectores[resultado.indice].rev = resultado.objeto.rev;
 }
 export function eliminarSector(state, indice) {
   state.sectores.splice(indice, 1);
+}
+export function updateCargandoSectores(state) {
+  state.cargandoSectores = state.cargandoSectores;
 }
