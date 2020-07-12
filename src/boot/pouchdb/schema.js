@@ -3,7 +3,8 @@ const schema = [
     singular: "sector",
     plural: "sectores",
     relations: {
-      nucleos: { hasMany: "nucleos" }
+      nucleos: { hasMany: "nucleos" },
+      jefe: { belongsTo: "jefe" }
     }
   },
   {
