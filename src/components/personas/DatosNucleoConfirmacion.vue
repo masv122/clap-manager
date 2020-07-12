@@ -5,30 +5,41 @@
     </div>
     <q-field borderless label="Nombre" stack-label>
       <template v-slot:control>
-        <div class="self-center full-width no-outline">{{}}</div>
+        <div class="self-center full-width no-outline">{{nombreNucleo}}</div>
       </template>
     </q-field>
     <q-field borderless label="Direccion" stack-label>
       <template v-slot:control>
-        <div class="self-center full-width no-outline">{{Direccion}}</div>
+        <div class="self-center full-width no-outline">{{direccion}}</div>
       </template>
     </q-field>
     <q-field borderless label="Sector" stack-label>
       <template v-slot:control>
-        <div class="self-center full-width no-outline">{{Sector}}</div>
+        <div class="self-center full-width no-outline">{{ nombreSector }}</div>
       </template>
     </q-field>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "DatosNucleoConfirmacion",
-  computed: {
-    ...mapGetters("personas", ["nombreNucleo"])
+  props: {
+    nombreNucleo: {
+      type: String,
+      default: ""
+    },
+    direccion: {
+      type: String,
+      default: ""
+    },
+    nombreSector: {
+      type: String,
+      default: ""
+    }
   },
+
 };
 </script>
 

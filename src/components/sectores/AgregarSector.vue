@@ -209,6 +209,7 @@
 
 <script>
 import Sector from "src/class/sector";
+import * as API from 'src/mixins/API';
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import TablaJefesDeCalleGrid from "components/TablaJefesDeCalleGrid.vue";
@@ -321,24 +322,22 @@ export default {
     },
     async confirmarSector() {
       try {
-        const SECTOR = new Sector(
+        const sector = new Sector(
           this.datos.nombre,
           this.estados[this.datos.estado - 1].nombre,
           this.municipios[this.datos.municipio - 1].nombre,
           this.parroquias[this.datos.parroquia - 1].nombre,
-          null,
-          null
         );
-        const RESULTADO = await this.$db.local.rel.save("sector", SECTOR);
-        let mensaje = !!RESULTADO
+        const resultado = await API.agregarSector(sector);
+        let mensaje = !!resultado
           ? "Sector Agregado"
           : "No se pudo agregar el sector";
-        let icon = !!RESULTADO ? "check" : "close";
+        let icon = !!resultado ? "check" : "close";
         this.$q.notify({
           message: mensaje,
           icon: icon
         });
-        if (RESULTADO) this.updateAgregar();
+        if (resultado) this.updateAgregar();
       } catch (error) {
         alert(error);
       }
@@ -348,6 +347,7 @@ export default {
       this.datos.municipio = null;
       this.datos.parroquia = null;
       this.datos.nombre = "";
+      this.step = 1;
     }
   },
   async created() {

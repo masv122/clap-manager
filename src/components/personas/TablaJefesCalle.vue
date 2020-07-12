@@ -2,18 +2,36 @@
   <div class="q-pa-md">
     <q-table
       :grid="$q.screen.xs"
-      :data="data"
+      :visible-columns="visibleColumns"
+      title="Jefes de Calle"
+      :data="jefes"
       :columns="columns"
-      row-key="name"
+      row-key="id"
       :filter="filter"
-      hide-header
+      :loading="cargandoPersonas"
+      selection="single"
+      :selected.sync="_jefe"
+      no-data-label="Sin registro de jefes"
     >
-      <template v-slot:top-left>
-        <q-toolbar-title shrink>
-          <q-icon name="supervised_user_circle" />Jefes de calle
-        </q-toolbar-title>
+      <template v-slot:loading>
+        <q-inner-loading showing color="negative" />
       </template>
       <template v-slot:top-right>
+        <q-select
+          v-model="visibleColumns"
+          multiple
+          outlined
+          dense
+          options-dense
+          :display-value="$q.lang.table.columns"
+          emit-value
+          map-options
+          :options="columns"
+          option-value="name"
+          options-cover
+          style="min-width: 150px"
+          class="q-mr-md"
+        />
         <q-input dense debounce="300" v-model="filter" placeholder="Buscar">
           <template v-slot:append>
             <q-icon name="search" />
@@ -25,98 +43,85 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-
+import { mapGetters, mapMutations } from "vuex";
 export default {
-  name: "TablaIntegrantes",
+  name: "TablaJefesCalle",
   data() {
     return {
       filter: "",
+      visibleColumns: [
+        "nombre",
+        "apellido",
+        "cedula",
+        "telefono",
+        "fechaNacimiento",
+        "codigo",
+        "direccion",
+        "sector",
+        "id"
+      ],
       columns: [
         {
-          name: "desc",
-          required: true,
-          label: "Dessert (100g serving)",
-          align: "left",
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
+          name: "nombre",
+          label: "Nombre",
+          field: "nombre"
         },
         {
-          name: "calories",
-          align: "center",
-          label: "Calories",
-          field: "calories",
-          sortable: true
-        },
-        { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
-        { name: "carbs", label: "Carbs (g)", field: "carbs" }
-      ],
-      data: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24
+          name: "apellido",
+          label: "Apellido",
+          field: "apellido"
         },
         {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37
+          name: "cedula",
+          label: "Cedula",
+          field: "cedula"
         },
         {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23
+          name: "telefono",
+          label: "Telefono",
+          field: "telefono"
         },
         {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67
+          name: "fechaNacimiento",
+          label: "Nacimiento",
+          field: "fechaNacimiento"
         },
         {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49
+          name: "codigo",
+          label: "Codigo",
+          field: "codigo"
         },
         {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94
+          name: "direccion",
+          label: "Direccion",
+          field: "direccion"
         },
         {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98
+          name: "sector",
+          label: "Sector",
+          field: "sector"
         },
         {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65
+          name: "id",
+          label: "Identificador",
+          field: "id"
         }
       ]
     };
   },
   methods: {
+    ...mapMutations("personas", ["updateJefeSel"])
+  },
+  computed: {
+    ...mapGetters("personas", ["jefes", "jefeSel", "cargandoPersonas"]),
+    _jefe: {
+      get() {
+        return this.jefeSel;
+      },
+      set(value) {
+        this.updateJefeSel(value);
+      }
+    }
   }
 };
 </script>

@@ -111,12 +111,19 @@ export default {
   methods: {
     ...mapActions("global", ["loadData"]),
     ...mapActions("sectores", ["cargarSectores"]),
-    ...mapMutations("sectores", ["updateCargandoSectores"])
+    ...mapActions("personas", ["cargarNucleos", "cargarIntegrantes", "cargarJefes"]),
+    ...mapMutations("sectores", ["updateCargandoSectores"]),
+    ...mapMutations("personas", ["updateCargandoPersonas"])
   },
   async created() {
     this.updateCargandoSectores;
     await this.cargarSectores();
     this.updateCargandoSectores;
+    this.updateCargandoPersonas;
+    await this.cargarNucleos();
+    await this.cargarIntegrantes();
+    await this.cargarJefes();
+    this.updateCargandoPersonas;
     await this.loadData();
   }
 };

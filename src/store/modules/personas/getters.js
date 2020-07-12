@@ -7,6 +7,9 @@ export function detallesPersona(state) {
 export function modificarPersona(state) {
   return state.modificarPersona;
 }
+export function cargandoNucleos(state) {
+  return state.cargandoNucleos;
+}
 export function nombre(state) {
   return state.nombre;
 }
@@ -25,8 +28,8 @@ export function fechaNacimiento(state) {
 export function datosPersonalesInvalidos(state) {
   return state.datosPersonalesInvalidos;
 }
-export function datosNucleoInvalidos(state) {
-  return state.datosNucleoInvalidos;
+export function datosTipoPersonaInvalidos(state) {
+  return state.datosTipoPersonaInvalidos;
 }
 export function tipoPersona(state) {
   return state.tipoPersona;
@@ -44,10 +47,31 @@ export function nucleo(state) {
   return state.nucleo;
 }
 export function nucleoSel(state) {
-  return state.nucleoSel[0];
+  return state.nucleoSel;
+}
+export function jefes(state) {
+  return state.jefes;
+}
+export function jefe(state) {
+  return state.jefe;
+}
+export function jefeSel(state) {
+  return state.jefeSel;
+}
+export function codigo(state) {
+  return state.codigo;
 }
 export const buscarIndiceNucleo = state => id => {
   return state.nucleos.findIndex(e => e.id === id);
+};
+export const nucleosSector = state => sector => {
+  return state.nucleos.filter(e => e.sector === sector);
+};
+export const integrantesNucleo = state => nucleo => {
+  return state.integrantes.filter(e => e.nucleo === nucleo);
+};
+export const buscarNucleo = state => id => {
+  return state.nucleos.find(e => e.id === id);
 };
 export function integrantes(state) {
   return state.integrantes;

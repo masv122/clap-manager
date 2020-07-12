@@ -5,25 +5,24 @@
     </div>
     <q-field borderless label="Codigo" stack-label>
       <template v-slot:control>
-        <div class="self-center full-width no-outline">Codigo</div>
+        <div class="self-center full-width no-outline">{{codigo}}</div>
       </template>
     </q-field>
     <q-field borderless label="Direccion" stack-label>
       <template v-slot:control>
-        <div class="self-center full-width no-outline">Direccion</div>
-      </template>
-    </q-field>
-    <q-field borderless label="Sector" stack-label>
-      <template v-slot:control>
-        <div class="self-center full-width no-outline">Sector</div>
+        <div class="self-center full-width no-outline">{{direccion}}</div>
       </template>
     </q-field>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
-  name: "DatosJefeConfirmacion"
+  name: "DatosJefeConfirmacion",
+  computed: {
+    ...mapGetters("personas", ["codigo", "direccion"]),
+  },
 };
 </script>
 

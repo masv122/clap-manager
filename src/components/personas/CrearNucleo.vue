@@ -19,10 +19,10 @@
       clearable
       color="negative"
       v-model="$v._direccion.$model"
-      error-message="Debe proporcionar un nombre para el nucleo"
+      error-message="Debe proporcionar una direccion para el nucleo"
       :error="$v._direccion.$invalid"
       type="text"
-      label="Nombre"
+      label="Direccion"
     />
     <div class="text-h5 q-ml-xs q-pt-xs">
       <q-icon name="place" />Asignacion de sector
@@ -50,22 +50,22 @@
       emit-value
       map-options
     >
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+          <q-item-section>
+            <q-item-label v-html="scope.opt.nombre" />
+            <q-item-label
+              caption
+            >{{ scope.opt.getDirecion() }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
       <template v-slot:no-option>
         <q-item>
           <q-item-section class="text-grey">No results</q-item-section>
         </q-item>
       </template>
     </q-select>
-    <transition name="fade">
-      <q-chip
-        v-if="getInvalid"
-        color="red"
-        text-color="white"
-        icon="warning"
-        label="Debe llenar todos los campos correctamente"
-        class="q-mx-auto"
-      />
-    </transition>
   </div>
 </template>
 
@@ -78,6 +78,15 @@ export default {
     return {
       opciones: []
     };
+  },
+  watch: {
+    $v: {
+      immediate: true,
+      deep: true,
+      handler(newValue) {
+        this.updateDatosTipoPersonaInvalido(newValue.$invalid);
+      }
+    }
   },
   validations: {
     _nombreNucleo: {
@@ -116,17 +125,13 @@ export default {
       set(value) {
         this.updateDireccion(value);
       }
-    },
-    getInvalid() {
-      this.updateDatosNucleoInvalidos(this.$v.$invalid);
-      return this.$v.$invalid;
     }
   },
   methods: {
     ...mapMutations("sectores", ["updateSector"]),
     ...mapMutations("personas", [
       "updateNombreNucleo",
-      "updateDatosNucleoInvalidos",
+      "updateDatosTipoPersonaInvalido",
       "updateDireccion"
     ]),
     filterFn(val, update, abort) {

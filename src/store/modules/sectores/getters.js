@@ -19,6 +19,9 @@ export function sectorSel(state) {
 export const buscarIndice = (state) => (id) => {
   return state.sectores.findIndex(e => e.id === id);
 }
+export const buscarSector = (state) => (id) => {
+  return state.sectores.find(e => e.id === id);
+}
 export function cargandoSectores(state) {
   return state.cargandoSectores;
 }

@@ -35,13 +35,15 @@
 import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "DatosPersonalesConfirmacion",
-  ...mapGetters("personas", [
-    "nombre",
-    "apellido",
-    "cedula",
-    "telefono",
-    "fechaNacimiento"
-  ])
+  computed: {
+    ...mapGetters("personas", [
+      "nombre",
+      "apellido",
+      "cedula",
+      "telefono",
+      "fechaNacimiento"
+    ])
+  }
 };
 </script>
 

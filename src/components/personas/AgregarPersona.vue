@@ -5,6 +5,7 @@
       persistent
       transition-show="flip-down"
       transition-hide="flip-up"
+      @show="reset"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
@@ -58,7 +59,7 @@
                     color="primary"
                     icon-right="chevron_right"
                     label="Siguiente"
-                    :disable="datosNucleoInvalidos"
+                    :disable="datosTipoPersonaInvalidos"
                   />
                 </q-stepper-navigation>
               </q-step>
@@ -68,8 +69,11 @@
                   <div class="col">
                     <DatosPersonalesConfirmacion />
                   </div>
-                  <div class="col">
+                  <div class="col" v-if="step === 3">
                     <DatosNucleoConfirmacion
+                      :nombreNucleo="_nombreNucleo"
+                      :direccion="_direccion"
+                      :nombreSector="nombreSector"
                       v-if="tipoPersona && (tipoPersona.value === 'asignar' || tipoPersona.value === 'crear')"
                     />
                     <DatosJefeConfirmacion v-else />
@@ -84,7 +88,12 @@
                     label="Regresar"
                     class="q-ml-sm"
                   />
-                  <q-btn color="positive" icon-right="check" label="Agregar" />
+                  <q-btn
+                    color="positive"
+                    icon-right="check"
+                    label="Agregar"
+                    @click="confirmarPersona"
+                  />
                 </q-stepper-navigation>
               </q-step>
             </q-stepper>
@@ -96,8 +105,11 @@
 </template>
 
 <script>
+import * as API from "src/mixins/API";
+import Nucleo from "src/class/nucleo";
+import Integrante from "src/class/integrante";
+import JefeCalle from "src/class/jefeCalle";
 import { mapGetters, mapMutations } from "vuex";
-import { date } from "quasar";
 import DatosPersonales from "components/personas/DatosPersonales.vue";
 import TipoPersona from "components/personas/TipoPersona.vue";
 import AsignarNucleo from "components/personas/AsignarNucleo.vue";
@@ -123,21 +135,24 @@ export default {
       step: 1
     };
   },
-
   computed: {
     ...mapGetters("personas", [
       "agregarPersona",
-      "tipoPersona",
-      "nombreNucleo",
       "nombre",
       "apellido",
       "cedula",
       "telefono",
       "fechaNacimiento",
+      "tipoPersona",
+      "nombreNucleo",
+      "direccion",
+      "codigo",
       "datosPersonalesInvalidos",
-      "datosNucleoInvalidos"
+      "datosTipoPersonaInvalidos",
+      "buscarNucleo",
+      "nucleo"
     ]),
-    ...mapGetters("sectores", ["sectores", "sector"]),
+    ...mapGetters("sectores", ["sectores", "sector", "buscarSector"]),
     _agregarPersona: {
       get() {
         return this.agregarPersona;
@@ -145,23 +160,148 @@ export default {
       set(value) {
         this.updateAgregarPersona(value);
       }
+    },
+    _nombreNucleo() {
+      if (this.nucleo)
+        return this.tipoPersona.value === "asignar"
+          ? this.buscarNucleo(this.nucleo).nombre
+          : this.nombreNucleo;
+      else return "";
+    },
+    _direccion() {
+      if (this.nucleo)
+        return this.tipoPersona.value === "asignar"
+          ? this.buscarNucleo(this.nucleo).direccion
+          : this.direccion;
+      else return "";
+    },
+    nombreSector() {
+      if (this.nucleo || this.sector)
+        return this.buscarSector(
+          this.tipoPersona.value === "asignar"
+            ? this.buscarNucleo(this.nucleo).sector
+            : this.sector
+        ).nombre;
+      else return "";
     }
   },
   methods: {
-    ...mapMutations("personas", ["updateAgregarPersona"]),
-    filterFn(val, update, abort) {
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.options = stringOptions.filter(
-          v => v.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
+    ...mapMutations("sectores", ["updateSector"]),
+    ...mapMutations("personas", [
+      "updateAgregarPersona",
+      "updateNombre",
+      "updateApellido",
+      "updateCedula",
+      "updateTelefono",
+      "updateFechaNacimiento",
+      "updateTipoPersona",
+      "updateNucleo",
+      "updateNombreNucleo",
+      "updateDireccion",
+      "updateCodigo"
+    ]),
+    async confirmarPersona() {
+      try {
+        let persona,
+          nucleo,
+          resultadoFinal,
+          resultadoAgregarIntegrante,
+          resultadoAgregarNucleo,
+          resultadoActualizarNucleo;
+        let tipo;
+        switch (this.tipoPersona.value) {
+          case "asignar":
+            tipo = "Integrante";
+            persona = new Integrante(
+              this.nombre,
+              this.apellido,
+              this.cedula,
+              this.telefono,
+              this.fechaNacimiento,
+              this.nucleo
+            );
+            resultadoAgregarIntegrante = await API.agregarIntegrante(persona);
+            if (!!resultadoAgregarIntegrante)
+              resultadoFinal = await API.actualizarIntegrantesNucleo(
+                resultadoAgregarIntegrante,
+                persona
+              );
+            break;
+          case "crear":
+            tipo = "Nucleo";
+            nucleo = new Nucleo(
+              this.cedula,
+              this.nombreNucleo,
+              this.direccion,
+              this.sector
+            );
+            persona = new Integrante(
+              this.nombre,
+              this.apellido,
+              this.cedula,
+              this.telefono,
+              this.fechaNacimiento
+            );
+            resultadoAgregarNucleo = await API.agregarNucleo(nucleo);
+            if (!!resultadoAgregarNucleo) {
+              persona.nucleo = resultadoAgregarNucleo.id;
+              resultadoAgregarIntegrante = await API.agregarIntegrante(persona);
+              if (!!resultadoAgregarIntegrante) {
+                resultadoActualizarNucleo = await API.actualizarIntegrantesNucleo(
+                  resultadoAgregarIntegrante,
+                  persona
+                );
+                if (!!resultadoActualizarNucleo) {
+                  resultadoFinal = await API.actualizarNucleosSector(
+                    resultadoAgregarNucleo,
+                    nucleo
+                  );
+                } else resultadoFinal = false;
+              } else resultadoFinal = false;
+            } else resultadoFinal = false;
+            break;
+          case "jefe":
+            tipo = "Jefe";
+            const jefeCalle = new JefeCalle(
+              this.nombre,
+              this.apellido,
+              this.cedula,
+              this.telefono,
+              this.fechaNacimiento,
+              this.codigo,
+              this.direccion
+            );
+            resultadoFinal = await API.agregarJefe(jefeCalle);
+            break;
+          default:
+            break;
+        }
+        let mensaje = resultadoFinal
+          ? `${tipo} Agregado`
+          : `No se pudo agregar el ${tipo}`;
+        let icon = !!resultadoFinal ? "check" : "close";
+        this.$q.notify({
+          message: mensaje,
+          icon: icon
+        });
+        if (resultadoFinal) this.updateAgregarPersona();
+      } catch (error) {
+        alert(error);
+      }
     },
-    setModel(val) {
-      this.model = val;
-    },
-    onReset() {
-      this.model = null;
+    reset() {
+      this.step = 1;
+      this.updateTipoPersona(null);
+      this.updateNucleo(null);
+      this.updateSector(null);
+      this.updateNombreNucleo(null);
+      this.updateDireccion(null);
+      this.updateCodigo(null);
+      this.updateNombre(null);
+      this.updateApellido(null);
+      this.updateCedula(null);
+      this.updateTelefono(null);
+      this.updateFechaNacimiento(null);
     }
   }
 };

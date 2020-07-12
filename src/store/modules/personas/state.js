@@ -4,6 +4,8 @@ export default function() {
     agregarPersona: false,
     detallesPersona: false,
     modificarPersona: false,
+    cargandoNucleos: false,
+    cargandoIntegrantes: false,
     nombre: "",
     apellido: "",
     cedula: null,
@@ -13,9 +15,16 @@ export default function() {
     tipoPersona: null,
     nombreNucleo: "",
     direccion: "",
-    datosNucleoInvalidos: true,
+    codigo: "",
+    datosTipoPersonaInvalidos: true,
+    integrantes: [],
+    integrante: {},
+    integranteSel: [],
     nucleos: [],
-    nucleo: {},
-    nucleoSel: []
+    nucleo: null,
+    nucleoSel: [],
+    jefes: [],
+    jefe: null,
+    jefeSel: [],
   };
 }

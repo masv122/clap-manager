@@ -62,16 +62,6 @@
         </q-icon>
       </template>
     </q-input>
-    <transition name="fade">
-      <q-chip
-        v-if="getInvalid"
-        color="red"
-        text-color="white"
-        icon="warning"
-        label="Debe llenar todos los campos correctamente"
-        class="q-mx-auto"
-      />
-    </transition>
   </div>
 </template>
 
@@ -86,6 +76,15 @@ import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "DatosPersonales",
+  watch: {
+    $v: {
+      immediate: true,
+      deep: true,
+      handler(newValue) {
+        this.updateDatosPersonalesInvalidos(newValue.$invalid);
+      }
+    }
+  },
   computed: {
     ...mapGetters("personas", [
       "nombre",
@@ -134,10 +133,6 @@ export default {
       set(value) {
         this.updateFechaNacimiento(value);
       }
-    },
-    getInvalid() {
-      this.updateDatosPersonalesInvalidos(this.$v.$invalid);
-      return this.$v.$invalid;
     }
   },
   validations: {

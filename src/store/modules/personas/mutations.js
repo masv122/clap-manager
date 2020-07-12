@@ -1,3 +1,7 @@
+import Integrante from "src/class/integrante";
+import Nucleo from "src/class/nucleo";
+import JefeCalle from "src/class/jefeCalle";
+
 export function updateAgregarPersona(state) {
   state.agregarPersona = !state.agregarPersona;
 }
@@ -6,6 +10,9 @@ export function updateDetallesPersona(state) {
 }
 export function updateModificarPersona(state) {
   state.modificarPersona = !state.modificarPersona;
+}
+export function updateCargandoNucleos(state) {
+  state.cargandoNucleos = !state.cargandoNucleos;
 }
 export function updateNombre(state, nombre) {
   state.nombre = nombre;
@@ -28,17 +35,20 @@ export function updateDatosPersonalesInvalidos(
 ) {
   state.datosPersonalesInvalidos = datosPersonalesInvalidos;
 }
-export function updateDatosNucleoInvalidos(
+export function updateDatosTipoPersonaInvalido(
   state,
-  datosNucleoInvalidos
+  datosTipoPersonaInvalidos
 ) {
-  state.datosNucleoInvalidos = datosNucleoInvalidos;
+  state.datosTipoPersonaInvalidos = datosTipoPersonaInvalidos;
 }
 export function updateTipoPersona(state, tipoPersona) {
   state.tipoPersona = tipoPersona;
 }
 export function updateNombreNucleo(state, nombreNucleo) {
   state.nombreNucleo = nombreNucleo;
+}
+export function updateCodigo(state, codigo) {
+  state.codigo = codigo;
 }
 export function updateDireccion(state, direccion) {
   state.direccion = direccion;
@@ -52,7 +62,16 @@ export function updateDetalles(state) {
 export function updateModificar(state) {
   state.modificar = !state.modificar;
 }
-export function insertarNucleo(state, nucleo) {
+export function insertarNucleo(state, data) {
+  const nucleo = new Nucleo(
+    data.cedula,
+    data.nombre,
+    data.direccion,
+    data.sector,
+    data.integrantes,
+    data.id,
+    data.rev
+  );
   state.nucleos.push(nucleo);
 }
 export function cargarNucleos(state, nucleos) {
@@ -72,7 +91,17 @@ export function modificarNucleo(state, resultado) {
 export function eliminarIntegrante(state, indice) {
   state.integrantes.splice(indice, 1);
 }
-export function insertarIntegrante(state, integrante) {
+export function insertarIntegrante(state, data) {
+  const integrante = new Integrante(
+    data.nombre,
+    data.apellido,
+    data.cedula,
+    data.telefono,
+    data.fechaNacimiento,
+    data.nucleo,
+    data.id,
+    data.rev
+  );
   state.integrantes.push(integrante);
 }
 export function cargarIntegrantes(state, integrantes) {
@@ -90,4 +119,41 @@ export function modificarIntegrante(state, resultado) {
   state.integrantes[resultado.indice].telefono = resultado.objeto.telefono;
   state.integrantes[resultado.indice].nucleo = resultado.objeto.nucleo;
   state.integrantes[resultado.indice].rev = resultado.objeto.rev;
+}
+export function eliminarJefe(state, indice) {
+  state.jefes.splice(indice, 1);
+}
+export function insertarJefe(state, data) {
+  const jefe = new JefeCalle(
+    data.nombre,
+    data.apellido,
+    data.cedula,
+    data.telefono,
+    data.fechaNacimiento,
+    data.codigo,
+    data.direccion,
+    data.sector,
+    data.id,
+    data.rev
+  );
+  state.jefes.push(jefe);
+}
+export function cargarJefes(state, jefes) {
+  state.jefes = jefes;
+}
+export function updateJefe(state, jefe) {
+  state.jefe = jefe;
+}
+export function updateJefeSel(state, jefe) {
+  state.jefeSel = jefe;
+}
+export function modificarJefe(state, resultado) {
+  state.jefes[resultado.indice].nombre = resultado.objeto.nombre;
+  state.jefes[resultado.indice].apellido = resultado.objeto.apellido;
+  state.jefes[resultado.indice].telefono = resultado.objeto.telefono;
+  state.jefes[resultado.indice].fechaNacimiento = resultado.objeto.fechaNacimiento;
+  state.jefes[resultado.indice].codigo = resultado.objeto.codigo;
+  state.jefes[resultado.indice].direccion = resultado.objeto.direccion;
+  state.jefes[resultado.indice].sector = resultado.objeto.sector;
+  state.jefes[resultado.indice].rev = resultado.objeto.rev;
 }

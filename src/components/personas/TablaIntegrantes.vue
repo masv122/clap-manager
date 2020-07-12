@@ -2,18 +2,112 @@
   <div class="q-pa-md">
     <q-table
       :grid="$q.screen.xs"
-      :data="data"
+      :visible-columns="visibleColumns"
+      title="Integrantes"
+      :data="_integrantes"
       :columns="columns"
-      row-key="name"
+      row-key="id"
       :filter="filter"
-      hide-header
+      :loading="cargandoNucleos"
+      selection="single"
+      :selected.sync="_integrante"
+      no-data-label="Sin registro de integrantes"
     >
-      <template v-slot:top-left>
-        <q-toolbar-title shrink>
-          <q-icon name="supervisor_account" />Integrantes
-        </q-toolbar-title>
+      <template v-slot:loading>
+        <q-inner-loading showing color="negative" />
       </template>
       <template v-slot:top-right>
+        <q-select
+          label="Sector"
+          use-input
+          outlined
+          dense
+          options-dense
+          behavior="menu"
+          hide-selected
+          fill-input
+          lazy-rules
+          input-debounce="0"
+          :options="sectoresOpt"
+          @filter="filterSectores"
+          label-color="negative"
+          color="negative"
+          v-model="sector"
+          option-value="id"
+          option-label="nombre"
+          emit-value
+          map-options
+          class="q-mr-md"
+
+        >
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+              <q-item-section>
+                <q-item-label v-html="scope.opt.nombre" />
+                <q-item-label caption>{{ scope.opt.getDirecion() }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">No results</q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <q-select
+          label="Nucleo"
+          error-message="Debe seleccionar un nucleo"
+          use-input
+          outlined
+          dense
+          options-dense
+          behavior="menu"
+          hide-selected
+          fill-input
+          lazy-rules
+          input-debounce="0"
+          :options="nucleosOpt"
+          @filter="filterNucleos"
+          label-color="negative"
+          color="negative"
+          v-model="nucleo"
+          option-value="id"
+          option-label="nombre"
+          emit-value
+          map-options
+          class="q-mr-md"
+
+        >
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+              <q-item-section>
+                <q-item-label v-html="scope.opt.cedula" />
+                <q-item-label caption>{{ scope.opt.nombre }}</q-item-label>
+                <q-item-label caption>{{ scope.opt.direccion }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">No results</q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <q-select
+          v-model="visibleColumns"
+          multiple
+          outlined
+          dense
+          options-dense
+          :display-value="$q.lang.table.columns"
+          emit-value
+          map-options
+          :options="columns"
+          option-value="name"
+          options-cover
+          style="min-width: 150px"
+          class="q-mr-md"
+        />
         <q-input dense debounce="300" v-model="filter" placeholder="Buscar">
           <template v-slot:append>
             <q-icon name="search" />
@@ -25,97 +119,117 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "TablaIntegrantes",
   data() {
     return {
       filter: "",
+      nucleo: null,
+      sector: null,
+      sectoresOpt: [],
+      nucleosOpt: [],
+      visibleColumns: [
+        "nombre",
+        "apellido",
+        "cedula",
+        "telefono",
+        "nucleo",
+        "fechaNacimiento"
+      ],
       columns: [
         {
-          name: "desc",
-          required: true,
-          label: "Dessert (100g serving)",
-          align: "left",
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
+          name: "nombre",
+          label: "Nombre(s)",
+          field: "nombre"
         },
         {
-          name: "calories",
-          align: "center",
-          label: "Calories",
-          field: "calories",
-          sortable: true
-        },
-        { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
-        { name: "carbs", label: "Carbs (g)", field: "carbs" }
-      ],
-      data: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24
+          name: "apellido",
+          label: "Apellido(s)",
+          field: "apellido"
         },
         {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37
+          name: "cedula",
+          label: "Cedula",
+          field: "cedula"
         },
         {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23
+          name: "telefono",
+          label: "Telefono",
+          field: "telefono"
         },
         {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67
+          name: "nucleo",
+          label: "Nucleo",
+          field: "nucleo"
         },
         {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49
+          name: "fechaNacimiento",
+          label: "Nacimiento",
+          field: "fechaNacimiento"
         },
         {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65
+          name: "id",
+          label: "Identificador",
+          field: "id"
         }
       ]
     };
   },
+  watch: {
+    sector(newValue, oldValue) {
+      if (newValue !== oldValue) this.nucleosOpt = this.nucleosSector(newValue);
+    }
+  },
   methods: {
+    ...mapMutations("personas", ["updateIntegranteSel"]),
+    filterSectores(val, update, abort) {
+      let opciones = this.sectores;
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.sectoresOpt = opciones.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+    filterNucleos(val, update, abort) {
+      let opciones = this.nucleos;
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.sectoresOpt = opciones.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
+    }
+  },
+  computed: {
+    ...mapGetters("personas", [
+      "integrantes",
+      "integranteSel",
+      "cargandoNucleos",
+      "integrantesNucleo",
+      "nucleos",
+      "nucleosSector"
+    ]),
+    ...mapGetters("sectores", ["sectores"]),
+    _integrante: {
+      get() {
+        return this.integranteSel;
+      },
+      set(value) {
+        this.updateIntegranteSel(value);
+      }
+    },
+    _integrantes() {
+      return this.nucleo
+        ? this.integrantesNucleo(this.nucleo)
+        : this.integrantes;
+    }
+  },
+  created() {
+    this.sectoresOpt = this.sectores;
+    this.nucleosOpt = this.nucleos;
   }
 };
 </script>
