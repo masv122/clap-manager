@@ -23,13 +23,18 @@ let events = {
   },
   nucleo: {
     name: "nucleo",
-    eliminar: "nucleos/eliminarNucleos",
-    guardar: "nucleos/guardarNucleos"
+    eliminar: "personas/eliminarNucleo",
+    guardar: "personas/guardarNucleo"
   },
   integrante: {
     name: "integrante",
-    eliminar: "integrante/eliminarIntegrante",
-    guardar: "integrante/guardarIntegrante"
+    eliminar: "personas/eliminarIntegrante",
+    guardar: "personas/guardarIntegrante"
+  },
+  jefe: {
+    name: "jefe",
+    eliminar: "personas/eliminarJefe",
+    guardar: "personas/guardarJefe"
   }
 };
 
