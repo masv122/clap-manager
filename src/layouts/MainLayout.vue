@@ -55,7 +55,7 @@
       </q-img>
 
       <div class="absolute-bottom flex q-mx-sm q-mb-sm">
-        <div class="text-weight-light q-pt-md">Version: v-0a4</div>
+        <div class="text-weight-light q-pt-md">Version: {{ version }}</div>
         <q-btn color="primary" icon="settings" flat round class="q-ml-auto" />
       </div>
     </q-drawer>
@@ -91,7 +91,7 @@
 import MenuDrawer from "components/MenuDrawer.vue";
 import Header from "components/Header.vue";
 import Dialogs from "components/Dialogs.vue";
-import { mapMutations, mapGetters, mapActions } from "vuex";
+import { mapMutations, mapGetters, mapActions, mapState } from "vuex";
 export default {
   name: "MainLayout",
   components: {
@@ -107,7 +107,9 @@ export default {
       leftDrawer: false
     };
   },
-  computed: {},
+  computed: {
+    ...mapState("global", ["version"]),
+  },
   methods: {
     ...mapActions("global", ["loadData"]),
     ...mapActions("sectores", ["cargarSectores"]),
