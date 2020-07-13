@@ -8,7 +8,7 @@
       :columns="columns"
       row-key="id"
       :filter="filter"
-      :loading="cargandoNucleos"
+      :loading="cargandoPersonas"
       selection="single"
       :selected.sync="_integrante"
       no-data-label="Sin registro de integrantes"
@@ -38,7 +38,6 @@
           emit-value
           map-options
           class="q-mr-md"
-
         >
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
@@ -76,7 +75,6 @@
           emit-value
           map-options
           class="q-mr-md"
-
         >
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
@@ -207,7 +205,7 @@ export default {
     ...mapGetters("personas", [
       "integrantes",
       "integranteSel",
-      "cargandoNucleos",
+      "cargandoPersonas",
       "integrantesNucleo",
       "nucleos",
       "nucleosSector"

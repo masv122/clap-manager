@@ -8,7 +8,7 @@
       :columns="columns"
       row-key="id"
       :filter="filter"
-      :loading="cargandoNucleos"
+      :loading="cargandoPersonas"
       selection="single"
       :selected.sync="_nucleo"
       no-data-label="Sin registro de nucleos"
@@ -37,6 +37,48 @@
             <q-icon name="search" />
           </template>
         </q-input>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td auto-width>
+            <q-btn flat round dense icon="more_vert">
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="article" color="info" />
+                    </q-item-section>
+                    <q-item-section>Detalles</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="edit" color="amber" />
+                    </q-item-section>
+                    <q-item-section>Modificar</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="delete" color="negative" />
+                    </q-item-section>
+                    <q-item-section>Eliminar</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="print" color="primary" />
+                    </q-item-section>
+                    <q-item-section>Imprimir</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-td>
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+          <q-td colspan="100%">
+            <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
+          </q-td>
+        </q-tr>
       </template>
     </q-table>
   </div>
@@ -69,7 +111,7 @@ export default {
         {
           name: "sector",
           label: "Sector",
-          field: "sector"
+          field: async row => await row.getSector().nombre
         },
         {
           name: "id",
@@ -80,10 +122,15 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("personas", ["updateNucleoSel"])
+    ...mapMutations("personas", [
+      "updateNucleoSel",
+      "updateAgregarPersona",
+      "updateModificarPersona",
+      "updateDetallesPersona"
+    ])
   },
   computed: {
-    ...mapGetters("personas", ["nucleos", "nucleoSel", "cargandoNucleos"]),
+    ...mapGetters("personas", ["nucleos", "nucleoSel", "cargandoPersonas"]),
     _nucleo: {
       get() {
         return this.nucleoSel;

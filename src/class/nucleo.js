@@ -18,8 +18,6 @@ export default class Nucleo extends Base {
   async getSector() {
     try {
       const resultado = await db.local.rel.find("sector", this.sector);
-      console.log(this.sector);
-      console.log(resultado);
       if (!!resultado) {
         const sector = new Sector(
           resultado.sectores[0].nombre,

@@ -287,9 +287,6 @@ export default {
   methods: {
     ...mapMutations("sectores", ["updateAgregar"]),
     ...mapActions("sectores", ["guardarSector"]),
-    mostrarValidation() {
-      console.log(this.$v);
-    },
     filterEstados(val, update, abort) {
       update(() => {
         const needle = val.toLocaleLowerCase();
