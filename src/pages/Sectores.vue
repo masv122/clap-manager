@@ -1,12 +1,19 @@
 <template>
   <q-page :style-fn="myTweak" padding>
     <div class="shadow-1 bg-white">
-      <NavSectores />
+      <NavSectores v-if="!$q.screen.lt.sm" />
       <ModificarSector />
       <ConfirmacionEliminacion />
       <DetallesSector />
       <TablaSectores />
     </div>
+    <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="$q.screen.lt.sm">
+      <q-fab color="negative" text-color="white" icon="keyboard_arrow_left" direction="left">
+        <q-fab-action color="positive" text-color="white" icon="add" />
+        <q-fab-action color="info" text-color="white" icon="article" />
+        <q-fab-action color="primary" text-color="white" icon="print" />
+      </q-fab>
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -28,9 +35,8 @@ export default {
   methods: {
     myTweak(offset) {
       return { minHeight: offset ? `calc(100vh - ${offset}px` : "100vh" };
-    },
-  },
-
+    }
+  }
 };
 </script>
 
