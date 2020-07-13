@@ -7,8 +7,8 @@ export function detallesPersona(state) {
 export function modificarPersona(state) {
   return state.modificarPersona;
 }
-export function cargandoNucleos(state) {
-  return state.cargandoNucleos;
+export function cargandoPersonas(state) {
+  return state.cargandoPersonas;
 }
 export function nombre(state) {
   return state.nombre;

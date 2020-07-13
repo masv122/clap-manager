@@ -11,8 +11,8 @@ export function updateDetallesPersona(state) {
 export function updateModificarPersona(state) {
   state.modificarPersona = !state.modificarPersona;
 }
-export function updateCargandoNucleos(state) {
-  state.cargandoNucleos = !state.cargandoNucleos;
+export function updateCargandoPersonas(state) {
+  state.cargandoPersonas = !state.cargandoPersonas;
 }
 export function updateNombre(state, nombre) {
   state.nombre = nombre;
@@ -151,7 +151,8 @@ export function modificarJefe(state, resultado) {
   state.jefes[resultado.indice].nombre = resultado.objeto.nombre;
   state.jefes[resultado.indice].apellido = resultado.objeto.apellido;
   state.jefes[resultado.indice].telefono = resultado.objeto.telefono;
-  state.jefes[resultado.indice].fechaNacimiento = resultado.objeto.fechaNacimiento;
+  state.jefes[resultado.indice].fechaNacimiento =
+    resultado.objeto.fechaNacimiento;
   state.jefes[resultado.indice].codigo = resultado.objeto.codigo;
   state.jefes[resultado.indice].direccion = resultado.objeto.direccion;
   state.jefes[resultado.indice].sector = resultado.objeto.sector;
