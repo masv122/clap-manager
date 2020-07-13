@@ -275,7 +275,6 @@ export default {
       );
     },
     async guardarSector() {
-      console.log(this.estados[this.datos.estado.id])
       try {
         const SECTOR = new Sector(
           this.datos.nombre,

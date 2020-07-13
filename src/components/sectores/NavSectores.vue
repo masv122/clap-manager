@@ -12,22 +12,6 @@
             icon="article"
             label="Detalles"
           />
-          <q-btn
-            color="amber"
-            :disable="sectorSel.length === 0"
-            push
-            @click="updateModificar"
-            icon="edit"
-            label="Modificar"
-          />
-          <q-btn
-            color="negative"
-            :disable="sectorSel.length === 0"
-            push
-            @click="confirmacion"
-            icon="delete"
-            label="Eliminar"
-          />
           <q-btn color="primary" push icon="print" label="Imprimir" />
         </q-btn-group>
       </div>
@@ -48,7 +32,6 @@ export default {
       "updateDetalles",
       "updateModificar"
     ]),
-    ...mapMutations("global", ["updateConfirmacionEliminacion"]),
     confirmacion() {
       this.$q
         .dialog({
@@ -59,7 +42,10 @@ export default {
         })
         .onOk(async () => {
           try {
-            const RESULTADO = await this.$db.local.rel.del("sector", this.sectorSel[0]);
+            const RESULTADO = await this.$db.local.rel.del(
+              "sector",
+              this.sectorSel[0]
+            );
             let mensaje = RESULTADO.deleted
               ? "Sector eliminado"
               : "No se pudo eliminar el sector";

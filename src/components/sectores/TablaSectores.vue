@@ -9,8 +9,6 @@
       row-key="id"
       :filter="filter"
       :loading="cargandoSectores"
-      selection="single"
-      :selected.sync="_sector"
       no-data-label="Sin registro de sectores"
     >
       <template v-slot:loading>
@@ -37,6 +35,49 @@
             <q-icon name="search" />
           </template>
         </q-input>
+      </template>
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+          <q-th auto-width />
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+          <q-td auto-width>
+            <q-btn flat round dense icon="more_vert" @click="updateSectorSel(props.row)">
+              <q-menu @hide="updateSectorSel([])">
+                <q-list style="min-width: 100px">
+                  <q-item clickable v-close-popup @click="updateDetalles">
+                    <q-item-section avatar>
+                      <q-icon name="article" color="info" />
+                    </q-item-section>
+                    <q-item-section>Detalles</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="updateModificar">
+                    <q-item-section avatar>
+                      <q-icon name="edit" color="amber" />
+                    </q-item-section>
+                    <q-item-section>Modificar</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="confirmacion">
+                    <q-item-section avatar>
+                      <q-icon name="delete" color="negative" />
+                    </q-item-section>
+                    <q-item-section>Eliminar</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="print" color="primary" />
+                    </q-item-section>
+                    <q-item-section>Imprimir</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-td>
+        </q-tr>
       </template>
     </q-table>
   </div>
@@ -80,7 +121,39 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("sectores", ["updateSectorSel"])
+    ...mapMutations("sectores", [
+      "updateSectorSel",
+      "updateAgregar",
+      "updateDetalles",
+      "updateModificar"
+    ]),
+    confirmacion() {
+      this.$q
+        .dialog({
+          title: "Confirme",
+          message: "¿Seguro que quiere modificar este sector",
+          cancel: true,
+          persistent: true
+        })
+        .onOk(async () => {
+          try {
+            const resultado = await this.$db.local.rel.del(
+              "sector",
+              this.sectorSel
+            );
+            let mensaje = resultado.deleted
+              ? "Sector eliminado"
+              : "No se pudo eliminar el sector";
+            let icon = !!resultado ? "check" : "close";
+            this.$q.notify({
+              message: mensaje,
+              icon: icon
+            });
+          } catch (error) {
+            alert(error);
+          }
+        });
+    }
   },
   computed: {
     ...mapGetters("sectores", ["sectores", "sectorSel", "cargandoSectores"]),
