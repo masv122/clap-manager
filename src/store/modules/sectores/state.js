@@ -5,7 +5,11 @@ export default function () {
     modificar: false,
     sectores: [],
     sector: null,
-    sectorSel: [],
+    estado: null,
+    municipio: null,
+    parroquia: null,
+    nombre: "",
+    datosBasicosSectorInvalidos: true,
     cargandoSectores: false,
   };
 }

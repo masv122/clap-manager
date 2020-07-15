@@ -13,15 +13,27 @@ export function sectores(state) {
 export function sector(state) {
   return state.sector;
 }
-export function sectorSel(state) {
-  return state.sectorSel;
+export function estado(state) {
+  return state.estado;
 }
-export const buscarIndice = (state) => (id) => {
+export function municipio(state) {
+  return state.municipio;
+}
+export function parroquia(state) {
+  return state.parroquia;
+}
+export function nombre(state) {
+  return state.nombre;
+}
+export function datosBasicosSectorInvalidos(state){
+  return state.datosBasicosSectorInvalidos
+}
+export const buscarIndice = state => id => {
   return state.sectores.findIndex(e => e.id === id);
-}
-export const buscarSector = (state) => (id) => {
+};
+export const buscarSector = state => id => {
   return state.sectores.find(e => e.id === id);
-}
+};
 export function cargandoSectores(state) {
   return state.cargandoSectores;
 }

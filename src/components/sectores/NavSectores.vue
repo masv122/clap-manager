@@ -6,7 +6,6 @@
           <q-btn color="positive" push @click="updateAgregar" icon="add" label="Agregar" />
           <q-btn
             color="info"
-            :disable="sectorSel.length === 0"
             push
             @click="updateDetalles"
             icon="article"
@@ -24,7 +23,7 @@ import { mapMutations, mapGetters } from "vuex";
 export default {
   name: "NavSectores",
   computed: {
-    ...mapGetters("sectores", ["sectorSel"])
+    ...mapGetters("sectores", ["sector"])
   },
   methods: {
     ...mapMutations("sectores", [
@@ -44,7 +43,7 @@ export default {
           try {
             const RESULTADO = await this.$db.local.rel.del(
               "sector",
-              this.sectorSel[0]
+              this.sector
             );
             let mensaje = RESULTADO.deleted
               ? "Sector eliminado"

@@ -18,12 +18,10 @@ export default function() {
     datosTipoPersonaInvalidos: true,
     integrantes: [],
     integrante: {},
-    integranteSel: [],
     nucleos: [],
     nucleo: null,
-    nucleoSel: [],
     jefes: [],
+    jefeSector: [],
     jefe: null,
-    jefeSel: [],
   };
 }

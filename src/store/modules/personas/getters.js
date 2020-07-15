@@ -46,17 +46,14 @@ export function nucleos(state) {
 export function nucleo(state) {
   return state.nucleo;
 }
-export function nucleoSel(state) {
-  return state.nucleoSel;
-}
 export function jefes(state) {
   return state.jefes;
 }
 export function jefe(state) {
   return state.jefe;
 }
-export function jefeSel(state) {
-  return state.jefeSel;
+export function jefeSector(state) {
+  return state.jefeSector;
 }
 export function codigo(state) {
   return state.codigo;
@@ -79,9 +76,9 @@ export function integrantes(state) {
 export function integrante(state) {
   return state.integrante;
 }
-export function integranteSel(state) {
-  return state.integranteSel[0];
-}
 export const buscarIndiceIntegrante = state => id => {
   return state.integrantes.findIndex(e => e.id === id);
+};
+export const buscarIndiceJefe = state => id => {
+  return state.jefes.findIndex(e => e.id === id);
 };

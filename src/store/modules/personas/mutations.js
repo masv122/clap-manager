@@ -80,9 +80,6 @@ export function cargarNucleos(state, nucleos) {
 export function updateNucleo(state, nucleo) {
   state.nucleo = nucleo;
 }
-export function updateNucleoSel(state, nucleo) {
-  state.nucleoSel = nucleo;
-}
 export function modificarNucleo(state, resultado) {
   state.nucleos[resultado.indice].direccion = resultado.objeto.direccion;
   state.nucleos[resultado.indice].sector = resultado.objeto.sector;
@@ -109,9 +106,6 @@ export function cargarIntegrantes(state, integrantes) {
 }
 export function updateIntegrante(state, integrante) {
   state.integrante = integrante;
-}
-export function updateIntegranteSel(state, integrante) {
-  state.integranteSel = integrante;
 }
 export function modificarIntegrante(state, resultado) {
   state.integrantes[resultado.indice].nombre = resultado.objeto.nombre;
@@ -144,8 +138,8 @@ export function cargarJefes(state, jefes) {
 export function updateJefe(state, jefe) {
   state.jefe = jefe;
 }
-export function updateJefeSel(state, jefe) {
-  state.jefeSel = jefe;
+export function updateJefeSector(state, jefe) {
+  state.jefeSector = jefe;
 }
 export function modificarJefe(state, resultado) {
   state.jefes[resultado.indice].nombre = resultado.objeto.nombre;

@@ -46,8 +46,8 @@
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
           <q-td auto-width>
-            <q-btn flat round dense icon="more_vert" @click="updateSectorSel(props.row)">
-              <q-menu @hide="updateSectorSel([])">
+            <q-btn flat round dense icon="more_vert" @click="updateSector(props.row)">
+              <q-menu>
                 <q-list style="min-width: 100px">
                   <q-item clickable v-close-popup @click="updateDetalles">
                     <q-item-section avatar>
@@ -85,12 +85,13 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import * as API from "src/mixins/API";
 export default {
   name: "TablaSectores",
   data() {
     return {
       filter: "",
-      visibleColumns: ["nombre", "estado", "municipio", "parroquia"],
+      visibleColumns: ["nombre", "estado", "municipio", "parroquia", "jefe"],
       columns: [
         {
           name: "nombre",
@@ -113,6 +114,11 @@ export default {
           field: "parroquia"
         },
         {
+          name: "jefe",
+          label: "Jefe de Calle",
+          field: "jefe"
+        },
+        {
           name: "id",
           label: "Identificador",
           field: "id"
@@ -122,7 +128,7 @@ export default {
   },
   methods: {
     ...mapMutations("sectores", [
-      "updateSectorSel",
+      "updateSector",
       "updateAgregar",
       "updateDetalles",
       "updateModificar"
@@ -131,16 +137,13 @@ export default {
       this.$q
         .dialog({
           title: "Confirme",
-          message: "¿Seguro que quiere modificar este sector",
+          message: "¿Seguro que quiere eliminar este sector",
           cancel: true,
           persistent: true
         })
         .onOk(async () => {
           try {
-            const resultado = await this.$db.local.rel.del(
-              "sector",
-              this.sectorSel
-            );
+            const resultado = await API.eliminarSector(this.sector);
             let mensaje = resultado.deleted
               ? "Sector eliminado"
               : "No se pudo eliminar el sector";
@@ -156,15 +159,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("sectores", ["sectores", "sectorSel", "cargandoSectores"]),
-    _sector: {
-      get() {
-        return this.sectorSel;
-      },
-      set(value) {
-        this.updateSectorSel(value);
-      }
-    }
+    ...mapGetters("sectores", ["sectores", "sector", "cargandoSectores"])
   }
 };
 </script>
