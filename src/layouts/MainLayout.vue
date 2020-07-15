@@ -29,7 +29,6 @@
           :to="{name: 'Personas'}"
           icon="supervisor_account"
           label="Personas"
-          exact
         />
         <q-route-tab name="pagos" :to="{name: 'Pagos'}" icon="payments" label="Pagos" exact />
       </q-tabs>
