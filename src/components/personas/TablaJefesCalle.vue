@@ -9,8 +9,6 @@
       row-key="id"
       :filter="filter"
       :loading="cargandoPersonas"
-      selection="single"
-      :selected.sync="_jefe"
       no-data-label="Sin registro de jefes"
     >
       <template v-slot:loading>
@@ -38,12 +36,56 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+          <q-th auto-width />
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+          <q-td auto-width>
+            <q-btn flat round dense icon="more_vert" @click="updateJefe(props.row)">
+              <q-menu @hide="updateJefe(null)">
+                <q-list style="min-width: 100px">
+                  <q-item clickable v-close-popup @click="updateDetallesPersona">
+                    <q-item-section avatar>
+                      <q-icon name="article" color="info" />
+                    </q-item-section>
+                    <q-item-section>Detalles</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="updateModificarPersona">
+                    <q-item-section avatar>
+                      <q-icon name="edit" color="amber" />
+                    </q-item-section>
+                    <q-item-section>Modificar</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="confirmacion">
+                    <q-item-section avatar>
+                      <q-icon name="delete" color="negative" />
+                    </q-item-section>
+                    <q-item-section>Eliminar</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="print" color="primary" />
+                    </q-item-section>
+                    <q-item-section>Imprimir</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </q-td>
+        </q-tr>
+      </template>
     </q-table>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import * as API from "src/mixins/API";
 export default {
   name: "TablaJefesCalle",
   data() {
@@ -57,8 +99,7 @@ export default {
         "fechaNacimiento",
         "codigo",
         "direccion",
-        "sector",
-        "id"
+        "sector"
       ],
       columns: [
         {
@@ -110,18 +151,39 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("personas", ["updateJefeSel"])
+    ...mapMutations("personas", [
+      "updateJefe",
+      "updateAgregarPersona",
+      "updateModificarPersona",
+      "updateDetallesPersona"
+    ]),
+    confirmacion() {
+      this.$q
+        .dialog({
+          title: "Confirme",
+          message: "¿Seguro que quiere eliminar este Jefe de calle",
+          cancel: true,
+          persistent: true
+        })
+        .onOk(async () => {
+          try {
+            const resultado = await API.eliminarJefe(this.jefe);
+            let mensaje = resultado.deleted
+              ? "Jefe de calle eliminado"
+              : "No se pudo eliminar el jefe de calle";
+            let icon = !!resultado ? "check" : "close";
+            this.$q.notify({
+              message: mensaje,
+              icon: icon
+            });
+          } catch (error) {
+            alert(error);
+          }
+        });
+    }
   },
   computed: {
-    ...mapGetters("personas", ["jefes", "jefeSel", "cargandoPersonas"]),
-    _jefe: {
-      get() {
-        return this.jefeSel;
-      },
-      set(value) {
-        this.updateJefeSel(value);
-      }
-    }
+    ...mapGetters("personas", ["jefes", "jefe", "cargandoPersonas"])
   }
 };
 </script>
