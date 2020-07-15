@@ -1,12 +1,13 @@
 <template>
   <q-page :style-fn="myTweak" padding>
     <div class="shadow-1 bg-white q-mt-md">
-      <NavPagos />
+      <NavPagos v-if="!$q.screen.lt.sm"/>
       <ModificarPago />
       <DetallesPago />
       <ConfirmacionEliminacion />
       <TablaPagos />
     </div>
+    <FBA />
   </q-page>
 </template>
 
@@ -16,6 +17,7 @@ import DetallesPago from "components/pagos/DetallesPago.vue";
 import ConfirmacionEliminacion from "components/ConfirmacionEliminacion.vue";
 import NavPagos from "components/pagos/NavPagos.vue";
 import TablaPagos from "components/pagos/TablaPagos.vue";
+import FBA from "components/FBA.vue";
 export default {
   name: "Pagos",
   components: {
@@ -23,7 +25,8 @@ export default {
     ModificarPago,
     DetallesPago,
     TablaPagos,
-    NavPagos
+    NavPagos,
+    FBA
   },
   methods: {
     myTweak(offset) {
