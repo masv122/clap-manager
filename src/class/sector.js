@@ -11,6 +11,7 @@ export default class Sector extends Base {
     if (!!nucleos) this.nucleos = nucleos;
     else this.nucleos = [];
     if (!!jefe) this.jefe = jefe;
+    else this.jefe = ""
 
   }
   getDirecion() {
