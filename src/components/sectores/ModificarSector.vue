@@ -31,93 +31,7 @@
               />
             </div>
             <q-separator />
-            <q-input
-              v-model="$v.datos.nombre.$model"
-              type="text"
-              error-message="Debe escribir un nombre para el sector"
-              :error="$v.datos.nombre.$invalid"
-              label-color="negative"
-              color="negative"
-              label="Ingrese nombre del sector"
-            />
-            <q-select
-              label-color="negative"
-              color="negative"
-              label="Estado"
-              v-model="$v.datos.estado.$model"
-              use-input
-              option-value="id"
-              option-label="nombre"
-              emit-value
-              map-options
-              behavior="menu"
-              hide-selected
-              fill-input
-              error-message="Debe seleccionar un estado"
-              :error="$v.datos.estado.$invalid"
-              input-debounce="0"
-              :options="estadosOpt"
-              @filter="filterEstados"
-              style="padding-bottom: 32px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">No results</q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-            <q-select
-              label-color="negative"
-              color="negative"
-              use-input
-              v-model="$v.datos.municipio.$model"
-              error-message="Debe seleccionar un municipio"
-              :error="$v.datos.municipio.$invalid"
-              option-value="id"
-              option-label="nombre"
-              emit-value
-              map-options
-              label="Municipio"
-              behavior="menu"
-              hide-selected
-              fill-input
-              input-debounce="0"
-              :options="municipiosOpt"
-              @filter="filterMunicipio"
-              style="padding-bottom: 32px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">No results</q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-            <q-select
-              label-color="negative"
-              color="negative"
-              use-input
-              v-model="$v.datos.parroquia.$model"
-              error-message="Debe seleccionar una parroquia"
-              :error="$v.datos.parroquia.$invalid"
-              option-value="id"
-              option-label="nombre"
-              emit-value
-              map-options
-              label="Parroquia"
-              behavior="menu"
-              hide-selected
-              fill-input
-              input-debounce="0"
-              :options="parroquiasOpt"
-              @filter="filterParroquia"
-              style="padding-bottom: 32px"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">No results</q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <DatosBasicosSector :modificar="true" />
             <div class="text-h6 q-mt-md">
               <q-icon name="supervised_user_circle" class="q-mr-md" />Reasignar jefe de calle
               <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
@@ -144,13 +58,16 @@
 
 <script>
 import Sector from "src/class/sector";
+import * as API from "src/mixins/API";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import TablaJefesDeCalleGrid from "components/TablaJefesDeCalleGrid.vue";
+import DatosBasicosSector from "components/sectores/DatosBasicosSector.vue";
 export default {
   name: "ModificarSector",
   components: {
-    TablaJefesDeCalleGrid
+    TablaJefesDeCalleGrid,
+    DatosBasicosSector
   },
   data() {
     return {
@@ -199,7 +116,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("sectores", ["modificar", "sectorSel"]),
+    ...mapGetters("sectores", ["modificar", "sector"]),
+    ...mapGetters("personas", ["jefeSector"]),
     ...mapGetters("global", [
       "estados",
       "municipios",
@@ -265,35 +183,33 @@ export default {
         });
     },
     cargarSector() {
-      this.datos.nombre = this.sectorSel[0].nombre;
-      this.datos.estado = this.estadoPorNombre(this.sectorSel[0].estado);
-      this.datos.municipio = this.municipioPorNombre(
-        this.sectorSel[0].municipio
-      );
-      this.datos.parroquia = this.parroquiasPorNombre(
-        this.sectorSel[0].parroquia
-      );
+      this.datos.nombre = this.sector.nombre;
+      this.datos.estado = this.estadoPorNombre(this.sector.estado);
+      this.datos.municipio = this.municipioPorNombre(this.sector.municipio);
+      this.datos.parroquia = this.parroquiasPorNombre(this.sector.parroquia);
     },
     async guardarSector() {
       try {
-        const SECTOR = new Sector(
+        const sector = new Sector(
           this.datos.nombre,
           this.estados[this.datos.estado.id - 1].nombre,
           this.municipios[this.datos.municipio.id - 1].nombre,
           this.parroquias[this.datos.parroquia.id - 1].nombre,
-          this.sectorSel[0].id,
-          this.sectorSel[0].rev
+          this.sector.nucleos,
+          this.sector.jefe,
+          this.sector.id,
+          this.sector.rev
         );
-        const RESULTADO = await this.$db.local.rel.save("sector", SECTOR);
-        let mensaje = !!RESULTADO
+        const resultado = await API.agregarSector(sector);
+        let mensaje = !!resultado
           ? "Sector Modificado"
           : "No se pudo modificar el sector";
-        let icon = !!RESULTADO ? "check" : "close";
+        let icon = !!resultado ? "check" : "close";
         this.$q.notify({
           message: mensaje,
           icon: icon
         });
-        if (RESULTADO) this.updateModificar();
+        if (resultado) this.updateModificar();
       } catch (error) {
         alert(error);
       }
