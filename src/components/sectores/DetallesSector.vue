@@ -25,22 +25,22 @@
               </div>
               <q-field borderless label="Nombre" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">{{ sectorSel[0].nombre }}</div>
+                  <div class="self-center full-width no-outline">{{ sector.nombre }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Estado" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">{{ sectorSel[0].estado }}</div>
+                  <div class="self-center full-width no-outline">{{ sector.estado }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Municipio" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">{{ sectorSel[0].municipio }}</div>
+                  <div class="self-center full-width no-outline">{{ sector.municipio }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Parroquia" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">{{  sectorSel[0].parroquia }}</div>
+                  <div class="self-center full-width no-outline">{{ sector.parroquia }}</div>
                 </template>
               </q-field>
             </div>
@@ -97,7 +97,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "DetallesSector",
   computed: {
-    ...mapGetters("sectores", ["detalles", "sectorSel"]),
+    ...mapGetters("sectores", ["detalles", "sector"]),
     _detallesSector: {
       get() {
         return this.detalles;
