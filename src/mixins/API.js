@@ -9,11 +9,29 @@ export async function agregarSector(sector) {
   }
 }
 
+export async function eliminarSector(sector) {
+  try {
+    return await db.local.rel.del("sector", sector);
+  } catch (error) {
+    alert("error al eliminar el sector: " + error);
+    return false;
+  }
+}
+
 export async function agregarIntegrante(integrante) {
   try {
     return await db.local.rel.save("integrante", integrante);
   } catch (error) {
     alert("error al agregar el integrante: " + error);
+    return false;
+  }
+}
+
+export async function eliminarIntegrante(integrante) {
+  try {
+    return await db.local.rel.del("integrante", integrante);
+  } catch (error) {
+    alert("error al eliminar el integrante: " + error);
     return false;
   }
 }
@@ -32,6 +50,15 @@ export async function agregarJefe(jefe) {
     return await db.local.rel.save("jefe", jefe);
   } catch (error) {
     alert("error al agregar el jefe: " + error);
+    return false;
+  }
+}
+
+export async function eliminarJefe(jefe) {
+  try {
+    return await db.local.rel.del("jefe", jefe);
+  } catch (error) {
+    alert("error al eliminar el jefe: " + error);
     return false;
   }
 }
