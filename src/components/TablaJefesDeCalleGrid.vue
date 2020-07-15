@@ -1,107 +1,129 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      grid
-      title="Jefes de calle"
-      :data="data"
+      title="Treats"
+      :data="jefes"
       :columns="columns"
       row-key="name"
+      selection="single"
+      :selected.sync="_jefeSector"
       :filter="filter"
+      grid
+      :visible-columns="visibleColumns"
       hide-header
     >
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar">
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
+      </template>
+
+      <template v-slot:item="props">
+        <div
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+          :style="props.selected ? 'transform: scale(0.95);' : ''"
+        >
+          <q-card :class="props.selected ? 'bg-grey-2' : ''">
+            <q-card-section>
+              <q-checkbox dense v-model="props.selected" :label="props.row.name" />
+            </q-card-section>
+            <q-separator />
+            <q-list dense>
+              <q-item v-for="col in props.cols.filter(col => col.name !== 'desc')" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label caption>{{ col.value }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
-  data () {
+  data() {
     return {
-      filter: '',
+      filter: "",
+      visibleColumns: [
+        "nombre",
+        "apellido",
+        "cedula",
+        "telefono",
+        "codigo",
+        "direccion",
+        "sector"
+      ],
       columns: [
         {
-          name: 'desc',
-          required: true,
-          label: 'Dessert (100g serving)',
-          align: 'left',
-          field: row => row.name,
-          format: val => `${val}`,
-          sortable: true
-        },
-        { name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true },
-        { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
-        { name: 'carbs', label: 'Carbs (g)', field: 'carbs' }
-      ],
-      data: [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24
+          name: "nombre",
+          label: "Nombre",
+          field: "nombre"
         },
         {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37
+          name: "apellido",
+          label: "Apellido",
+          field: "apellido"
         },
         {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23
+          name: "cedula",
+          label: "Cedula",
+          field: "cedula"
         },
         {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67
+          name: "telefono",
+          label: "Telefono",
+          field: "telefono"
         },
         {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49
+          name: "codigo",
+          label: "Codigo",
+          field: "codigo"
         },
         {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94
+          name: "direccion",
+          label: "Direccion",
+          field: "direccion"
         },
         {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98
+          name: "sector",
+          label: "Sector",
+          field: row =>
+            !!row.sector ? row.getSector().nombre : "sin sector asignado"
         },
         {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65
+          name: "id",
+          label: "Identificador",
+          field: "id"
         }
       ]
+    };
+  },
+  computed: {
+    ...mapGetters("personas", ["jefes", "jefeSector"]),
+    _jefeSector: {
+      get() {
+        return this.jefeSector;
+      },
+      set(value) {
+        this.updateJefeSector(value);
+      }
     }
+  },
+  methods: {
+    ...mapMutations("personas", ["updateJefeSector"])
   }
-}
+};
 </script>
+<style lang="sass">
+.grid-style-transition
+  transition: transform .28s, background-color .28s
+</style>
