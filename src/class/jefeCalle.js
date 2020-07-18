@@ -1,4 +1,6 @@
 import Persona from "./persona";
+import { db } from "boot/pouchdb/index";
+import Sector from "./sector";
 
 export default class JefeCalle extends Persona {
   constructor(
