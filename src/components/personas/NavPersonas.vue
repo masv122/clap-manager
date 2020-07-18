@@ -1,6 +1,6 @@
 <template>
   <div class="fit row q-gutter-y-md">
-    <q-toolbar class="col-6">
+    <q-toolbar class="col-sm-8">
       <q-tabs v-model="tab" class="q-mx-auto text-negative">
         <q-route-tab
           :to="{ name: 'integrantes'}"
@@ -17,12 +17,9 @@
         />
       </q-tabs>
     </q-toolbar>
-    <q-toolbar class="col-6">
-      <q-btn-group push rounded class="q-mx-auto">
-        <q-btn color="positive" push @click="updateAgregarPersona" icon="add" label="Agregar" />
-        <q-btn color="info" push @click="updateDetallesPersona" icon="article" label="Detalles" />
-        <q-btn color="primary" push icon="print" label="Imprimir" />
-      </q-btn-group>
+    <q-toolbar class="col-4 q-gutter-xs" v-if="!$q.screen.lt.sm">
+        <q-btn color="positive" flat @click="updateAgregarPersona" icon="add" label="Agregar" />
+        <q-btn color="primary" flat icon="print" label="Imprimir" />
     </q-toolbar>
   </div>
 </template>
@@ -39,8 +36,6 @@ export default {
   methods: {
     ...mapMutations("personas", [
       "updateAgregarPersona",
-      "updateModificarPersona",
-      "updateDetallesPersona"
     ]),
   }
 };

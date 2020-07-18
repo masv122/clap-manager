@@ -2,7 +2,6 @@
   <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="$q.screen.lt.sm">
     <q-fab color="negative" text-color="white" icon="keyboard_arrow_left" direction="left">
       <q-fab-action color="primary" text-color="white" icon="print" />
-      <q-fab-action color="info" text-color="white" icon="article" />
       <q-fab-action color="positive" text-color="white" @click="agregar" icon="add" />
     </q-fab>
   </q-page-sticky>
