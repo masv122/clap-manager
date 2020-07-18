@@ -9,4 +9,7 @@ export default class Persona extends Base {
     this.telefono = telefono;
     this.fechaNacimiento = fechaNacimiento;
   }
+  nombreCompleto() {
+    return this.nombre + " " + this.apellido;
+  }
 }
