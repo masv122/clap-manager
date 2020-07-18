@@ -26,7 +26,7 @@ export async function eliminarSector(sector) {
       ? "Sector eliminado"
       : "No se pudo eliminar el sector";
     const icon = !!resultado ? "check" : "close";
-    this.$q.notify({
+    Notify.create({
       message: mensaje,
       icon: icon
     });
@@ -203,6 +203,25 @@ export async function actualizarSectorJefe(data, sector) {
     return resultado;
   } catch (error) {
     alert("error al actualizar el jefe: " + error);
+    return false;
+  }
+}
+
+export async function eliminarSectorJefe(jefe) {
+  try {
+    jefe.sector = null
+    const resultado = await db.local.rel.save("jefe", jefe);
+    const mensaje = !!resultado
+      ? "Sector del jefe de calle eliminado"
+      : "No se pudo eliminado el sector del jefe de calle";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al eliminar el jefe del sector: " + error);
     return false;
   }
 }
