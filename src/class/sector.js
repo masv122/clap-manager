@@ -1,5 +1,6 @@
 import Base from "./base";
 import JefeCalle from "src/class/jefeCalle"
+import { db } from "boot/pouchdb/index";
 
 export default class Sector extends Base {
   constructor(nombre, estado, municipio, parroquia, nucleos, jefe, id, rev) {
@@ -11,7 +12,7 @@ export default class Sector extends Base {
     if (!!nucleos) this.nucleos = nucleos;
     else this.nucleos = [];
     if (!!jefe) this.jefe = jefe;
-    else this.jefe = ""
+    else this.jefe = null
 
   }
   getDirecion() {
@@ -22,7 +23,7 @@ export default class Sector extends Base {
   }
   async getJefe(){
     try {
-      const resultado = await db.local.rel.find("JefeCalle", this.jefe);
+      const resultado = await db.local.rel.find("jefe", this.jefe);
       if (!!resultado) {
         const jefe = new JefeCalle(
           resultado.jefes[0].nombre,
