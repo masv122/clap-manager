@@ -79,6 +79,9 @@ export function integrante(state) {
 export const buscarIndiceIntegrante = state => id => {
   return state.integrantes.findIndex(e => e.id === id);
 };
+export const buscarJefe = state => id => {
+  return state.jefes.find(e => e.id === id);
+};
 export const buscarIndiceJefe = state => id => {
   return state.jefes.findIndex(e => e.id === id);
 };
