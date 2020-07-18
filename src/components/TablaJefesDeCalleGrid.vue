@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      title="Treats"
+      title="Jefes"
       :data="jefes"
       :columns="columns"
-      row-key="name"
+      row-key="id"
       selection="single"
       :selected.sync="_jefeSector"
       :filter="filter"
