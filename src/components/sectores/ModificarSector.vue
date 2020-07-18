@@ -6,6 +6,7 @@
       transition-show="flip-down"
       transition-hide="flip-up"
       @show="cargarSector"
+      @hide="resetear"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
@@ -71,58 +72,24 @@ export default {
   },
   data() {
     return {
-      model: null,
-      text: "",
-      datos: {
-        estado: null,
-        municipio: null,
-        parroquia: null,
-        nombre: ""
-      },
-      id: ""
+      idJefe: ""
     };
   },
-  watch: {
-    datos: {
-      immediate: true,
-      deep: true,
-      handler(newValue, oldValue) {
-        if (!!newValue.estado) {
-          if (newValue.estado !== oldValue.estado) this.datos.municipio = null;
-          this.municipiosOpt = this.municipiosEnEstado(newValue.estado);
-        }
-        if (!!newValue.municipio) {
-          if (newValue.municipio !== oldValue.municipio)
-            this.datos.parroquia = null;
-          this.parroquiasOpt = this.parroquiasEnMunicipio(newValue.municipio);
-        }
-      }
-    }
-  },
-  validations: {
-    datos: {
-      estado: {
-        required
-      },
-      municipio: {
-        required
-      },
-      parroquia: {
-        required
-      },
-      nombre: {
-        required
-      }
-    }
-  },
   computed: {
-    ...mapGetters("sectores", ["modificar", "sector"]),
-    ...mapGetters("personas", ["jefeSector"]),
+    ...mapGetters("sectores", [
+      "modificar",
+      "sector",
+      "estadoMod",
+      "municipioMod",
+      "parroquiaMod",
+      "nombreMod"
+    ]),
+    ...mapGetters("personas", ["jefeSector", "buscarJefe"]),
     ...mapGetters("global", [
       "estados",
       "municipios",
-      "municipiosEnEstado",
       "parroquias",
+      "municipiosEnEstado",
       "parroquiasEnMunicipio",
       "estadoPorNombre",
       "municipioPorNombre",
@@ -138,38 +105,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations("sectores", ["updateModificar"]),
-    ...mapActions("sectores", ["modificarSector"]),
-    filterEstados(val, update, abort) {
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.estadosOpt = this.estados.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-    filterMunicipio(val, update, abort) {
-      const OPTS = !this.datos.estado
-        ? this.municipios
-        : this.municipiosEnEstado(this.datos.estado);
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.municipiosOpt = OPTS.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-    filterParroquia(val, update, abort) {
-      const OPTS = !this.datos.municipio
-        ? this.parroquias
-        : this.parroquiasEnMunicipio(this.datos.municipio);
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.parroquiasOpt = OPTS.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
+    ...mapMutations("sectores", [
+      "updateModificar",
+      "updateSector",
+      "updateEstadoMod",
+      "updateMunicipioMod",
+      "updateParroquiaMod",
+      "updateNombreMod"
+    ]),
+    ...mapMutations("personas", ["updateJefeSector"]),
     confirmacion() {
       this.$q
         .dialog({
@@ -183,35 +127,36 @@ export default {
         });
     },
     cargarSector() {
-      this.datos.nombre = this.sector.nombre;
-      this.datos.estado = this.estadoPorNombre(this.sector.estado);
-      this.datos.municipio = this.municipioPorNombre(this.sector.municipio);
-      this.datos.parroquia = this.parroquiasPorNombre(this.sector.parroquia);
+      this.idJefe = !!this.sector.jefe ? this.sector.jefe : "";
+      this.updateJefeSector(!!this.sector.jefe ? [this.buscarJefe(this.sector.jefe)] : []);
+    },
+    resetear() {
+      this.updateSector(null);
+      this.updateEstadoMod(null);
+      this.updateMunicipioMod(null);
+      this.updateParroquiaMod(null);
+      this.updateNombreMod("");
+      this.idJefe = null;
+      this.updateJefeSector([]);
     },
     async guardarSector() {
       try {
         const sector = new Sector(
-          this.datos.nombre,
-          this.estados[this.datos.estado.id - 1].nombre,
-          this.municipios[this.datos.municipio.id - 1].nombre,
-          this.parroquias[this.datos.parroquia.id - 1].nombre,
+          this.nombreMod,
+          this.estados[this.estadoMod - 1].nombre,
+          this.municipios[this.municipioMod - 1].nombre,
+          this.parroquias[this.parroquiaMod - 1].nombre,
           this.sector.nucleos,
-          this.sector.jefe,
+          this.jefeSector[0].id,
           this.sector.id,
           this.sector.rev
         );
-        const resultado = await API.agregarSector(sector);
-        let mensaje = !!resultado
-          ? "Sector Modificado"
-          : "No se pudo modificar el sector";
-        let icon = !!resultado ? "check" : "close";
-        this.$q.notify({
-          message: mensaje,
-          icon: icon
-        });
+        const resultado = await API.guardarSector(sector);
+        if (this.idJefe !== this.jefeSector[0].id)
+          await API.actualizarSectorJefe(resultado, sector);
         if (resultado) this.updateModificar();
       } catch (error) {
-        alert(error);
+        alert("error al modificar el sector 101: " + error);
       }
     }
   },
