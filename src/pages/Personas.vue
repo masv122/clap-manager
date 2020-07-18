@@ -1,7 +1,7 @@
 <template>
   <q-page :style-fn="myTweak" padding>
     <div class="shadow-1 bg-white q-mt-md">
-      <NavPersonas v-if="!$q.screen.lt.sm" />
+      <NavPersonas />
       <ModificarPersona />
       <ConfirmacionEliminacion />
       <DetallesPersona />
