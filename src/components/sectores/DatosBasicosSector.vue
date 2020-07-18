@@ -4,7 +4,7 @@
       label-color="negative"
       color="negative"
       label="Estado"
-      v-model="$v._estado.$model"
+      v-model="estadoModel"
       use-input
       option-value="id"
       option-label="nombre"
@@ -14,7 +14,7 @@
       hide-selected
       fill-input
       error-message="Debe seleccionar un estado"
-      :error="$v._estado.$invalid"
+      :error="modificar ? $v._estadoMod.$invalid : $v._estado.$invalid"
       input-debounce="0"
       :options="estadosOpt"
       @filter="filterEstados"
@@ -30,9 +30,9 @@
       label-color="negative"
       color="negative"
       use-input
-      v-model="$v._municipio.$model"
+      v-model="municipioModel"
       error-message="Debe seleccionar un municipio"
-      :error="$v._municipio.$invalid"
+      :error="modificar ? $v._municipioMod.$invalid : $v._municipio.$invalid"
       option-value="id"
       option-label="nombre"
       emit-value
@@ -56,9 +56,9 @@
       label-color="negative"
       color="negative"
       use-input
-      v-model="$v._parroquia.$model"
+      v-model="parroquiaModel"
       error-message="Debe seleccionar una parroquia"
-      :error="$v._parroquia.$invalid"
+      :error="modificar ? $v._parroquiaMod.$invalid : $v._parroquia.$invalid"
       option-value="id"
       option-label="nombre"
       emit-value
@@ -79,10 +79,10 @@
       </template>
     </q-select>
     <q-input
-      v-model="$v._nombre.$model"
+      v-model="nombreModel"
       type="text"
       error-message="Debe escribir un nombre para el sector"
-      :error="$v._nombre.$invalid"
+      :error="modificar ? $v._nombreMod.$invalid : $v._nombre.$invalid"
       label-color="negative"
       color="negative"
       label="Ingrese nombre del sector"
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { required, minLength, between } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 import { mapGetters, mapMutations } from "vuex";
 
 export default {
@@ -106,7 +106,9 @@ export default {
     return {
       estadosOpt: null,
       municipiosOpt: null,
-      parroquiasOpt: null
+      parroquiasOpt: null,
+      estadoModWatcher: null,
+      municipioModWatcher: null
     };
   },
   validations: {
@@ -121,10 +123,32 @@ export default {
     },
     _nombre: {
       required
+    },
+    _estadoMod: {
+      required
+    },
+    _municipioMod: {
+      required
+    },
+    _parroquiaMod: {
+      required
+    },
+    _nombreMod: {
+      required
     }
   },
   computed: {
-    ...mapGetters("sectores", ["nombre", "estado", "municipio", "parroquia"]),
+    ...mapGetters("sectores", [
+      "estado",
+      "municipio",
+      "parroquia",
+      "nombre",
+      "sector",
+      "estadoMod",
+      "municipioMod",
+      "parroquiaMod",
+      "nombreMod"
+    ]),
     ...mapGetters("global", [
       "estados",
       "municipios",
@@ -135,6 +159,54 @@ export default {
       "municipioPorNombre",
       "parroquiasPorNombre"
     ]),
+    estadoModel: {
+      get() {
+        return this.modificar
+          ? this.$v._estadoMod.$model
+          : this.$v._estado.$model;
+      },
+      set(value) {
+        this.modificar
+          ? (this.$v._estadoMod.$model = value)
+          : (this.$v._estado.$model = value);
+      }
+    },
+    municipioModel: {
+      get() {
+        return this.modificar
+          ? this.$v._municipioMod.$model
+          : this.$v._municipio.$model;
+      },
+      set(value) {
+        this.modificar
+          ? (this.$v._municipioMod.$model = value)
+          : (this.$v._municipio.$model = value);
+      }
+    },
+    parroquiaModel: {
+      get() {
+        return this.modificar
+          ? this.$v._parroquiaMod.$model
+          : this.$v._parroquia.$model;
+      },
+      set(value) {
+        this.modificar
+          ? (this.$v._parroquiaMod.$model = value)
+          : (this.$v._parroquia.$model = value);
+      }
+    },
+    nombreModel: {
+      get() {
+        return this.modificar
+          ? this.$v._nombreMod.$model
+          : this.$v._nombre.$model;
+      },
+      set(value) {
+        this.modificar
+          ? (this.$v._nombreMod.$model = value)
+          : (this.$v._nombre.$model = value);
+      }
+    },
     _estado: {
       get() {
         return this.estado;
@@ -166,6 +238,38 @@ export default {
       set(value) {
         this.updateNombre(value);
       }
+    },
+    _estadoMod: {
+      get() {
+        return this.estadoMod;
+      },
+      set(value) {
+        this.updateEstadoMod(value);
+      }
+    },
+    _municipioMod: {
+      get() {
+        return this.municipioMod;
+      },
+      set(value) {
+        this.updateMunicipioMod(value);
+      }
+    },
+    _parroquiaMod: {
+      get() {
+        return this.parroquiaMod;
+      },
+      set(value) {
+        this.updateParroquiaMod(value);
+      }
+    },
+    _nombreMod: {
+      get() {
+        return this.nombreMod;
+      },
+      set(value) {
+        this.updateNombreMod(value);
+      }
     }
   },
   watch: {
@@ -173,14 +277,23 @@ export default {
       immediate: true,
       deep: true,
       handler(newValue) {
-        this.updateDatosBasicosSectorInvalidos(newValue.$invalid);
+        const value = this.modificar
+          ? newValue._estadoMod.$invalid ||
+            newValue._municipioMod.$invalid ||
+            newValue._parroquiaMod.$invalid ||
+            newValue._nombreMod.$invalid
+          : newValue._estado.$invalid ||
+            newValue._municipio.$invalid ||
+            newValue._parroquia.$invalid ||
+            newValue._nombre.$invalid;
+        this.updateDatosBasicosSectorInvalidos(value);
       }
     },
     estado: {
       immediate: true,
       deep: true,
       handler(newValue, oldValue) {
-        if (newValue !== oldValue) this._municipio = null;
+        if (newValue !== oldValue) this.updateMunicipio(null);
         this.municipiosOpt = this.municipiosEnEstado(newValue);
       }
     },
@@ -188,20 +301,27 @@ export default {
       immediate: true,
       deep: true,
       handler(newValue, oldValue) {
-        if (newValue !== oldValue) this._parroquia = null;
+        if (newValue !== oldValue) this.updateParroquia(null);
         this.parroquiasOpt = this.parroquiasEnMunicipio(newValue);
       }
     }
   },
   methods: {
     ...mapMutations("sectores", [
+      "updateNombre",
       "updateEstado",
       "updateMunicipio",
       "updateParroquia",
-      "updateNombre",
-      "sector",
+      "updateSector",
+      "updateEstadoMod",
+      "updateMunicipioMod",
+      "updateParroquiaMod",
+      "updateNombreMod",
       "updateDatosBasicosSectorInvalidos"
     ]),
+    onClick() {
+      console.log(this.$v);
+    },
     filterEstados(val, update, abort) {
       update(() => {
         const needle = val.toLocaleLowerCase();
@@ -211,39 +331,50 @@ export default {
       });
     },
     filterMunicipio(val, update, abort) {
-      const OPTS = !this.estado
-        ? this.municipios
-        : this.municipiosEnEstado(this.estado);
+      let estado = this.modificar ? this.estadoMod : this.estado;
+      const opts = !!estado ? this.municipiosEnEstado(estado) : this.municipios;
       update(() => {
         const needle = val.toLocaleLowerCase();
-        this.municipiosOpt = OPTS.filter(
+        this.municipiosOpt = opts.filter(
           v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
         );
       });
     },
     filterParroquia(val, update, abort) {
-      const OPTS = !this.municipio
-        ? this.parroquias
-        : this.parroquiasEnMunicipio(this.municipio);
+      let municipio = this.modificar ? this.municipioMod : this.municipio;
+      const opts = !!municipio
+        ? this.parroquiasEnMunicipio(municipio)
+        : this.parroquias;
       update(() => {
         const needle = val.toLocaleLowerCase();
-        this.parroquiasOpt = OPTS.filter(
+        this.parroquiasOpt = opts.filter(
           v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
         );
       });
     },
     establecerDatos() {
-      this.estado = this.estadoPorNombre(this.sector.estado);
-      this.municipio = this.municipioPorNombre(this.sector.municipio);
-      this.parroquia = this.parroquiasPorNombre(this.sector.parroquia);
-      this.nombre = this.sector.nombre;
+      this.updateEstadoMod(this.estadoPorNombre(this.sector.estado).id);
+      this.updateMunicipioMod(this.municipioPorNombre(this.sector.municipio).id);
+      this.updateParroquiaMod(this.parroquiasPorNombre(this.sector.parroquia).id);
+      this.updateNombreMod(this.sector.nombre);
     }
   },
-  async created() {
+  async mounted() {
     this.estadosOpt = this.estados;
     this.municipiosOpt = this.municipios;
     this.parroquiasOpt = this.parroquias;
-    if (modificar) this.establecerDatos();
+    if (this.modificar) this.establecerDatos();
+    this.estadoModWatcher = this.$watch("estadoMod", (newValue, oldValue) => {
+      if (newValue !== oldValue) this.updateMunicipioMod(null);
+      this.municipiosOpt = this.municipiosEnEstado(newValue);
+    });
+    this.municipioModWatcher = this.$watch(
+      "municipioMod",
+      (newValue, oldValue) => {
+        if (newValue !== oldValue) this.updateParroquiaMod(null);
+        this.parroquiasOpt = this.parroquiasEnMunicipio(newValue);
+      }
+    );
   }
 };
 </script>
