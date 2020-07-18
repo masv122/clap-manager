@@ -8,13 +8,6 @@
         icon="menu"
         @click="updateLeftDrawer"
       />
-      <q-img
-        src="~assets/clap_manager_icon.png"
-        :ratio="16/9"
-        spinner-color="primary"
-        spinner-size="82px"
-        width="100px"
-      />
       <q-toolbar-title>CLAP Manager</q-toolbar-title>
       <q-btn color="white" text-color="dark" :to="{name: 'Login'}" v-if="$q.screen.width > 500"  label="Iniciar sesion" />
       <q-btn @click="updateRightDrawer" flat round dense icon="notifications" />
