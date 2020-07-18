@@ -18,7 +18,8 @@
         <q-select
           v-model="visibleColumns"
           multiple
-          outlined
+                  label-color="negative"
+          color="negative"
           dense
           options-dense
           :display-value="$q.lang.table.columns"
