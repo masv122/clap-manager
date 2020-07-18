@@ -9,6 +9,10 @@ export default function () {
     municipio: null,
     parroquia: null,
     nombre: "",
+    estadoMod: null,
+    municipioMod: null,
+    parroquiaMod: null,
+    nombreMod: "",
     datosBasicosSectorInvalidos: true,
     cargandoSectores: false,
   };

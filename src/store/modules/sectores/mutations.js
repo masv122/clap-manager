@@ -24,6 +24,18 @@ export function updateNombre(state, value) {
 export function updateDatosBasicosSectorInvalidos(state, value) {
   state.datosBasicosSectorInvalidos = value;
 }
+export function updateEstadoMod(state, value) {
+  state.estadoMod = value;
+}
+export function updateMunicipioMod(state, value) {
+  state.municipioMod = value;
+}
+export function updateParroquiaMod(state, value) {
+  state.parroquiaMod = value;
+}
+export function updateNombreMod(state, value) {
+  state.nombreMod = value;
+}
 export function insertarSector(state, data) {
   const sector = new Sector(
     data.nombre,
@@ -49,6 +61,7 @@ export function modificarSector(state, data) {
   state.sectores[data.indice].municipio = data.objeto.municipio;
   state.sectores[data.indice].parroquia = data.objeto.parroquia;
   state.sectores[data.indice].nucleos = data.objeto.nucleos;
+  state.sectores[data.indice].jefe = data.objeto.jefe;
   state.sectores[data.indice].rev = data.objeto.rev;
 }
 export function eliminarSector(state, indice) {

@@ -25,6 +25,18 @@ export function parroquia(state) {
 export function nombre(state) {
   return state.nombre;
 }
+export function estadoMod(state) {
+  return state.estadoMod;
+}
+export function municipioMod(state) {
+  return state.municipioMod;
+}
+export function parroquiaMod(state) {
+  return state.parroquiaMod;
+}
+export function nombreMod(state) {
+  return state.nombreMod;
+}
 export function datosBasicosSectorInvalidos(state){
   return state.datosBasicosSectorInvalidos
 }
