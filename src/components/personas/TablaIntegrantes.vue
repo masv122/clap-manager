@@ -18,7 +18,6 @@
         <q-select
           label="Sector"
           use-input
-          outlined
           dense
           options-dense
           behavior="menu"
@@ -55,7 +54,6 @@
           label="Nucleo"
           error-message="Debe seleccionar un nucleo"
           use-input
-          outlined
           dense
           options-dense
           behavior="menu"
@@ -92,19 +90,26 @@
         <q-select
           v-model="visibleColumns"
           multiple
-          outlined
           dense
           options-dense
           :display-value="$q.lang.table.columns"
           emit-value
           map-options
+          label-color="negative"
+          color="negative"
           :options="columns"
           option-value="name"
           options-cover
           style="min-width: 150px"
           class="q-mr-md"
         />
-        <q-input dense debounce="300" v-model="filter" placeholder="Buscar">
+        <q-input
+          color="negative"
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Buscar"
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -217,16 +222,24 @@ export default {
     };
   },
   watch: {
-    sector(newValue, oldValue) {
+    async sector(newValue, oldValue) {
       if (newValue !== oldValue) this.nucleosOpt = this.nucleosSector(newValue);
+      this.updateCargandoPersonas();
+      this.cargarIntegrantes(
+        await this.buscarSector(newValue).getIntegrantes()
+      );
+      this.updateCargandoPersonas();
+      this.nucleo = null;
     }
   },
   methods: {
     ...mapMutations("personas", [
       "updateIntegrante",
+      "cargarIntegrantes",
       "updateAgregarPersona",
       "updateModificarPersona",
-      "updateDetallesPersona"
+      "updateDetallesPersona",
+      "updateCargandoPersonas"
     ]),
     confirmacion() {
       this.$q
@@ -272,7 +285,7 @@ export default {
       "nucleos",
       "nucleosSector"
     ]),
-    ...mapGetters("sectores", ["sectores"]),
+    ...mapGetters("sectores", ["sectores", "buscarSector"]),
     _integrantes() {
       return !!this.nucleo
         ? this.integrantesNucleo(this.nucleo)
@@ -282,6 +295,9 @@ export default {
   created() {
     this.sectoresOpt = this.sectores;
     this.nucleosOpt = this.nucleos;
-  }
+  },
+  destroyed () {
+    this.updateIntegrante(null);
+  },
 };
 </script>
