@@ -18,9 +18,9 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-ma-md">
-          <ModificarIntegrante v-if="false" />
-          <ModificarNucleo v-if="false"/>
-          <ModificarJefe />
+          <ModificarIntegrante v-if="integrante" />
+          <ModificarNucleo v-if="nucleo" />
+          <ModificarJefe v-if="jefe" />
         </q-card-section>
         <q-separator />
         <q-card-actions class="q-ma-md" align="center">
@@ -53,7 +53,13 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters("personas", ["modificarPersona"]),
+    ...mapGetters("personas", [
+      "modificarPersona",
+      "detallesPersona",
+      "integrante",
+      "nucleo",
+      "jefe"
+    ]),
     _modificarPersona: {
       get() {
         return this.modificarPersona;
