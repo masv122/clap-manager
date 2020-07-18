@@ -33,6 +33,7 @@ export default class Sector extends Base {
           resultado.jefes[0].fechaNacimiento,
           resultado.jefes[0].codigo,
           resultado.jefes[0].direccion,
+          resultado.jefes[0].sector,
           resultado.jefes[0].id,
           resultado.jefes[0].rev,
         );
