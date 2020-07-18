@@ -76,6 +76,12 @@ export function integrantes(state) {
 export function integrante(state) {
   return state.integrante;
 }
+export const buscarIntegrante = state => id => {
+  return state.integrantes.find(integrante => integrante.id === id);
+};
+export const buscarIntegranteCedula = state => cedula=> {
+  return state.integrantes.find(integrante => integrante.cedula === cedula);
+};
 export const buscarIndiceIntegrante = state => id => {
   return state.integrantes.findIndex(e => e.id === id);
 };
