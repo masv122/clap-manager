@@ -5,69 +5,59 @@
         <div class="text-h6 q-ml-xl">
           <q-icon name="info" />Informacion personal
         </div>
-        <q-field borderless label="Nombre" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Nombre</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Apellidos" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Apellidos</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Cedula" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Cedula</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Telefono" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Telefono</div>
-          </template>
-        </q-field>
+        <InformacionPersonal
+          :nombre="integrante.nombre"
+          :apellido="integrante.apellido"
+          :cedula="integrante.cedula"
+          :telefono="integrante.telefono"
+        />
       </div>
       <div class="col">
         <div class="text-h6 q-ml-xl">
           <q-icon name="group" />Informacion del nucleo
         </div>
-        <q-field borderless label="Jefe(a) del nucleo" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Jefe(a) del nucleo</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Cedula" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Cedula</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Direccion" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Direccion</div>
-          </template>
-        </q-field>
+        <InformacionNucleo
+          :nombreNucleo="buscarNucleo(integrante.nucleo).nombre"
+          :nombre="buscarIntegranteCedula(buscarNucleo(integrante.nucleo).cedula).nombre"
+          :cedula="buscarNucleo(integrante.nucleo).cedula"
+          :direccion="buscarNucleo(integrante.nucleo).direccion"
+        />
       </div>
       <div class="col">
         <div class="text-h6 q-ml-xl">
           <q-icon name="place" />Sector
         </div>
-        <q-field borderless label="Nombre" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Nombre</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Direccion" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Direccion</div>
-          </template>
-        </q-field>
+        <informacion-sector
+          :nombre="buscarSector(buscarNucleo(integrante.nucleo).sector).nombre"
+          :estado="buscarSector(buscarNucleo(integrante.nucleo).sector).estado"
+          :municipio="buscarSector(buscarNucleo(integrante.nucleo).sector).municipio"
+          :parroquia="buscarSector(buscarNucleo(integrante.nucleo).sector).parroquia"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import InformacionPersonal from "components/personas/InformacionPersonal.vue";
+import InformacionNucleo from "components/personas/InformacionNucleo.vue";
+import InformacionSector from "components/sectores/InformacionSector.vue";
 export default {
-  name: "DetallesIntegrante"
+  name: "DetallesIntegrante",
+  components: {
+    InformacionPersonal,
+    InformacionNucleo,
+    InformacionSector
+  },
+  computed: {
+    ...mapGetters("personas", [
+      "integrante",
+      "buscarNucleo",
+      "buscarIntegranteCedula"
+    ]),
+    ...mapGetters("sectores", ["buscarSector"])
+  }
 };
 </script>
 

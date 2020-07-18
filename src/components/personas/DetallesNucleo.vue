@@ -5,36 +5,23 @@
         <div class="text-h6 q-ml-xl">
           <q-icon name="group" />Informacion del nucleo
         </div>
-        <q-field borderless label="Jefe(a) del nucleo" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Jefe(a) del nucleo</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Cedula" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Cedula</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Direccion" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Direccion</div>
-          </template>
-        </q-field>
+        <InformacionNucleo
+          :nombreNucleo="nucleo.nombre"
+          :nombre="buscarIntegrante(nucleo.cedula).nombre"
+          :cedula="nucleo.cedula"
+          :direccion="nucleo.direccion"
+        />
       </div>
       <div class="col">
         <div class="text-h6 q-ml-xl">
           <q-icon name="place" />Sector
         </div>
-        <q-field borderless label="Nombre" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Nombre</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Direccion" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Direccion</div>
-          </template>
-        </q-field>
+        <informacion-sector
+          :nombre="buscarSector(nucleo.sector).nombre"
+          :estado="buscarSector(nucleo.sector).estado"
+          :municipio="buscarSector(nucleo.sector).municipio"
+          :parroquia="buscarSector(nucleo.sector).parroquia"
+        />
       </div>
       <div class="col">
         <div class="text-h6 q-ml-xl">
@@ -56,8 +43,19 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import InformacionNucleo from "components/personas/InformacionNucleo.vue";
+import InformacionSector from "components/sectores/InformacionSector.vue";
 export default {
-  name: "DetallesNucleo"
+  name: "DetallesNucleo",
+  components: {
+    InformacionNucleo,
+    InformacionSector
+  },
+  computed: {
+    ...mapGetters("personas", ["nucleo", "buscarIntegrante"]),
+    ...mapGetters("sectores", ["buscarSector"])
+  }
 };
 </script>
 

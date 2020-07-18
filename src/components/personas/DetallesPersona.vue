@@ -18,9 +18,9 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-pt-none">
-          <DetallesIntegrante />
-          <DetallesNucleo />
-          <DetallesJefeCalle />
+          <DetallesIntegrante v-if="integrante"/>
+          <DetallesNucleo v-if="nucleo"/>
+          <DetallesJefeCalle v-if="jefe"/>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -40,7 +40,7 @@ export default {
     DetallesJefeCalle
   },
   computed: {
-    ...mapGetters("personas", ["detallesPersona"]),
+    ...mapGetters("personas", ["detallesPersona", "integrante", "nucleo", "jefe"]),
     _detallesPersona: {
       get() {
         return this.detallesPersona;
