@@ -5,6 +5,7 @@
       persistent
       transition-show="flip-down"
       transition-hide="flip-up"
+      @show="cargarData"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
@@ -50,17 +51,19 @@
               </div>
               <q-field borderless label="Nombre" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Nombre</div>
+                  <div
+                    class="self-center full-width no-outline"
+                  >{{ !!sector.jefe ? buscarJefe(sector.jefe).nombre : "sin jefe de calle asignado" }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Cedula" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Cedula</div>
+                  <div class="self-center full-width no-outline">{{ !!sector.jefe ? buscarJefe(sector.jefe).cedula : "sin jefe de calle asignado" }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Codigo" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Codigo</div>
+                  <div class="self-center full-width no-outline">{{ !!sector.jefe ? buscarJefe(sector.jefe).codigo : "sin jefe de calle asignado" }}</div>
                 </template>
               </q-field>
             </div>
@@ -70,12 +73,12 @@
               </div>
               <q-field borderless label="Nucleos registrados" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Nucleos registrados</div>
+                  <div class="self-center full-width no-outline">{{ sector.nucleos.length }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Integrantes registrados" stack-label>
                 <template v-slot:control>
-                  <div class="self-center full-width no-outline">Integrantes registrados</div>
+                  <div class="self-center full-width no-outline">{{ integrantes.length }}</div>
                 </template>
               </q-field>
               <q-field borderless label="Pagos registrados" stack-label>
@@ -96,8 +99,15 @@ import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "DetallesSector",
+  data() {
+    return {
+      integrantes: [],
+      pagos: []
+    }
+  },
   computed: {
     ...mapGetters("sectores", ["detalles", "sector"]),
+    ...mapGetters("personas", ["buscarJefe"]),
     _detallesSector: {
       get() {
         return this.detalles;
@@ -108,7 +118,10 @@ export default {
     }
   },
   methods: {
-    ...mapMutations("sectores", ["updateDetalles"])
+    ...mapMutations("sectores", ["updateDetalles"]),
+    async cargarData() {
+      this.integrantes = await this.sector.getIntegrantes()
+    }
   }
 };
 </script>
