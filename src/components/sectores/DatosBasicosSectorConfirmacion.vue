@@ -31,17 +31,17 @@
       </div>
       <q-field borderless label="Nombre" stack-label>
         <template v-slot:control>
-          <div class="self-center full-width no-outline">{{ jefeSector[0].nombre }}</div>
+          <div class="self-center full-width no-outline">{{ !!jefeSector[0]? jefeSector[0].nombre : "Sin jefe de calle asignado" }}</div>
         </template>
       </q-field>
       <q-field borderless label="Cedula" stack-label>
         <template v-slot:control>
-          <div class="self-center full-width no-outline">{{ jefeSector[0].cedula }}</div>
+          <div class="self-center full-width no-outline">{{ !!jefeSector[0] ? jefeSector[0].cedula : "Sin jefe de calle asignado"  }}</div>
         </template>
       </q-field>
       <q-field borderless label="Codigo" stack-label>
         <template v-slot:control>
-          <div class="self-center full-width no-outline">{{ jefeSector[0].codigo }}</div>
+          <div class="self-center full-width no-outline">{{ !!jefeSector[0] ? jefeSector[0].codigo : "Sin jefe de calle asignado"  }}</div>
         </template>
       </q-field>
     </div>
