@@ -31,33 +31,6 @@ export default {
       "updateDetalles",
       "updateModificar"
     ]),
-    confirmacion() {
-      this.$q
-        .dialog({
-          title: "Confirme",
-          message: "¿Seguro que quiere modificar este sector",
-          cancel: true,
-          persistent: true
-        })
-        .onOk(async () => {
-          try {
-            const RESULTADO = await this.$db.local.rel.del(
-              "sector",
-              this.sector
-            );
-            let mensaje = RESULTADO.deleted
-              ? "Sector eliminado"
-              : "No se pudo eliminar el sector";
-            let icon = !!RESULTADO ? "check" : "close";
-            this.$q.notify({
-              message: mensaje,
-              icon: icon
-            });
-          } catch (error) {
-            alert(error);
-          }
-        });
-    }
   }
 };
 </script>

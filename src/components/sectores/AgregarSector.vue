@@ -137,6 +137,7 @@ export default {
       "updateNombre",
       "updateDatosBasicosSectorInvalidos"
     ]),
+    ...mapMutations("personas", ["updateJefeSector"]),
     async confirmarSector() {
       try {
         const sector = new Sector(
@@ -145,17 +146,10 @@ export default {
           this.municipios[this.municipio - 1].nombre,
           this.parroquias[this.parroquia - 1].nombre,
           null,
-          this.jefeSector[0]
+          !!this.jefeSector[0] ? this.jefeSector[0].id : null
         );
-        const resultado = await API.agregarSector(sector);
-        let mensaje = !!resultado
-          ? "Sector Agregado"
-          : "No se pudo agregar el sector";
-        let icon = !!resultado ? "check" : "close";
-        this.$q.notify({
-          message: mensaje,
-          icon: icon
-        });
+        const resultado = await API.guardarSector(sector);
+        if (!!sector.jefe) await API.actualizarSectorJefe(resultado, sector);
         if (resultado) this.updateAgregar();
       } catch (error) {
         alert(error);
@@ -167,6 +161,7 @@ export default {
       this.updateParroquia(null);
       this.updateNombre("");
       this.step = 1;
+      this.updateJefeSector([]);
     }
   }
 };

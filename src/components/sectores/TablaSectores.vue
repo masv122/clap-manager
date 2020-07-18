@@ -143,15 +143,8 @@ export default {
         })
         .onOk(async () => {
           try {
-            const resultado = await API.eliminarSector(this.sector);
-            let mensaje = resultado.deleted
-              ? "Sector eliminado"
-              : "No se pudo eliminar el sector";
-            let icon = !!resultado ? "check" : "close";
-            this.$q.notify({
-              message: mensaje,
-              icon: icon
-            });
+            await API.eliminarSector(this.sector);
+
           } catch (error) {
             alert(error);
           }

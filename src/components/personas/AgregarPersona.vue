@@ -276,14 +276,6 @@ export default {
           default:
             break;
         }
-        let mensaje = resultadoFinal
-          ? `${tipo} Agregado`
-          : `No se pudo agregar el ${tipo}`;
-        let icon = !!resultadoFinal ? "check" : "close";
-        this.$q.notify({
-          message: mensaje,
-          icon: icon
-        });
         if (resultadoFinal) this.updateAgregarPersona();
       } catch (error) {
         alert(error);

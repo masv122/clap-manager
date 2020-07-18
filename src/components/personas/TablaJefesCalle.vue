@@ -167,17 +167,9 @@ export default {
         })
         .onOk(async () => {
           try {
-            const resultado = await API.eliminarJefe(this.jefe);
-            let mensaje = resultado.deleted
-              ? "Jefe de calle eliminado"
-              : "No se pudo eliminar el jefe de calle";
-            let icon = !!resultado ? "check" : "close";
-            this.$q.notify({
-              message: mensaje,
-              icon: icon
-            });
+            await API.eliminarJefe(this.jefe);
           } catch (error) {
-            alert(error);
+            alert("error al eliminar el jefe de calle 101: " + error);
           }
         });
     }

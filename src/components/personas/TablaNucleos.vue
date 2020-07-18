@@ -138,17 +138,10 @@ export default {
         })
         .onOk(async () => {
           try {
-            const resultado = await API.eliminarIntegrante(this.nucleo);
-            let mensaje = resultado.deleted
-              ? "Nucleo eliminado"
-              : "No se pudo eliminar el nucleo";
-            let icon = !!resultado ? "check" : "close";
-            this.$q.notify({
-              message: mensaje,
-              icon: icon
-            });
+             await API.eliminarIntegrante(this.nucleo);
           } catch (error) {
-            alert(error);
+                        alert("error al eliminar el nucleo 101: " + error);
+
           }
         });
     }

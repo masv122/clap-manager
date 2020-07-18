@@ -238,17 +238,9 @@ export default {
         })
         .onOk(async () => {
           try {
-            const resultado = await API.eliminarIntegrante(this.integrante);
-            let mensaje = resultado.deleted
-              ? "Integrante eliminado"
-              : "No se pudo eliminar el integrante";
-            let icon = !!resultado ? "check" : "close";
-            this.$q.notify({
-              message: mensaje,
-              icon: icon
-            });
+            await API.eliminarIntegrante(this.integrante);
           } catch (error) {
-            alert(error);
+            alert("error al eliminar el integrante 101: " + error);
           }
         });
     },
