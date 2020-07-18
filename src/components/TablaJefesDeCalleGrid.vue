@@ -44,6 +44,13 @@
         </div>
       </template>
     </q-table>
+    <q-banner v-show="alerta" dense inline-actions class="text-white bg-red">
+      <template v-slot:avatar>
+        <q-icon name="warning" color="white" />
+      </template>
+      Acaba de seleccionar un jefe de calle con sector asignado.
+      El sector del jefe de calle sera sustituido por este.
+    </q-banner>
   </div>
 </template>
 
@@ -96,8 +103,12 @@ export default {
         {
           name: "sector",
           label: "Sector",
-          field: row =>
-            !!row.sector ? row.getSector().nombre : "sin sector asignado"
+          field: row => {
+            if (!!row) {
+              if (!!row.sector) return this.buscarSector(row.sector).nombre;
+              else return "Sin sector asignado";
+            }
+          }
         },
         {
           name: "id",
@@ -109,6 +120,7 @@ export default {
   },
   computed: {
     ...mapGetters("personas", ["jefes", "jefeSector"]),
+    ...mapGetters("sectores", ["buscarSector"]),
     _jefeSector: {
       get() {
         return this.jefeSector;
@@ -116,10 +128,17 @@ export default {
       set(value) {
         this.updateJefeSector(value);
       }
+    },
+    alerta() {
+      if (!!this.jefeSector[0]) return !!this.jefeSector[0].sector;
+      else return false;
     }
   },
   methods: {
-    ...mapMutations("personas", ["updateJefeSector"])
+    ...mapMutations("personas", ["updateJefeSector"]),
+    mostrarAlerta(jefe) {
+      console.log(jefe);
+    }
   }
 };
 </script>
