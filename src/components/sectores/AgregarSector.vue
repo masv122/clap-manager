@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_agregarSector"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
       @hide="reset"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
@@ -152,7 +152,7 @@ export default {
         if (!!sector.jefe) await API.actualizarSectorJefe(resultado, sector);
         if (resultado) this.updateAgregar();
       } catch (error) {
-        alert(error);
+        alert("error al confirmar el sector 101: " + error);
       }
     },
     reset() {

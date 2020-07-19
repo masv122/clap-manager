@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_detallesSector"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
       @show="cargarData"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
@@ -24,7 +24,8 @@
               <div class="text-h6 q-ml-xl">
                 <q-icon name="info" />Datos del sector
               </div>
-              <informacion-sector v-if="!!sector"
+              <informacion-sector
+                v-if="!!sector"
                 :nombre="sector.nombre"
                 :estado="sector.estado"
                 :municipio="sector.municipio"
@@ -35,7 +36,8 @@
               <div class="text-h6 q-ml-xl">
                 <q-icon name="supervised_user_circle" />Jefe de calle
               </div>
-              <informacion-jefe v-if="!!sector"
+              <informacion-jefe
+                v-if="!!sector"
                 :nombre="!!sector.jefe ? buscarJefe(sector.jefe).nombre : 'sin jefe de calle asignado'"
                 :cedula="!!sector.jefe ? buscarJefe(sector.jefe).cedula : null "
                 :codigo="!!sector.jefe ? buscarJefe(sector.jefe).codigo : 'sin jefe de calle asignado'"

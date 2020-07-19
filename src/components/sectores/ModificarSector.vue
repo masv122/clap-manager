@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_modificarSector"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
       @show="cargarSector"
       @hide="resetear"
     >
@@ -128,7 +128,9 @@ export default {
     },
     cargarSector() {
       this.idJefe = !!this.sector.jefe ? this.sector.jefe : "";
-      this.updateJefeSector(!!this.sector.jefe ? [this.buscarJefe(this.sector.jefe)] : []);
+      this.updateJefeSector(
+        !!this.sector.jefe ? [this.buscarJefe(this.sector.jefe)] : []
+      );
     },
     resetear() {
       this.updateSector(null);

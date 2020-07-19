@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_modificarPersona"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
@@ -18,9 +18,9 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-ma-md">
-          <ModificarIntegrante v-if="integrante" />
-          <ModificarNucleo v-if="nucleo" />
-          <ModificarJefe v-if="jefe" />
+          <ModificarIntegrante v-if="!!tipoPersona && tipoPersona.value === 'integrante'" />
+          <ModificarNucleo v-if="!!tipoPersona && tipoPersona.value === 'nucleo'" />
+          <ModificarJefe v-if="!!tipoPersona && tipoPersona.value === 'jefe'" />
         </q-card-section>
         <q-separator />
         <q-card-actions class="q-ma-md" align="center">
@@ -29,6 +29,7 @@
             icon="save"
             type="submit"
             color="primary"
+            @click="confirmarPersona('modificar')"
             class="q-ml-sm full-width"
           />
         </q-card-actions>
@@ -39,6 +40,7 @@
 
 <script>
 import ModificarIntegrante from "components/personas/ModificarIntegrante.vue";
+import confirmarPersona from "src/mixins/confirmarPersona";
 import ModificarNucleo from "components/personas/ModificarNucleo.vue";
 import ModificarJefe from "components/personas/ModificarJefe.vue";
 import { mapGetters, mapMutations } from "vuex";
@@ -49,16 +51,23 @@ export default {
     ModificarNucleo,
     ModificarJefe
   },
+  mixins: [confirmarPersona],
   data() {
     return {};
   },
   computed: {
     ...mapGetters("personas", [
       "modificarPersona",
+      "nombre",
+      "apellido",
+      "cedula",
+      "telefono",
+      "fechaNacimiento",
       "detallesPersona",
       "integrante",
       "nucleo",
-      "jefe"
+      "jefe",
+      "tipoPersona"
     ]),
     _modificarPersona: {
       get() {
