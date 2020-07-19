@@ -103,13 +103,7 @@
           style="min-width: 150px"
           class="q-mr-md"
         />
-        <q-input
-          color="negative"
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Buscar"
-        >
+        <q-input color="negative" dense debounce="300" v-model="filter" placeholder="Buscar">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -125,7 +119,13 @@
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
           <q-td auto-width>
-            <q-btn flat round dense icon="more_vert" @click="updateIntegrante(props.row)">
+            <q-btn
+              flat
+              round
+              dense
+              icon="more_vert"
+              @click="updateTipoPersona({value: 'integrante'});updateIntegrante(props.row)"
+            >
               <q-menu>
                 <q-list style="min-width: 100px">
                   <q-item clickable v-close-popup @click="updateDetallesPersona">
@@ -196,7 +196,7 @@ export default {
         {
           name: "cedula",
           label: "Cedula",
-          field: "cedula"
+          field: "id"
         },
         {
           name: "telefono",
@@ -212,11 +212,6 @@ export default {
           name: "fechaNacimiento",
           label: "Nacimiento",
           field: "fechaNacimiento"
-        },
-        {
-          name: "id",
-          label: "Identificador",
-          field: "id"
         }
       ]
     };
@@ -239,7 +234,8 @@ export default {
       "updateAgregarPersona",
       "updateModificarPersona",
       "updateDetallesPersona",
-      "updateCargandoPersonas"
+      "updateCargandoPersonas",
+      "updateTipoPersona"
     ]),
     confirmacion() {
       this.$q
@@ -296,8 +292,8 @@ export default {
     this.sectoresOpt = this.sectores;
     this.nucleosOpt = this.nucleos;
   },
-  destroyed () {
+  destroyed() {
     this.updateIntegrante(null);
-  },
+  }
 };
 </script>
