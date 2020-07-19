@@ -179,6 +179,19 @@ export default {
           name: "id",
           label: "Identificador",
           field: "id"
+        },
+        ,
+        {
+          name: "nucleos",
+          label: "nucleos",
+          field: row => {
+            const nombres = [];
+            row.nucleos.forEach(element => {
+              const nucleo = this.buscarNucleo(element);
+              nombres.push(nucleo.nombre);
+            });
+            return nombres;
+          }
         }
       ]
     };
@@ -204,14 +217,14 @@ export default {
               await API.eliminarSectorJefe(await this.sector.getJefe());
             await API.eliminarSector(this.sector);
           } catch (error) {
-            alert(error);
+            alert("error al eliminar el sector 101: " + error);
           }
         });
     }
   },
   computed: {
     ...mapGetters("sectores", ["sectores", "sector", "cargandoSectores"]),
-    ...mapGetters("personas", ["buscarJefe"])
+    ...mapGetters("personas", ["buscarJefe", "buscarNucleo"])
   }
 };
 </script>
