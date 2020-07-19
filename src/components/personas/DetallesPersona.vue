@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_detallesPersona"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
@@ -18,9 +18,9 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-pt-none">
-          <DetallesIntegrante v-if="integrante"/>
-          <DetallesNucleo v-if="nucleo"/>
-          <DetallesJefeCalle v-if="jefe"/>
+          <DetallesIntegrante v-if="tipoPersona === 'integrante'" />
+          <DetallesNucleo v-if="tipoPersona === 'nucleo'" />
+          <DetallesJefeCalle v-if="tipoPersona === 'jefe'" />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -40,7 +40,13 @@ export default {
     DetallesJefeCalle
   },
   computed: {
-    ...mapGetters("personas", ["detallesPersona", "integrante", "nucleo", "jefe"]),
+    ...mapGetters("personas", [
+      "detallesPersona",
+      "integrante",
+      "nucleo",
+      "jefe",
+      "tipoPersona"
+    ]),
     _detallesPersona: {
       get() {
         return this.detallesPersona;

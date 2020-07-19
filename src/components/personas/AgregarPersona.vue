@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_agregarPersona"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
       @show="reset"
     >
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
@@ -19,85 +19,83 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-pt-none">
-          <div class="q-pa-md">
-            <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
-              <q-step :name="1" title="Complete los datos" icon="info" :done="step > 1">
-                <DatosPersonales />
-                <q-stepper-navigation>
-                  <q-btn
-                    @click="step = 2"
-                    color="primary"
-                    icon-right="chevron_right"
-                    label="Siguiente"
-                    :disable="datosPersonalesInvalidos"
-                  />
-                </q-stepper-navigation>
-              </q-step>
+          <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
+            <q-step :name="1" title="Complete los datos" icon="info" :done="step > 1">
+              <DatosPersonales />
+              <q-stepper-navigation>
+                <q-btn
+                  @click="step = 2"
+                  color="primary"
+                  icon-right="chevron_right"
+                  label="Siguiente"
+                  :disable="datosPersonalesInvalidos"
+                />
+              </q-stepper-navigation>
+            </q-step>
 
-              <q-step
-                :name="2"
-                title="Seleccione el tipo de persona"
-                caption="Optional"
-                icon="perm_identity"
-                :done="step > 2"
-              >
-                <TipoPersona />
-                <AsignarNucleo v-if="tipoPersona && tipoPersona.value === 'asignar'" />
-                <CrearNucleo v-else-if="tipoPersona && tipoPersona.value === 'crear'" />
-                <CrearJefeCalle v-else-if="tipoPersona && tipoPersona.value === 'jefe'" />
-                <q-stepper-navigation>
-                  <q-btn
-                    flat
-                    @click="step = 1"
-                    icon="chevron_left"
-                    color="negative"
-                    label="Regresar"
-                    class="q-ml-sm"
-                  />
-                  <q-btn
-                    @click="step = 3"
-                    color="primary"
-                    icon-right="chevron_right"
-                    label="Siguiente"
-                    :disable="datosTipoPersonaInvalidos"
-                  />
-                </q-stepper-navigation>
-              </q-step>
+            <q-step
+              :name="2"
+              title="Seleccione el tipo de persona"
+              caption="Optional"
+              icon="perm_identity"
+              :done="step > 2"
+            >
+              <TipoPersona />
+              <AsignarNucleo v-if="tipoPersona && tipoPersona.value === 'integrante'" />
+              <CrearNucleo v-else-if="tipoPersona && tipoPersona.value === 'nucleo'" />
+              <CrearJefeCalle v-else-if="tipoPersona && tipoPersona.value === 'jefe'" />
+              <q-stepper-navigation>
+                <q-btn
+                  flat
+                  @click="step = 1"
+                  icon="chevron_left"
+                  color="negative"
+                  label="Regresar"
+                  class="q-ml-sm"
+                />
+                <q-btn
+                  @click="step = 3"
+                  color="primary"
+                  icon-right="chevron_right"
+                  label="Siguiente"
+                  :disable="datosTipoPersonaInvalidos"
+                />
+              </q-stepper-navigation>
+            </q-step>
 
-              <q-step :name="3" title="Confirme la informacion" icon="check">
-                <div class="row">
-                  <div class="col">
-                    <DatosPersonalesConfirmacion />
-                  </div>
-                  <div class="col" v-if="step === 3">
-                    <DatosNucleoConfirmacion
-                      :nombreNucleo="_nombreNucleo"
-                      :direccion="_direccion"
-                      :nombreSector="nombreSector"
-                      v-if="tipoPersona && (tipoPersona.value === 'asignar' || tipoPersona.value === 'crear')"
-                    />
-                    <DatosJefeConfirmacion v-else />
-                  </div>
+            <q-step :name="3" title="Confirme la informacion" icon="check">
+              <div class="row">
+                <div class="col">
+                  <DatosPersonalesConfirmacion />
                 </div>
-                <q-stepper-navigation>
-                  <q-btn
-                    flat
-                    @click="step = 2"
-                    icon="chevron_left"
-                    color="negative"
-                    label="Regresar"
-                    class="q-ml-sm"
+                <div class="col" v-if="step === 3">
+                  <DatosNucleoConfirmacion
+                    :nombreNucleo="_nombreNucleo"
+                    :direccion="_direccion"
+                    :nombreSector="nombreSector"
+                    v-if="tipoPersona && (tipoPersona.value === 'integrante' || tipoPersona.value === 'nucleo')"
                   />
-                  <q-btn
-                    color="positive"
-                    icon-right="check"
-                    label="Agregar"
-                    @click="confirmarPersona"
-                  />
-                </q-stepper-navigation>
-              </q-step>
-            </q-stepper>
-          </div>
+                  <DatosJefeConfirmacion v-else />
+                </div>
+              </div>
+              <q-stepper-navigation>
+                <q-btn
+                  flat
+                  @click="step = 2"
+                  icon="chevron_left"
+                  color="negative"
+                  label="Regresar"
+                  class="q-ml-sm"
+                />
+                <q-btn
+                  color="positive"
+                  icon-right="check"
+                  label="Agregar"
+                  @click="confirmarPersona('agregar')"
+                />
+              </q-stepper-navigation>
+            </q-step>
+          </q-stepper>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -105,10 +103,7 @@
 </template>
 
 <script>
-import * as API from "src/mixins/API";
-import Nucleo from "src/class/nucleo";
-import Integrante from "src/class/integrante";
-import JefeCalle from "src/class/jefeCalle";
+import confirmarPersona from "src/mixins/confirmarPersona";
 import { mapGetters, mapMutations } from "vuex";
 import DatosPersonales from "components/personas/DatosPersonales.vue";
 import TipoPersona from "components/personas/TipoPersona.vue";
@@ -130,6 +125,7 @@ export default {
     DatosNucleoConfirmacion,
     DatosJefeConfirmacion
   },
+  mixins: [confirmarPersona],
   data() {
     return {
       step: 1
@@ -163,14 +159,14 @@ export default {
     },
     _nombreNucleo() {
       if (this.nucleo)
-        return this.tipoPersona.value === "asignar"
+        return this.tipoPersona.value === "integrante"
           ? this.buscarNucleo(this.nucleo).nombre
           : this.nombreNucleo;
       else return "";
     },
     _direccion() {
       if (this.nucleo)
-        return this.tipoPersona.value === "asignar"
+        return this.tipoPersona.value === "integrante"
           ? this.buscarNucleo(this.nucleo).direccion
           : this.direccion;
       else return "";
@@ -178,7 +174,7 @@ export default {
     nombreSector() {
       if (this.nucleo || this.sector)
         return this.buscarSector(
-          this.tipoPersona.value === "asignar"
+          this.tipoPersona.value === "integrante"
             ? this.buscarNucleo(this.nucleo).sector
             : this.sector
         ).nombre;
@@ -200,86 +196,8 @@ export default {
       "updateDireccion",
       "updateCodigo"
     ]),
-    async confirmarPersona() {
-      try {
-        let persona,
-          nucleo,
-          resultadoFinal,
-          resultadoAgregarIntegrante,
-          resultadoAgregarNucleo,
-          resultadoActualizarNucleo;
-        let tipo;
-        switch (this.tipoPersona.value) {
-          case "asignar":
-            tipo = "Integrante";
-            persona = new Integrante(
-              this.nombre,
-              this.apellido,
-              this.cedula,
-              this.telefono,
-              this.fechaNacimiento,
-              this.nucleo
-            );
-            resultadoAgregarIntegrante = await API.agregarIntegrante(persona);
-            if (!!resultadoAgregarIntegrante)
-              resultadoFinal = await API.actualizarIntegrantesNucleo(
-                resultadoAgregarIntegrante,
-                persona
-              );
-            break;
-          case "crear":
-            tipo = "Nucleo";
-            nucleo = new Nucleo(
-              this.cedula,
-              this.nombreNucleo,
-              this.direccion,
-              this.sector
-            );
-            persona = new Integrante(
-              this.nombre,
-              this.apellido,
-              this.cedula,
-              this.telefono,
-              this.fechaNacimiento
-            );
-            resultadoAgregarNucleo = await API.agregarNucleo(nucleo);
-            if (!!resultadoAgregarNucleo) {
-              persona.nucleo = resultadoAgregarNucleo.id;
-              resultadoAgregarIntegrante = await API.agregarIntegrante(persona);
-              if (!!resultadoAgregarIntegrante) {
-                resultadoActualizarNucleo = await API.actualizarIntegrantesNucleo(
-                  resultadoAgregarIntegrante,
-                  persona
-                );
-                if (!!resultadoActualizarNucleo) {
-                  resultadoFinal = await API.actualizarNucleosSector(
-                    resultadoAgregarNucleo,
-                    nucleo
-                  );
-                } else resultadoFinal = false;
-              } else resultadoFinal = false;
-            } else resultadoFinal = false;
-            break;
-          case "jefe":
-            tipo = "Jefe";
-            const jefeCalle = new JefeCalle(
-              this.nombre,
-              this.apellido,
-              this.cedula,
-              this.telefono,
-              this.fechaNacimiento,
-              this.codigo,
-              this.direccion
-            );
-            resultadoFinal = await API.agregarJefe(jefeCalle);
-            break;
-          default:
-            break;
-        }
-        if (resultadoFinal) this.updateAgregarPersona();
-      } catch (error) {
-        alert(error);
-      }
+    confirmar(){
+      this.confirmarPersona();
     },
     reset() {
       this.step = 1;

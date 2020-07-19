@@ -3,8 +3,8 @@
     <q-dialog
       v-model="_agregarPago"
       persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
+      :full-height="$q.screen.lt.sm"
+      :full-width="$q.screen.lt.sm"
     >
       <div class="q-pa-md"></div>
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
@@ -103,9 +103,7 @@
                 label="Seleccione fecha"
               >
                 <template v-slot:append>
-                  <q-icon name="event"
-                color="negative"
-                   class="cursor-pointer">
+                  <q-icon name="event" color="negative" class="cursor-pointer">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
                     </q-popup-proxy>

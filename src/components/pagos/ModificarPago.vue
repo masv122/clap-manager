@@ -1,11 +1,6 @@
 <template>
   <div>
-    <q-dialog
-      v-model="_modificarPago"
-      persistent
-      transition-show="flip-down"
-      transition-hide="flip-up"
-    >
+    <q-dialog v-model="_modificarPago" persistent>
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
           <q-toolbar-title shrink>
