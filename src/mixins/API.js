@@ -37,12 +37,12 @@ export async function eliminarSector(sector) {
   }
 }
 
-export async function agregarIntegrante(integrante) {
+export async function guardarIntegrante(integrante) {
   try {
     const resultado = await db.local.rel.save("integrante", integrante);
     const mensaje = !!resultado
-      ? "Integrante Agregado"
-      : "No se pudo agregar el integrante";
+      ? "Integrante guardado"
+      : "No se pudo guardar el integrante";
     const icon = !!resultado ? "check" : "close";
     Notify.create({
       message: mensaje,
@@ -50,7 +50,7 @@ export async function agregarIntegrante(integrante) {
     });
     return resultado;
   } catch (error) {
-    alert("error al agregar el integrante: " + error);
+    alert("error al guardarel integrante: " + error);
     return false;
   }
 }
@@ -69,6 +69,24 @@ export async function eliminarIntegrante(integrante) {
     return resultado;
   } catch (error) {
     alert("error al eliminar el integrante: " + error);
+    return false;
+  }
+}
+
+export async function eliminarNucleo(nucleo) {
+  try {
+    const resultado = await db.local.rel.del("nucleo", nucleo);
+    const mensaje = !!resultado.deleted
+      ? "Nucleo eliminado"
+      : "No se pudo eliminar el nucleo";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al eliminar el nucleo: " + error);
     return false;
   }
 }
@@ -135,6 +153,26 @@ export async function actualizarIntegrantesNucleo(data, integrante) {
     const mensaje = !!resultado
       ? "Integrantes del nucleo actualizados"
       : "No se pudo actualizar los integrantes del nucleo";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al actualizar el nucleo: " + error);
+    return false;
+  }
+}
+
+export async function eliminarIntegrantesNucleo(data, integrante) {
+  try {
+    let nucleo = await integrante.geNucleo();
+    nucleo.eliminarIntegrante(data.id);
+    const resultado = await db.local.rel.save("nucleo", nucleo);
+    const mensaje = !!resultado
+      ? "Integrante del nucleo eliminado"
+      : "No se pudo eliminar el integrante del nucleo";
     const icon = !!resultado ? "check" : "close";
     Notify.create({
       message: mensaje,
