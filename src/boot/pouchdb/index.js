@@ -39,23 +39,19 @@ let events = {
 };
 
 const db = new Database();
-export default async ({ Vue, store, router }) => {
+export default async ({ Vue, store }) => {
   await db.configure({
     onchange(change) {
       let { data, _id, _rev, _deleted } = change.doc;
       let parsed = db.local.rel.parseDocID(_id);
       let event = events[parsed.type];
       if (_deleted) {
-        router.app.$emit(parsed.type, { id: parsed.id, _deleted });
-        router.app.$emit(parsed.id, { _deleted });
         if (event) {
           store.dispatch(event.eliminar, parsed.id);
         }
       } else {
         data.id = parsed.id;
         data.rev = _rev;
-        router.app.$emit(parsed.type, data);
-        router.app.$emit(parsed.id, data);
         if (event) {
           store.dispatch(event.guardar, data);
         }
