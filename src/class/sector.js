@@ -27,7 +27,6 @@ export default class Sector extends Base {
         const jefe = new JefeCalle(
           resultado.jefes[0].nombre,
           resultado.jefes[0].apellido,
-          resultado.jefes[0].cedula,
           resultado.jefes[0].telefono,
           resultado.jefes[0].fechaNacimiento,
           resultado.jefes[0].codigo,

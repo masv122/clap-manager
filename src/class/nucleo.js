@@ -15,19 +15,26 @@ export default class Nucleo extends Base {
   agregarIntegrante(id) {
     this.integrantes.push(id);
   }
+  eliminarIntegrante(id) {
+    const indice = this.integrantes.indexOf(id);
+    this.integrantes.splice(indice, 1);
+  }
   async getSector() {
     try {
       const resultado = await db.local.rel.find("sector", this.sector);
-      if (!!resultado) {
+      const indice = result.sectores.findIndex(
+        sector => (sector.id = this.sector)
+      );
+      if (indice >= 0) {
         const sector = new Sector(
-          resultado.sectores[0].nombre,
-          resultado.sectores[0].estado,
-          resultado.sectores[0].municipio,
-          resultado.sectores[0].parroquia,
-          resultado.sectores[0].nucleos,
-          resultado.sectores[0].jefe,
-          resultado.sectores[0].id,
-          resultado.sectores[0].rev
+          resultado.sectores[indice].nombre,
+          resultado.sectores[indice].estado,
+          resultado.sectores[indice].municipio,
+          resultado.sectores[indice].parroquia,
+          resultado.sectores[indice].nucleos,
+          resultado.sectores[indice].jefe,
+          resultado.sectores[indice].id,
+          resultado.sectores[indice].rev
         );
         return sector;
       } else return null;
