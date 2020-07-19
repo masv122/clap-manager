@@ -37,14 +37,14 @@ export default {
       options: [
         {
           label: "Asignar a nucleo",
-          value: "asignar",
+          value: "integrante",
           icon: "group_add",
           description:
             "Agrega la persona como integrante y se le asigna un nucleo existente"
         },
         {
           label: "Crear Nucleo",
-          value: "crear",
+          value: "nucleo",
           icon: "person_add",
           description:
             "Agregar la persona como un integrante y se asigna como jefe de familia de un nuevo nucleo"
