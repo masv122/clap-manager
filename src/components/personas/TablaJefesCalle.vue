@@ -115,7 +115,7 @@ export default {
         {
           name: "cedula",
           label: "Cedula",
-          field: "cedula"
+          field: "id"
         },
         {
           name: "telefono",
@@ -141,11 +141,6 @@ export default {
           name: "sector",
           label: "Sector",
           field: "sector"
-        },
-        {
-          name: "id",
-          label: "Identificador",
-          field: "id"
         }
       ]
     };
