@@ -81,18 +81,19 @@ export function updateNucleo(state, nucleo) {
   state.nucleo = nucleo;
 }
 export function modificarNucleo(state, resultado) {
-  state.nucleos[resultado.indice].direccion = resultado.objeto.direccion;
-  state.nucleos[resultado.indice].sector = resultado.objeto.sector;
-  state.nucleos[resultado.indice].rev = resultado.objeto.rev;
+  console.log(resultado);
+  state.nucleos[resultado.indice] = resultado.objeto;
 }
 export function eliminarIntegrante(state, indice) {
   state.integrantes.splice(indice, 1);
+}
+export function eliminarNucleo(state, indice) {
+  state.nucleos.splice(indice, 1);
 }
 export function insertarIntegrante(state, data) {
   const integrante = new Integrante(
     data.nombre,
     data.apellido,
-    data.cedula,
     data.telefono,
     data.fechaNacimiento,
     data.nucleo,
@@ -108,20 +109,15 @@ export function updateIntegrante(state, integrante) {
   state.integrante = integrante;
 }
 export function modificarIntegrante(state, resultado) {
-  state.integrantes[resultado.indice].nombre = resultado.objeto.nombre;
-  state.integrantes[resultado.indice].apellido = resultado.objeto.apellido;
-  state.integrantes[resultado.indice].telefono = resultado.objeto.telefono;
-  state.integrantes[resultado.indice].nucleo = resultado.objeto.nucleo;
-  state.integrantes[resultado.indice].rev = resultado.objeto.rev;
+  state.integrantes[resultado.indice] = resultado.objeto;
 }
 export function eliminarJefe(state, indice) {
-  state.jefes.splice(indice, 1);
+  state.jefes.slice(indice, 1);
 }
 export function insertarJefe(state, data) {
   const jefe = new JefeCalle(
     data.nombre,
     data.apellido,
-    data.cedula,
     data.telefono,
     data.fechaNacimiento,
     data.codigo,
@@ -142,13 +138,5 @@ export function updateJefeSector(state, jefe) {
   state.jefeSector = jefe;
 }
 export function modificarJefe(state, resultado) {
-  state.jefes[resultado.indice].nombre = resultado.objeto.nombre;
-  state.jefes[resultado.indice].apellido = resultado.objeto.apellido;
-  state.jefes[resultado.indice].telefono = resultado.objeto.telefono;
-  state.jefes[resultado.indice].fechaNacimiento =
-    resultado.objeto.fechaNacimiento;
-  state.jefes[resultado.indice].codigo = resultado.objeto.codigo;
-  state.jefes[resultado.indice].direccion = resultado.objeto.direccion;
-  state.jefes[resultado.indice].sector = resultado.objeto.sector;
-  state.jefes[resultado.indice].rev = resultado.objeto.rev;
+  state.jefes[resultado.indice] = resultado.objeto;
 }

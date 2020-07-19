@@ -40,7 +40,7 @@ export async function cargarSectores({ commit }) {
       commit("cargarSectores", sectores);
     }
   } catch (error) {
-    alert(error);
+    alert("error al cargar los sectores 101: " + error);
   }
 }
 
@@ -52,7 +52,7 @@ export async function buscarSector({ commit }, id) {
       return resultado.sectores[0];
     } else return false;
   } catch (error) {
-    alert(error);
+    alert("error al buscar el sector 101: " + error);
     return false;
   }
 }

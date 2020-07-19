@@ -79,7 +79,7 @@ export function integrante(state) {
 export const buscarIntegrante = state => id => {
   return state.integrantes.find(integrante => integrante.id === id);
 };
-export const buscarIntegranteCedula = state => cedula=> {
+export const buscarIntegranteCedula = state => cedula => {
   return state.integrantes.find(integrante => integrante.cedula === cedula);
 };
 export const buscarIndiceIntegrante = state => id => {

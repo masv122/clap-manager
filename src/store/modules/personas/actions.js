@@ -82,7 +82,6 @@ export async function cargarIntegrantes({ commit }) {
         const integrante = new Integrante(
           resultado.integrantes[i].nombre,
           resultado.integrantes[i].apellido,
-          resultado.integrantes[i].cedula,
           resultado.integrantes[i].telefono,
           resultado.integrantes[i].fechaNacimiento,
           resultado.integrantes[i].nucleo,
@@ -135,7 +134,6 @@ export async function cargarJefes({ commit }) {
         const jefe = new JefeCalle(
           resultado.jefes[i].nombre,
           resultado.jefes[i].apellido,
-          resultado.jefes[i].cedula,
           resultado.jefes[i].telefono,
           resultado.jefes[i].fechaNacimiento,
           resultado.jefes[i].codigo,
