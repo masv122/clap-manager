@@ -47,7 +47,7 @@
           <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
           <q-td auto-width>
             <q-btn flat round dense icon="more_vert" @click="updateNucleo(props.row)">
-              <q-menu @hide="updateNucleo(null)">
+              <q-menu>
                 <q-list style="min-width: 100px">
                   <q-item clickable v-close-popup @click="updateDetallesPersona">
                     <q-item-section avatar>
@@ -111,12 +111,24 @@ export default {
         {
           name: "sector",
           label: "Sector",
-          field: async row => await row.getSector().nombre
+          field: row => row.sector
         },
         {
           name: "id",
           label: "Identificador",
           field: "id"
+        },
+        {
+          name: "integrantes",
+          label: "integrantes",
+          field: row => {
+            const nombres = [];
+            row.integrantes.forEach(element => {
+              const integrante = this.buscarIntegrante(element);
+              nombres.push(integrante.nombre);
+            });
+            return nombres;
+          }
         }
       ]
     };
@@ -138,16 +150,20 @@ export default {
         })
         .onOk(async () => {
           try {
-             await API.eliminarIntegrante(this.nucleo);
+            await API.eliminarNucleo(this.nucleo);
           } catch (error) {
-                        alert("error al eliminar el nucleo 101: " + error);
-
+            alert("error al eliminar el nucleo 101: " + error);
           }
         });
     }
   },
   computed: {
-    ...mapGetters("personas", ["nucleos", "nucleo", "cargandoPersonas"]),
+    ...mapGetters("personas", [
+      "nucleos",
+      "nucleo",
+      "cargandoPersonas",
+      "buscarIntegrante"
+    ]),
     _nucleo: {
       get() {
         return this.nucleo;
