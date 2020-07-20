@@ -23,8 +23,8 @@ export default class JefeCalle extends Persona {
   async getSector() {
     try {
       const resultado = await db.local.rel.find("sector", this.sector);
-      const indice = result.sectores.findIndex(
-        sector => (sector.id = this.sector)
+      const indice = resultado.sectores.findIndex(
+        sector => sector.id === this.sector
       );
       if (indice >= 0) {
         const sector = new Sector(

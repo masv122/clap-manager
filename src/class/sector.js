@@ -23,17 +23,20 @@ export default class Sector extends Base {
   async getJefe() {
     try {
       const resultado = await db.local.rel.find("jefe", this.jefe);
-      if (!!resultado) {
+      const indice = resultado.jefes.findIndex(
+        jefe => jefe.id === this.jefe
+      );
+      if (indice >= 0) {
         const jefe = new JefeCalle(
-          resultado.jefes[0].nombre,
-          resultado.jefes[0].apellido,
-          resultado.jefes[0].telefono,
-          resultado.jefes[0].fechaNacimiento,
-          resultado.jefes[0].codigo,
-          resultado.jefes[0].direccion,
-          resultado.jefes[0].sector,
-          resultado.jefes[0].id,
-          resultado.jefes[0].rev
+          resultado.jefes[indice].nombre,
+          resultado.jefes[indice].apellido,
+          resultado.jefes[indice].telefono,
+          resultado.jefes[indice].fechaNacimiento,
+          resultado.jefes[indice].codigo,
+          resultado.jefes[indice].direccion,
+          resultado.jefes[indice].sector,
+          resultado.jefes[indice].id,
+          resultado.jefes[indice].rev
         );
         return jefe;
       } else return null;
