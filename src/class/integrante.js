@@ -7,21 +7,21 @@ export default class Integrante extends Persona {
     if (!!nucleo) this.nucleo = nucleo;
     else this.nucleo = null;
   }
-  async geNucleo() {
+  async getNucleo() {
     try {
-      const result = await db.local.rel.find("nucleo", this.nucleo);
-      const indice = result.nucleos.findIndex(
-        nucleo => (nucleo.id = this.nucleo)
+      const resultado = await db.local.rel.find("nucleo");
+      const indice = resultado.nucleos.findIndex(
+        nucleo => nucleo.id === this.nucleo
       );
       if (indice >= 0) {
         const nucleo = new Nucleo(
-          result.nucleos[indice].cedula,
-          result.nucleos[indice].nombre,
-          result.nucleos[indice].direccion,
-          result.nucleos[indice].sector,
-          result.nucleos[indice].integrantes,
-          result.nucleos[indice].id,
-          result.nucleos[indice].rev
+          resultado.nucleos[indice].cedula,
+          resultado.nucleos[indice].nombre,
+          resultado.nucleos[indice].direccion,
+          resultado.nucleos[indice].sector,
+          resultado.nucleos[indice].integrantes,
+          resultado.nucleos[indice].id,
+          resultado.nucleos[indice].rev
         );
         return nucleo;
       } else return null;
