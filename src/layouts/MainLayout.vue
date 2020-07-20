@@ -10,7 +10,7 @@
           spinner-color="primary"
           spinner-size="82px"
           width="100px"
-        /> -->
+        />-->
         <q-toolbar-title>CLAP Manager</q-toolbar-title>
         <q-btn
           color="white"
@@ -19,6 +19,8 @@
           v-if="$q.screen.width > 500"
           label="Iniciar sesion"
         />
+        <q-btn color="primary" icon="add" @click="agregar" />
+        <q-btn color="primary" icon="article" @click="mostar" />
         <q-btn @click="rightDrawer = !rightDrawer" flat round dense icon="notifications" />
       </q-toolbar>
       <q-tabs class="text-white q-ml-auto">
@@ -107,14 +109,90 @@ export default {
     };
   },
   computed: {
-    ...mapState("global", ["version"]),
+    ...mapState("global", ["version"])
   },
   methods: {
     ...mapActions("global", ["loadData"]),
     ...mapActions("sectores", ["cargarSectores"]),
-    ...mapActions("personas", ["cargarNucleos", "cargarIntegrantes", "cargarJefes"]),
+    ...mapActions("personas", [
+      "cargarNucleos",
+      "cargarIntegrantes",
+      "cargarJefes"
+    ]),
     ...mapMutations("sectores", ["updateCargandoSectores"]),
-    ...mapMutations("personas", ["updateCargandoPersonas"])
+    ...mapMutations("personas", ["updateCargandoPersonas"]),
+    agregar() {
+      this.$db.local.rel
+        .save("sector", {
+          estado: "Anzoátegui",
+          jefe: null,
+          municipio: "Aragua",
+          nombre: "hhhhh",
+          nucleos: [
+            "184ABD6B-9E6D-2885-ADD4-7BE394A547C8",
+            "A8623851-BDAA-9156-9A12-A6C1DDE0E7D9"
+          ],
+          id: "7A4E73EF-4CA6-9580-97E5-32604B726708",
+          parroquia: "Cachipo"
+        })
+        .then(() => {
+          return this.$db.local.rel
+            .save("nucleo", {
+              cedula: 7787878,
+              direccion: "jjj",
+              integrantes: [7787878, 465656],
+              nombre: "familia 1",
+              pagos: [],
+              id: "184ABD6B-9E6D-2885-ADD4-7BE394A547C8",
+              sector: "7A4E73EF-4CA6-9580-97E5-32604B726708"
+            })
+            .then(() => {
+              return this.$db.local.rel.save("integrante", {
+                apellido: "Salazare",
+                fechaNacimiento: "2020/07/02",
+                nombre: "Marcele",
+                id: 7787878,
+                nucleo: "184ABD6B-9E6D-2885-ADD4-7BE394A547C8",
+                telefono: "(5842) 489 - 6216"
+              });
+            })
+            .then(() => {
+              return this.$db.local.rel.save("integrante", {
+                apellido: "Salazari",
+                fechaNacimiento: "2020/07/02",
+                nombre: "Marceli",
+                id: 465656,
+                nucleo: "184ABD6B-9E6D-2885-ADD4-7BE394A547C8",
+                telefono: "(5842) 489 - 6216"
+              });
+            });
+        })
+        .then(() => {
+          return this.$db.local.rel
+            .save("nucleo", {
+              cedula: 666666,
+              direccion: "fgfg",
+              integrantes: [666666],
+              nombre: "familia 2",
+              pagos: [],
+              id: "A8623851-BDAA-9156-9A12-A6C1DDE0E7D9",
+              sector: "7A4E73EF-4CA6-9580-97E5-32604B726708"
+            })
+            .then(() => {
+              return this.$db.local.rel.save("integrante", {
+                apellido: "Salazara",
+                fechaNacimiento: "2020/07/02",
+                nombre: "Marcela",
+                id: 666666,
+                nucleo: "A8623851-BDAA-9156-9A12-A6C1DDE0E7D9",
+                telefono: "(5842) 489 - 6216"
+              });
+            });
+        });
+    },
+    async mostar() {
+      console.log(await this.$db.local.rel.find("sector"));
+    }
   },
   async created() {
     this.updateCargandoSectores;
