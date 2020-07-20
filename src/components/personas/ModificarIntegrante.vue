@@ -7,12 +7,45 @@
       </div>
       <q-separator />
       <datos-personales />
-      <div class="text-h6 q-mt-md">
-        <q-icon name="group" class="q-mr-md" />Reasignar Nucleo
-        <q-btn class="float-right" color="negative" icon="add" label="Crear Nucleo" />
+      <div class="row">
+        <div class="col-6 text-h6">
+          <q-icon name="group" class="q-mr-md" />
+          {{ reasignar ? 'Reasignar Nucleo': 'Crear nucleo' }}
+        </div>
+        <div class="col-6">
+          <q-btn
+            class="float-right"
+            color="negative"
+            icon="add"
+            :label="reasignar ? 'Crear Nucleo ': 'Reasignar Nucleo'"
+            @click="reasignar = !reasignar"
+          >
+            <q-tooltip
+              content-class="bg-negative"
+              content-style="font-size: 14px"
+              v-if="reasignar"
+            ><q-icon name="info" size="sm"/> Esta accion creara un nuevo nucleo con este integrante</q-tooltip>
+          </q-btn>
+        </div>
       </div>
-      <q-separator />
-      <seleccionar-nucleo />
+      <div class="text-h6 q-mt-md"></div>
+      <q-banner
+        v-show="esJefeFamiliar(integrante.id) >= 0 && !reasignar"
+        dense
+        inline-actions
+        class="text-white bg-red alerta"
+      >
+        <template v-slot:avatar>
+          <q-icon name="warning" color="white" />
+        </template>
+        Va a reasignar el jefe familiar del nucleo.
+        Debera proporcionar un nuevo jefe familiar para el mismo.
+      </q-banner>
+      <div v-if="reasignar">
+        <q-separator />
+        <seleccionar-nucleo />
+      </div>
+      <crear-nucleo :modificar="true" v-else />
     </q-form>
   </div>
 </template>
@@ -20,22 +53,27 @@
 <script>
 import DatosPersonales from "components/personas/DatosPersonales.vue";
 import SeleccionarNucleo from "components/personas/SeleccionarNucleo.vue";
+import CrearNucleo from "components/personas/CrearNucleo.vue";
 import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "ModificarIntegrante",
   components: {
     DatosPersonales,
-    SeleccionarNucleo
+    SeleccionarNucleo,
+    CrearNucleo
   },
   data() {
-    return {};
+    return {
+      reasignar: true
+    };
   },
   computed: {
     ...mapGetters("personas", [
       "nucleos",
       "nucleo",
       "integrante",
-      "buscarNucleo"
+      "buscarNucleo",
+      "esJefeFamiliar"
     ]),
     ...mapGetters("sectores", ["sectores"])
   },
@@ -61,3 +99,5 @@ export default {
   }
 };
 </script>
+<style scoped>
+</style>
