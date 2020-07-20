@@ -1,5 +1,6 @@
 import { db } from "boot/pouchdb/index";
 import { Notify } from "quasar";
+import Nucleo from "src/class/nucleo";
 
 export async function guardarSector(sector) {
   try {
@@ -145,9 +146,33 @@ export async function eliminarJefe(jefe) {
   }
 }
 
+export async function actualizarJefeFamiliarNucleo(newCedula, oldCedula) {
+  console.log("entra");
+  try {
+    let resultado = await db.local.rel.find("nucleo");
+    let nucleo = resultado.nucleos.find(
+      nucleo => nucleo.cedula === oldCedula
+    );
+    nucleo.cedula = newCedula;
+    resultado = await db.local.rel.save("nucleo", nucleo);
+    const mensaje = !!resultado
+      ? "Jefe familiar del nucleo actualizad"
+      : "No se pudo actualizar el jefe familiar";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al actualizar el jefe familiar del nucleo: " + error);
+    return false;
+  }
+}
+
 export async function actualizarIntegrantesNucleo(data, integrante) {
   try {
-    let nucleo = await integrante.geNucleo();
+    let nucleo = await integrante.getNucleo();
     nucleo.agregarIntegrante(data.id);
     const resultado = await db.local.rel.save("nucleo", nucleo);
     const mensaje = !!resultado
@@ -160,27 +185,39 @@ export async function actualizarIntegrantesNucleo(data, integrante) {
     });
     return resultado;
   } catch (error) {
-    alert("error al actualizar el nucleo: " + error);
+    alert("error al actualizar los integrantes del nucleo: " + error);
     return false;
   }
 }
 
-export async function eliminarIntegrantesNucleo(data, integrante) {
+export async function eliminarIntegrantesNucleo(data, id) {
   try {
-    let nucleo = await integrante.geNucleo();
-    nucleo.eliminarIntegrante(data.id);
-    const resultado = await db.local.rel.save("nucleo", nucleo);
-    const mensaje = !!resultado
-      ? "Integrante del nucleo eliminado"
-      : "No se pudo eliminar el integrante del nucleo";
-    const icon = !!resultado ? "check" : "close";
-    Notify.create({
-      message: mensaje,
-      icon: icon
-    });
-    return resultado;
+    let resultado = await db.local.rel.find("nucleo");
+    const indice = resultado.nucleos.findIndex(nucleo => nucleo.id === id);
+    if (indice >= 0) {
+      const nucleo = new Nucleo(
+        resultado.nucleos[indice].cedula,
+        resultado.nucleos[indice].nombre,
+        resultado.nucleos[indice].direccion,
+        resultado.nucleos[indice].sector,
+        resultado.nucleos[indice].integrantes,
+        resultado.nucleos[indice].id,
+        resultado.nucleos[indice].rev
+      );
+      nucleo.eliminarIntegrante(data.id);
+      resultado = await db.local.rel.save("nucleo", nucleo);
+      const mensaje = !!resultado
+        ? "Integrante del nucleo eliminado"
+        : "No se pudo eliminar el integrante del nucleo";
+      const icon = !!resultado ? "check" : "close";
+      Notify.create({
+        message: mensaje,
+        icon: icon
+      });
+      return resultado;
+    } else return null;
   } catch (error) {
-    alert("error al actualizar el nucleo: " + error);
+    alert("error al eliminar los integrantes del nucleo: " + error);
     return false;
   }
 }
@@ -247,7 +284,7 @@ export async function actualizarSectorJefe(data, sector) {
 
 export async function eliminarSectorJefe(jefe) {
   try {
-    jefe.sector = null
+    jefe.sector = null;
     const resultado = await db.local.rel.save("jefe", jefe);
     const mensaje = !!resultado
       ? "Sector del jefe de calle eliminado"
