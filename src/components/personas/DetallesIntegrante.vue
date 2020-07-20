@@ -18,7 +18,7 @@
         </div>
         <InformacionNucleo
           :nombreNucleo="buscarNucleo(integrante.nucleo).nombre"
-          :nombre="buscarIntegranteCedula(buscarNucleo(integrante.nucleo).cedula).nombre"
+          :nombre="buscarIntegrante(buscarNucleo(integrante.nucleo).cedula).nombre"
           :cedula="buscarNucleo(integrante.nucleo).cedula"
           :direccion="buscarNucleo(integrante.nucleo).direccion"
         />
@@ -54,7 +54,7 @@ export default {
     ...mapGetters("personas", [
       "integrante",
       "buscarNucleo",
-      "buscarIntegranteCedula"
+      "buscarIntegrante"
     ]),
     ...mapGetters("sectores", ["buscarSector"])
   }
