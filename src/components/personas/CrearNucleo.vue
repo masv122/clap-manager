@@ -1,9 +1,9 @@
 <template>
   <div class="q-gutter-md">
-    <div class="text-h5 q-ml-xs q-pt-md">
+    <div v-if="!modificar" class="text-h5 q-ml-xs q-pt-md">
       <q-icon name="group" />Crear nuevo nucleo
     </div>
-    <q-separator color="negative" inset />
+    <q-separator v-if="!modificar" color="negative" inset />
     <q-input
       label-color="negative"
       clearable
@@ -54,9 +54,7 @@
         <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
           <q-item-section>
             <q-item-label v-html="scope.opt.nombre" />
-            <q-item-label
-              caption
-            >{{ scope.opt.getDirecion() }}</q-item-label>
+            <q-item-label caption>{{ scope.opt.getDirecion() }}</q-item-label>
           </q-item-section>
         </q-item>
       </template>
@@ -73,7 +71,13 @@
 import { mapGetters, mapMutations } from "vuex";
 import { required } from "vuelidate/lib/validators";
 export default {
-  name: "AsignarNucleo",
+  name: "CrearNucleo",
+  props: {
+    modificar: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       opciones: []
