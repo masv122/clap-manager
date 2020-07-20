@@ -56,6 +56,7 @@ export default {
     return {};
   },
   computed: {
+    ...mapGetters("sectores", ["sector"]),
     ...mapGetters("personas", [
       "modificarPersona",
       "nombre",
@@ -67,7 +68,10 @@ export default {
       "integrante",
       "nucleo",
       "jefe",
-      "tipoPersona"
+      "nombreNucleo",
+      "direccion",
+      "tipoPersona",
+      "esJefeFamiliar"
     ]),
     _modificarPersona: {
       get() {
