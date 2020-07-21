@@ -20,6 +20,10 @@ export default class Sector extends Base {
   agregarNucleo(id) {
     this.nucleos.push(id);
   }
+  eliminarNucleo(id) {
+    const indice = this.nucleos.indexOf(id);
+    this.nucleos.splice(indice, 1);
+  }
   async getJefe() {
     try {
       const resultado = await db.local.rel.find("jefe", this.jefe);
