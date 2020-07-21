@@ -1,6 +1,7 @@
 import { db } from "boot/pouchdb/index";
 import { Notify } from "quasar";
 import Nucleo from "src/class/nucleo";
+import Sector from "src/class/sector";
 
 export async function guardarSector(sector) {
   try {
@@ -34,6 +35,40 @@ export async function eliminarSector(sector) {
     return resultado;
   } catch (error) {
     alert("error al eliminar el sector: " + error);
+    return false;
+  }
+}
+
+export async function eliminarNucleoSector(data, id) {
+  try {
+    let resultado = await db.local.rel.find("sector");
+    const indice = resultado.sectores.findIndex(sector => sector.id === id);
+    if (indice >= 0) {
+      let sector = new Sector(
+        resultado.sectores[indice].nombre,
+        resultado.sectores[indice].estado,
+        resultado.sectores[indice].municipio,
+        resultado.sectores[indice].parroquia,
+        resultado.sectores[indice].nucleos,
+        resultado.sectores[indice].jefe,
+        resultado.sectores[indice].id,
+        resultado.sectores[indice].rev
+      )
+      sector.eliminarNucleo(data.id);
+      console.log(sector);
+      resultado = await db.local.rel.save("sector", sector);
+      const mensaje = !!resultado
+        ? "Nucleo del sector eliminado"
+        : "No se pudo eliminar el nucleo del sector";
+      const icon = !!resultado ? "check" : "close";
+      Notify.create({
+        message: mensaje,
+        icon: icon
+      });
+      return resultado;
+    } else return null;
+  } catch (error) {
+    alert("error al eliminar los nucleos del sector: " + error);
     return false;
   }
 }

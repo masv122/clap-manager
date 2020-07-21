@@ -7,13 +7,15 @@ export default {
   methods: {
     async confirmarPersona(modo) {
       try {
-        let persona,                  //se cren las variables para ser usadas en todo
-          resultadoFinal,            //el mixin
+        let persona, //se cren las variables para ser usadas en todo
+          resultadoFinal, //el mixin
           resultadoAgregarIntegrante,
           resultadoActualizarNucleo,
           resultadoCrearNucleo,
           tipo;
-        switch (this.tipoPersona.value) { //cada vez que se guarde una persona se evalua que tipo es
+        switch (
+          this.tipoPersona.value //cada vez que se guarde una persona se evalua que tipo es
+        ) {
           case "integrante":
             tipo = "Integrante";
             persona = new Integrante(
@@ -27,33 +29,61 @@ export default {
             );
             if (modo === "agregar") {
               resultadoAgregarIntegrante = await API.guardarIntegrante(persona); //si el modo es agregar
-              resultadoFinal = await API.actualizarIntegrantesNucleo(     //se guarda el integrante
-                resultadoAgregarIntegrante,                               //y se actualiza el nucleo
+              resultadoFinal = await API.actualizarIntegrantesNucleo(
+                //se guarda el integrante
+                resultadoAgregarIntegrante, //y se actualiza el nucleo
                 persona
               );
             } else if (
               this.nucleo !== this.integrante.nucleo && //si el modo es modificar y el nucleo del integrante
-              modo === "modificar"                     //y el nucleo seleccionado cambio es porque hay una
-            ) {                                       //reasignacion de nucleo
-              resultadoAgregarIntegrante = await API.guardarIntegrante(persona);  //primero se guarda el integrante
-              resultadoActualizarNucleo = await API.eliminarIntegrantesNucleo(    //luego se elimina del nucleo
+              modo === "modificar" //y el nucleo seleccionado cambio es porque hay una
+            ) {
+              //reasignacion de nucleo
+              resultadoAgregarIntegrante = await API.guardarIntegrante(persona); //primero se guarda el integrante
+              resultadoActualizarNucleo = await API.eliminarIntegrantesNucleo(
+                //luego se elimina del nucleo
                 resultadoAgregarIntegrante,
                 this.integrante.nucleo
               );
-              resultadoFinal = await API.actualizarIntegrantesNucleo(           //y por ultimo se actualiza los
-                resultadoAgregarIntegrante,                                    //integrantes del nuevo nucleo
+              resultadoFinal = await API.actualizarIntegrantesNucleo(
+                //y por ultimo se actualiza los
+                resultadoAgregarIntegrante, //integrantes del nuevo nucleo
                 persona
               );
-            } else if (!this.reasignar) { //si reasignar es negativo quiere decir que se selecciono crear un nuevo nucleo con el integrante
+            } else if (!this.reasignar) {
+              //si reasignar es negativo quiere decir que se selecciono crear un nuevo nucleo con el integrante
               resultadoCrearNucleo = await this.crearNucleo(modo);
               tipo = resultadoCrearNucleo.tipo;
               resultadoFinal = resultadoCrearNucleo.resultadoFinal;
             }
             break;
           case "nucleo":
-            resultadoCrearNucleo = await this.crearNucleo(modo);
-            tipo = resultadoCrearNucleo.tipo;
-            resultadoFinal = resultadoCrearNucleo.resultadoFinal;
+            if (modo === "agregar") {
+              resultadoCrearNucleo = await this.crearNucleo(modo);
+              tipo = resultadoCrearNucleo.tipo;
+              resultadoFinal = resultadoCrearNucleo.resultadoFinal;
+            } else {
+              let nucleo = new Nucleo(
+                this.cedula,
+                this.nombreNucleo,
+                this.direccion,
+                this.sector,
+                this.nucleo.integrantes,
+                this.nucleo.id,
+                this.nucleo.rev
+              );
+              let resultadoAgregarNucleo = await API.agregarNucleo(nucleo);
+              if (this.nucleo.sector !== nucleo.sector) {
+                await API.eliminarNucleoSector(
+                  resultadoAgregarNucleo,
+                  this.nucleo.sector
+                );
+                resultadoFinal = await API.actualizarNucleosSector(
+                  resultadoAgregarNucleo,
+                  nucleo
+                );
+              } else resultadoFinal = resultadoAgregarNucleo;
+            }
             break;
           case "jefe":
             tipo = "Jefe";
@@ -64,10 +94,17 @@ export default {
               this.fechaNacimiento,
               this.codigo,
               this.direccion,
-              null,
-              this.cedula
+              modo === "modificar" ? this.sector : null,
+              this.cedula,
+              modo === "modificar" ? this.jefe.rev : null
             );
-            resultadoFinal = await API.agregarJefe(jefeCalle);
+            let resultadoAgregarJefe = await API.agregarJefe(jefeCalle);
+            if (this.jefe.sector !== jefeCalle.sector && modo === "modificar")
+              resultadoFinal = await API.actualizarJefeSector(
+                resultadoAgregarJefe,
+                jefeCalle
+              );
+            else resultadoFinal = resultadoAgregarJefe;
             break;
           default:
             break;

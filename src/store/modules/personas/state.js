@@ -11,7 +11,7 @@ export default function() {
     telefono: null,
     fechaNacimiento: date.formatDate(Date.now(), "YYYY/MM/DD"),
     datosPersonalesInvalidos: true,
-    tipoPersona: null,
+    tipoPersona: { value: null },
     nombreNucleo: "",
     direccion: "",
     codigo: "",
@@ -22,6 +22,6 @@ export default function() {
     nucleo: null,
     jefes: [],
     jefeSector: [],
-    jefe: null,
+    jefe: null
   };
 }
