@@ -7,7 +7,7 @@
         </div>
         <InformacionNucleo
           :nombreNucleo="nucleo.nombre"
-          :nombre="buscarIntegrante(nucleo.cedula).nombre"
+          :nombre="!!nucleo.cedula ? buscarIntegrante(nucleo.cedula).nombre : 'Sin jefe familiar, asigne uno'"
           :cedula="nucleo.cedula"
           :direccion="nucleo.direccion"
         />
@@ -29,7 +29,7 @@
         </div>
         <q-field borderless label="Integrantes registrados" stack-label>
           <template v-slot:control>
-            <div class="self-center full-width no-outline">Integrantes registrados</div>
+            <div class="self-center full-width no-outline">{{ nucleo.integrantes.length }}</div>
           </template>
         </q-field>
         <q-field borderless label="Pagos registrados" stack-label>
