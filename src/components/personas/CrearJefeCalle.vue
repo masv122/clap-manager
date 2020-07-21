@@ -1,7 +1,8 @@
 <template>
-  <q-form @submit.prevent class="q-gutter-md q-px-md q-pb-md">
+  <q-form @submit.prevent :class="clasesCrear">
     <div class="text-h5 q-ml-xs q-pt-md">
-      <q-icon name="group" />Crear Jefe de Calle
+      <q-icon name="group" />
+      {{ modificar ? 'Informacion jefe de calle' : 'Crear Jefe de Calle' }}
     </div>
     <q-separator color="negative" inset />
     <q-input
@@ -14,7 +15,7 @@
       error-message="Debe escribir el codigo del jefe de calle"
       :error="$v._codigo.$invalid"
     />
-      <q-input
+    <q-input
       label-color="negative"
       clearable
       color="negative"
@@ -24,6 +25,43 @@
       error-message="Debe proporcionar una direccion"
       :error="$v._direccion.$invalid"
     />
+    <div class="text-h6 q-mt-md">
+      <q-icon name="group" class="q-mr-md" />Reasignar Sector
+    </div>
+    <q-separator />
+    <q-select
+      label="Sector"
+      use-input
+      behavior="menu"
+      hide-selected
+      fill-input
+      lazy-rules
+      input-debounce="0"
+      :options="sectoresOpt"
+      @filter="filterSectores"
+      style="padding-bottom: 32px"
+      label-color="negative"
+      color="negative"
+      v-model="_sector"
+      option-value="id"
+      option-label="nombre"
+      emit-value
+      map-options
+    >
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+          <q-item-section>
+            <q-item-label v-html="scope.opt.nombre" />
+            <q-item-label caption>{{ scope.opt.getDirecion() }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
+      <template v-slot:no-option>
+        <q-item>
+          <q-item-section class="text-grey">No results</q-item-section>
+        </q-item>
+      </template>
+    </q-select>
   </q-form>
 </template>
 
@@ -31,10 +69,15 @@
 import { mapGetters, mapMutations } from "vuex";
 import { required } from "vuelidate/lib/validators";
 export default {
-  name: "AsignarNucleo",
+  name: "CrearJefeCalle",
+  props: {
+    modificar: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
-    return {
-    };
+    return { sectoresOpt: [] };
   },
   watch: {
     $v: {
@@ -51,9 +94,13 @@ export default {
     },
     _direccion: {
       required
+    },
+    _sector: {
+      required
     }
   },
   computed: {
+    ...mapGetters("sectores", ["sectores", "sector"]),
     ...mapGetters("personas", ["codigo", "direccion"]),
     _codigo: {
       get() {
@@ -70,14 +117,38 @@ export default {
       set(value) {
         return this.updateDireccion(value);
       }
+    },
+    _sector: {
+      get() {
+        return this.sector;
+      },
+      set(value) {
+        this.updateSector(value);
+      }
+    },
+    clasesCrear() {
+      return this.modificar ? [] : ["q-gutter-md", "q-px-md", "q-pb-md"];
     }
   },
   methods: {
+    ...mapMutations("sectores", ["updateSector"]),
     ...mapMutations("personas", [
       "updateCodigo",
       "updateDireccion",
       "updateDatosTipoPersonaInvalido"
-    ])
+    ]),
+    filterSectores(val, update, abort) {
+      let opciones = this.sectores;
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        this.sectoresOpt = opciones.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+        );
+      });
+    }
+  },
+  created() {
+    this.sectoresOpt = this.sectores;
   }
 };
 </script>
