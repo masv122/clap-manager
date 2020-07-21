@@ -32,7 +32,7 @@
               />
             </div>
             <q-separator />
-            <DatosBasicosSector :modificar="true" />
+            <DatosBasicosSector modificar />
             <div class="text-h6 q-mt-md">
               <q-icon name="supervised_user_circle" class="q-mr-md" />Reasignar jefe de calle
               <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
