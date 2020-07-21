@@ -3,28 +3,66 @@
     <q-form class="q-gutter-md">
       <div class="text-h6 q-mt-md">
         <q-icon name="group" class="q-mr-md" />Reasignar Sector
-        <q-btn class="float-right" color="negative" icon="add" label="Crear Nucleo" />
       </div>
       <q-separator />
       <q-select
         label="Sector"
-        :value="model"
         use-input
-        label-color="negative"
-        color="negative"
         behavior="menu"
         hide-selected
         fill-input
         lazy-rules
-        :rules="[ val => val !== null && val !== '' || 'Seleccione un sector']"
         input-debounce="0"
-        :options="options"
-        @filter="filterFn"
-        @input-value="setModel"
+        :options="sectoresOpt"
+        @filter="filterSectores"
+        style="padding-bottom: 32px"
+        label-color="negative"
+        color="negative"
+        v-model="_sector"
+        option-value="id"
+        option-label="nombre"
+        emit-value
+        map-options
       >
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+            <q-item-section>
+              <q-item-label v-html="scope.opt.nombre" />
+              <q-item-label caption>{{ scope.opt.getDirecion() }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
         <template v-slot:no-option>
           <q-item>
             <q-item-section class="text-grey">No results</q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <div class="text-h6 q-mt-md">
+        <q-icon name="group" class="q-mr-md" />Reasignar Jefe Familiar
+      </div>
+      <q-separator />
+      <q-select
+        v-model="_cedula"
+        use-input
+        input-debounce="0"
+        label="Jefe Familiar"
+        :options="cedulas"
+        @filter="filterSectores"
+        label-color="negative"
+        color="negative"
+      >
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+            <q-item-section>
+              <q-item-label v-html="scope.opt" />
+              <q-item-label caption>{{ buscarIntegrante(scope.opt).nombre }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">Sin resultados</q-item-section>
           </q-item>
         </template>
       </q-select>
@@ -33,53 +71,82 @@
         <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
-      <q-input
-        label-color="negative"
-        clearable
-        color="negative"
-        v-model="text"
-        type="text"
-        label="Direccion"
-      />
+      <datos-basicos-nucleo modificar />
     </q-form>
   </div>
 </template>
 
 <script>
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle"
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + " " + i);
-  }
-  return acc;
-}, []);
+import { required } from "vuelidate/lib/validators";
+import { mapGetters, mapMutations } from "vuex";
+import DatosBasicosNucleo from "components/personas/DatosBasicosNucleo.vue";
+
 export default {
-  name: "ReasignarNucleo",
+  name: "ModificarNucleo",
+  components: {
+    DatosBasicosNucleo
+  },
   data() {
     return {
-      model: null,
-      stringOptions,
-      options: stringOptions,
-      text: ""
+      cedulas: [],
+      sectoresOpt: []
     };
   },
+  validations: {
+    _sector: {
+      required
+    },
+    _cedula: {
+      required
+    }
+  },
+  computed: {
+    ...mapGetters("sectores", ["sectores", "sector"]),
+    ...mapGetters("personas", ["nucleo", "cedula", "buscarIntegrante"]),
+    _sector: {
+      get() {
+        return this.sector;
+      },
+      set(value) {
+        this.updateSector(value);
+      }
+    },
+    _cedula: {
+      get() {
+        return this.cedula;
+      },
+      set(value) {
+        this.updateCedula(value);
+      }
+    }
+  },
   methods: {
-    filterFn(val, update, abort) {
+    ...mapMutations("sectores", ["updateSector"]),
+    ...mapMutations("personas", [
+      "updateDatosTipoPersonaInvalido",
+      "updateCedula"
+    ]),
+    filterSectores(val, update, abort) {
+      let opciones = this.sectores;
       update(() => {
         const needle = val.toLocaleLowerCase();
-        this.options = stringOptions.filter(
-          v => v.toLocaleLowerCase().indexOf(needle) > -1
+        this.sectoresOpt = opciones.filter(
+          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
         );
       });
     },
-    setModel(val) {
-      this.model = val;
+    filterCedulas(val, update, abort) {
+      let opciones = this.nucleo.integrantes;
+      update(() => {
+        this.cedulas = opciones.filter(v => v === val);
+      });
     }
+  },
+  created() {
+    this.sectoresOpt = this.sectores;
+    this.cedulas = this.nucleo.integrantes;
+    this.updateSector(this.nucleo.sector);
+    this.updateCedula(this.nucleo.cedula);
   }
 };
 </script>
