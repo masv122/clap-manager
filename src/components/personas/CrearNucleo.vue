@@ -4,26 +4,7 @@
       <q-icon name="group" />Crear nuevo nucleo
     </div>
     <q-separator v-if="!modificar" color="negative" inset />
-    <q-input
-      label-color="negative"
-      clearable
-      color="negative"
-      v-model="$v._nombreNucleo.$model"
-      error-message="Debe proporcionar un nombre para el nucleo"
-      :error="$v._nombreNucleo.$invalid"
-      type="text"
-      label="Nombre"
-    />
-    <q-input
-      label-color="negative"
-      clearable
-      color="negative"
-      v-model="$v._direccion.$model"
-      error-message="Debe proporcionar una direccion para el nucleo"
-      :error="$v._direccion.$invalid"
-      type="text"
-      label="Direccion"
-    />
+    <datos-basicos-nucleo />
     <div class="text-h5 q-ml-xs q-pt-xs">
       <q-icon name="place" />Asignacion de sector
     </div>
@@ -70,8 +51,12 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { required } from "vuelidate/lib/validators";
+import DatosBasicosNucleo from "components/personas/DatosBasicosNucleo.vue";
 export default {
   name: "CrearNucleo",
+  components: {
+    DatosBasicosNucleo
+  },
   props: {
     modificar: {
       type: Boolean,
@@ -93,19 +78,12 @@ export default {
     }
   },
   validations: {
-    _nombreNucleo: {
-      required
-    },
     _sector: {
       required
     },
-    _direccion: {
-      required
-    }
   },
   computed: {
     ...mapGetters("sectores", ["sectores", "sector"]),
-    ...mapGetters("personas", ["nombreNucleo", "direccion"]),
     _sector: {
       get() {
         return this.sector;
@@ -114,29 +92,11 @@ export default {
         this.updateSector(value);
       }
     },
-    _nombreNucleo: {
-      get() {
-        return this.nombreNucleo;
-      },
-      set(value) {
-        this.updateNombreNucleo(value);
-      }
-    },
-    _direccion: {
-      get() {
-        return this.direccion;
-      },
-      set(value) {
-        this.updateDireccion(value);
-      }
-    }
   },
   methods: {
     ...mapMutations("sectores", ["updateSector"]),
     ...mapMutations("personas", [
-      "updateNombreNucleo",
       "updateDatosTipoPersonaInvalido",
-      "updateDireccion"
     ]),
     filterFn(val, update, abort) {
       update(() => {
