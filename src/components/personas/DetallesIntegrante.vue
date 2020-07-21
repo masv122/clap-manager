@@ -8,7 +8,7 @@
         <InformacionPersonal
           :nombre="integrante.nombre"
           :apellido="integrante.apellido"
-          :cedula="integrante.cedula"
+          :cedula="integrante.id"
           :telefono="integrante.telefono"
         />
       </div>
