@@ -1,16 +1,16 @@
 <template>
   <q-layout view="lHr Lpr lFf">
+    <q-ajax-bar position="top" size="10px" color="primary"/>
     <Dialogs />
     <q-header class="bg-negative" elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="leftDrawer = !leftDrawer" />
-        <!-- <q-img
+        <q-img
           src="~assets/clap_manager_icon.png"
-          :ratio="16/9"
           spinner-color="primary"
           spinner-size="82px"
-          width="100px"
-        />-->
+          width="50px"
+        />
         <q-toolbar-title>CLAP Manager</q-toolbar-title>
         <q-btn
           color="white"
