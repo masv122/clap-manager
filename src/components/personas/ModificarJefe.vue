@@ -6,78 +6,50 @@
         <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
-      <q-input
-        label-color="negative"
-        clearable
-        color="negative"
-        v-model="text"
-        type="text"
-        label="Nombre"
-      />
-      <q-input
-        label-color="negative"
-        clearable
-        color="negative"
-        v-model="text"
-        type="text"
-        label="Apellido"
-      />
-      <q-input
-        label-color="negative"
-        clearable
-        color="negative"
-        v-model="text"
-        type="tel"
-        label="Telefono"
-        mask="(####) ### - ####"
-      />
-      <q-input
-        label-color="negative"
-        clearable
-        color="negative"
-        v-model="text"
-        type="tel"
-        label="Direccion"
-      />
+      <datos-personales />
+      <crear-jefe-calle modificar />
     </q-form>
   </div>
 </template>
 
 <script>
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle"
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + " " + i);
-  }
-  return acc;
-}, []);
+import { mapGetters, mapMutations } from "vuex";
+import DatosPersonales from "components/personas/DatosPersonales.vue";
+import CrearJefeCalle from "components/personas/CrearJefeCalle.vue";
 export default {
   name: "ModificarJefe",
+  components: {
+    DatosPersonales,
+    CrearJefeCalle
+  },
   data() {
-    return {
-      model: null,
-      stringOptions,
-      options: stringOptions,
-      text: ""
-    };
+    return {};
+  },
+  computed: {
+    ...mapGetters("personas", ["jefe"]),
+    ...mapGetters("sectores", ["sectores", "sector"])
   },
   methods: {
-    filterFn(val, update, abort) {
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.options = stringOptions.filter(
-          v => v.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-    setModel(val) {
-      this.model = val;
-    }
+    ...mapMutations("personas", [
+      "updateNombre",
+      "updateApellido",
+      "updateCedula",
+      "updateTelefono",
+      "updateCodigo",
+      "updateDireccion",
+      "updateFechaNacimiento"
+    ]),
+    ...mapMutations("sectores", ["updateSector"])
+  },
+  created() {
+    this.updateNombre(this.jefe.nombre);
+    this.updateApellido(this.jefe.apellido);
+    this.updateCedula(this.jefe.id);
+    this.updateTelefono(this.jefe.telefono);
+    this.updateFechaNacimiento(this.jefe.fechaNacimiento);
+    this.updateCodigo(this.jefe.codigo);
+    this.updateDireccion(this.jefe.direccion);
+    this.updateSector(this.jefe.sector)
   }
 };
 </script>
