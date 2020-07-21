@@ -201,7 +201,7 @@ export default {
     },
     reset() {
       this.step = 1;
-      this.updateTipoPersona(null);
+      this.updateTipoPersona({value:null});
       this.updateNucleo(null);
       this.updateSector(null);
       this.updateNombreNucleo(null);

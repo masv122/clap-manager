@@ -46,7 +46,7 @@
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
           <q-td auto-width>
-            <q-btn flat round dense icon="more_vert" @click="updateJefe(props.row)">
+            <q-btn flat round dense icon="more_vert" @click="updateTipoPersona({value: 'jefe'});updateJefe(props.row)">
               <q-menu>
                 <q-list style="min-width: 100px">
                   <q-item clickable v-close-popup @click="updateDetallesPersona">
@@ -150,7 +150,8 @@ export default {
       "updateJefe",
       "updateAgregarPersona",
       "updateModificarPersona",
-      "updateDetallesPersona"
+      "updateDetallesPersona",
+      "updateTipoPersona"
     ]),
     confirmacion() {
       this.$q
