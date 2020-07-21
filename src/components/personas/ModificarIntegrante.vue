@@ -45,7 +45,7 @@
         <q-separator />
         <seleccionar-nucleo />
       </div>
-      <crear-nucleo :modificar="true" v-else />
+      <crear-nucleo modificar v-else />
     </q-form>
   </div>
 </template>
