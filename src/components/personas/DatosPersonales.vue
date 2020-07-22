@@ -29,6 +29,7 @@
       label="Cedula"
       error-message="Debe escribir la cedula de la persona"
       :error="$v._cedula.$invalid"
+      v-if="!modificar"
     />
     <q-input
       label-color="negative"
@@ -76,6 +77,12 @@ import { mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "DatosPersonales",
+  props: {
+    modificar: {
+      type: Boolean,
+      default:false
+    },
+  },
   watch: {
     $v: {
       immediate: true,

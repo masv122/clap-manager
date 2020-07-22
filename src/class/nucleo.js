@@ -43,4 +43,7 @@ export default class Nucleo extends Base {
       return null;
     }
   }
+  async getRegistrosAsociados(){
+    return await db.local.rel.find("nucleo", this.id);
+  }
 }

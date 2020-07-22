@@ -6,7 +6,7 @@
         <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
-      <datos-personales />
+      <datos-personales modificar />
       <div class="row">
         <div class="col-6 text-h6">
           <q-icon name="group" class="q-mr-md" />

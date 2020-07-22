@@ -70,6 +70,7 @@ export default {
       "jefe",
       "nombreNucleo",
       "direccion",
+      "codigo",
       "tipoPersona",
       "esJefeFamiliar"
     ]),

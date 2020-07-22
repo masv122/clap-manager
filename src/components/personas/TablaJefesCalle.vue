@@ -46,7 +46,13 @@
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
           <q-td auto-width>
-            <q-btn flat round dense icon="more_vert" @click="updateTipoPersona({value: 'jefe'});updateJefe(props.row)">
+            <q-btn
+              flat
+              round
+              dense
+              icon="more_vert"
+              @click="updateTipoPersona({value: 'jefe'});updateJefe(props.row)"
+            >
               <q-menu>
                 <q-list style="min-width: 100px">
                   <q-item clickable v-close-popup @click="updateDetallesPersona">
@@ -140,7 +146,7 @@ export default {
         {
           name: "sector",
           label: "Sector",
-          field: "sector"
+          field: row => this.buscarSector(row.sector).nombre
         }
       ]
     };
@@ -163,6 +169,8 @@ export default {
         })
         .onOk(async () => {
           try {
+            if (!!this.jefe.sector)
+              await API.eliminarJefeSector(await this.jefe.getSector());
             await API.eliminarJefe(this.jefe);
           } catch (error) {
             alert("error al eliminar el jefe de calle 101: " + error);
@@ -171,7 +179,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("personas", ["jefes", "jefe", "cargandoPersonas"])
+    ...mapGetters("personas", ["jefes", "jefe", "cargandoPersonas"]),
+    ...mapGetters("sectores", ["buscarSector"])
   }
 };
 </script>

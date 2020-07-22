@@ -41,9 +41,9 @@
               :done="step > 2"
             >
               <TipoPersona />
-              <AsignarNucleo v-if="tipoPersona && tipoPersona.value === 'integrante'" />
-              <CrearNucleo v-else-if="tipoPersona && tipoPersona.value === 'nucleo'" />
-              <CrearJefeCalle v-else-if="tipoPersona && tipoPersona.value === 'jefe'" />
+              <AsignarNucleo v-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'integrante'" />
+              <CrearNucleo v-else-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'nucleo'" />
+              <CrearJefeCalle v-else-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'jefe'" />
               <q-stepper-navigation>
                 <q-btn
                   flat
@@ -73,7 +73,7 @@
                     :nombreNucleo="_nombreNucleo"
                     :direccion="_direccion"
                     :nombreSector="nombreSector"
-                    v-if="tipoPersona && (tipoPersona.value === 'integrante' || tipoPersona.value === 'nucleo')"
+                    v-if="!!tipoPersona && (tipoPersona.value === 'integrante' || tipoPersona.value === 'nucleo')"
                   />
                   <DatosJefeConfirmacion v-else />
                 </div>
@@ -201,7 +201,7 @@ export default {
     },
     reset() {
       this.step = 1;
-      this.updateTipoPersona({value:null});
+      this.updateTipoPersona(null);
       this.updateNucleo(null);
       this.updateSector(null);
       this.updateNombreNucleo(null);

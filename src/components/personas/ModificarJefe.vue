@@ -6,7 +6,7 @@
         <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
-      <datos-personales />
+      <datos-personales modificar />
       <crear-jefe-calle modificar />
     </q-form>
   </div>

@@ -94,12 +94,15 @@ export default {
               this.fechaNacimiento,
               this.codigo,
               this.direccion,
-              modo === "modificar" ? this.sector : null,
+              this.sector,
               this.cedula,
               modo === "modificar" ? this.jefe.rev : null
             );
             let resultadoAgregarJefe = await API.agregarJefe(jefeCalle);
-            if (this.jefe.sector !== jefeCalle.sector && modo === "modificar")
+            if (
+              (!!jefeCalle.sector && modo === "agregar") ||
+              (this.jefe.sector !== jefeCalle.sector && modo === "modificar")
+            )
               resultadoFinal = await API.actualizarJefeSector(
                 resultadoAgregarJefe,
                 jefeCalle

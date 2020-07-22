@@ -18,9 +18,9 @@
           </q-btn>
         </q-toolbar>
         <q-card-section class="q-pt-none">
-          <DetallesIntegrante v-if="tipoPersona.value === 'integrante'" />
-          <DetallesNucleo v-if="tipoPersona.value === 'nucleo'" />
-          <DetallesJefeCalle v-if="tipoPersona.value === 'jefe'" />
+          <DetallesIntegrante v-if="!!tipoPersona && tipoPersona.value === 'integrante'" />
+          <DetallesNucleo v-if="!!tipoPersona && tipoPersona.value === 'nucleo'" />
+          <DetallesJefeCalle v-if="!!tipoPersona && tipoPersona.value === 'jefe'" />
         </q-card-section>
       </q-card>
     </q-dialog>

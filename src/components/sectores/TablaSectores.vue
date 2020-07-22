@@ -18,7 +18,7 @@
         <q-select
           v-model="visibleColumns"
           multiple
-                  label-color="negative"
+          label-color="negative"
           color="negative"
           dense
           options-dense
@@ -207,12 +207,19 @@ export default {
       this.$q
         .dialog({
           title: "Confirme",
-          message: "¿Seguro que quiere eliminar este sector",
+          message: !!this.sector.nucleos
+            ? "El sector posee nucleos e integrantes registrados.\n Si lo elimina tambien se eliminaran los mismos.\n ¿Seguro que quiere eliminar este sector?"
+            : "¿Seguro que quiere eliminar este sector?",
           cancel: true,
           persistent: true
         })
         .onOk(async () => {
           try {
+            if (!!this.sector.nucleos) {
+              const result = await this.sector.getRegistrosAsociados();
+              await API.eliminarIntegrantes(result.integrantes);
+              await API.eliminarNucleos(result.nucleos);
+            }
             if (!!this.sector.jefe)
               await API.eliminarSectorJefe(await this.sector.getJefe());
             await API.eliminarSector(this.sector);

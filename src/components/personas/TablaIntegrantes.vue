@@ -15,78 +15,7 @@
         <q-inner-loading showing color="negative" />
       </template>
       <template v-slot:top-right>
-        <q-select
-          label="Sector"
-          use-input
-          dense
-          options-dense
-          behavior="menu"
-          hide-selected
-          fill-input
-          lazy-rules
-          input-debounce="0"
-          :options="sectoresOpt"
-          @filter="filterSectores"
-          label-color="negative"
-          color="negative"
-          v-model="sector"
-          option-value="id"
-          option-label="nombre"
-          emit-value
-          map-options
-          class="q-mr-md"
-        >
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-              <q-item-section>
-                <q-item-label v-html="scope.opt.nombre" />
-                <q-item-label caption>{{ scope.opt.getDirecion() }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">No results</q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <q-select
-          label="Nucleo"
-          error-message="Debe seleccionar un nucleo"
-          use-input
-          dense
-          options-dense
-          behavior="menu"
-          hide-selected
-          fill-input
-          lazy-rules
-          input-debounce="0"
-          :options="nucleosOpt"
-          @filter="filterNucleos"
-          label-color="negative"
-          color="negative"
-          v-model="nucleo"
-          option-value="id"
-          option-label="nombre"
-          emit-value
-          map-options
-          class="q-mr-md"
-        >
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-              <q-item-section>
-                <q-item-label v-html="scope.opt.cedula" />
-                <q-item-label caption>{{ scope.opt.nombre }}</q-item-label>
-                <q-item-label caption>{{ scope.opt.direccion }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">No results</q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+        <sector-nucleo-select inline />
         <q-select
           v-model="visibleColumns"
           multiple
@@ -164,16 +93,16 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
 import * as API from "src/mixins/API";
 export default {
   name: "TablaIntegrantes",
+  components: {
+    SectorNucleoSelect
+  },
   data() {
     return {
       filter: "",
-      nucleo: null,
-      sector: null,
-      sectoresOpt: [],
-      nucleosOpt: [],
       visibleColumns: [
         "nombre",
         "apellido",
@@ -206,7 +135,7 @@ export default {
         {
           name: "nucleo",
           label: "Nucleo",
-          field: "nucleo"
+          field: row => this.buscarNucleo(row.nucleo).nombre
         },
         {
           name: "fechaNacimiento",
@@ -216,17 +145,6 @@ export default {
       ]
     };
   },
-  watch: {
-    async sector(newValue, oldValue) {
-      if (newValue !== oldValue) this.nucleosOpt = this.nucleosSector(newValue);
-      this.updateCargandoPersonas();
-      this.cargarIntegrantes(
-        await this.buscarSector(newValue).getIntegrantes()
-      );
-      this.updateCargandoPersonas();
-      this.nucleo = null;
-    }
-  },
   methods: {
     ...mapMutations("personas", [
       "updateIntegrante",
@@ -235,7 +153,9 @@ export default {
       "updateModificarPersona",
       "updateDetallesPersona",
       "updateCargandoPersonas",
-      "updateTipoPersona"
+      "updateTipoPersona",
+      "updateNucleos",
+      "cargarNucleos"
     ]),
     confirmacion() {
       this.$q
@@ -252,24 +172,6 @@ export default {
             alert("error al eliminar el integrante 101: " + error);
           }
         });
-    },
-    filterSectores(val, update, abort) {
-      let opciones = this.sectores;
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.sectoresOpt = opciones.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-    filterNucleos(val, update, abort) {
-      let opciones = this.nucleos;
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.sectoresOpt = opciones.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
     }
   },
   computed: {
@@ -279,18 +181,16 @@ export default {
       "cargandoPersonas",
       "integrantesNucleo",
       "nucleos",
-      "nucleosSector"
+      "nucleo",
+      "nucleosSector",
+      "buscarNucleo"
     ]),
-    ...mapGetters("sectores", ["sectores", "buscarSector"]),
+    ...mapGetters("sectores", ["sectores", "buscarSector", "sector"]),
     _integrantes() {
       return !!this.nucleo
         ? this.integrantesNucleo(this.nucleo)
         : this.integrantes;
     }
-  },
-  created() {
-    this.sectoresOpt = this.sectores;
-    this.nucleosOpt = this.nucleos;
   },
   destroyed() {
     this.updateIntegrante(null);

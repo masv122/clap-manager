@@ -39,6 +39,38 @@ export async function eliminarSector(sector) {
   }
 }
 
+export async function eliminarIntegrantes(integrantes) {
+  try {
+    integrantes.forEach(async integrante => {
+      await db.local.rel.del("integrante", integrante);
+    });
+    Notify.create({
+      message: "Integrantes Eliminados",
+      icon: "check"
+    });
+    return true;
+  } catch (error) {
+    alert("error al eliminar los integrantes: " + error);
+    return false;
+  }
+}
+
+export async function eliminarNucleos(nucleos) {
+  try {
+    nucleos.forEach(async nucleo => {
+      await db.local.rel.del("nucleo", nucleo);
+    });
+    Notify.create({
+      message: "Nucleos Eliminados",
+      icon: "check"
+    });
+    return true;
+  } catch (error) {
+    alert("error al eliminar los nucleos: " + error);
+    return false;
+  }
+}
+
 export async function eliminarNucleoSector(data, id) {
   try {
     let resultado = await db.local.rel.find("sector");
@@ -53,7 +85,7 @@ export async function eliminarNucleoSector(data, id) {
         resultado.sectores[indice].jefe,
         resultado.sectores[indice].id,
         resultado.sectores[indice].rev
-      )
+      );
       sector.eliminarNucleo(data.id);
       console.log(sector);
       resultado = await db.local.rel.save("sector", sector);
@@ -185,9 +217,7 @@ export async function actualizarJefeFamiliarNucleo(newCedula, oldCedula) {
   console.log("entra");
   try {
     let resultado = await db.local.rel.find("nucleo");
-    let nucleo = resultado.nucleos.find(
-      nucleo => nucleo.cedula === oldCedula
-    );
+    let nucleo = resultado.nucleos.find(nucleo => nucleo.cedula === oldCedula);
     nucleo.cedula = newCedula;
     resultado = await db.local.rel.save("nucleo", nucleo);
     const mensaje = !!resultado
@@ -335,3 +365,23 @@ export async function eliminarSectorJefe(jefe) {
     return false;
   }
 }
+
+export async function eliminarJefeSector(sector) {
+  try {
+    sector.jefe = null;
+    const resultado = await db.local.rel.save("sector", sector);
+    const mensaje = !!resultado
+      ? "Sector del sector de calle eliminado"
+      : "No se pudo eliminado el sector del sector de calle";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al eliminar el sector del sector: " + error);
+    return false;
+  }
+}
+

@@ -1,7 +1,7 @@
 <template>
   <q-form @submit.prevent :class="clasesCrear">
     <div class="text-h5 q-ml-xs q-pt-md">
-      <q-icon name="group" />
+      <q-icon name="supervised_user_circle" class="q-mr-md" />
       {{ modificar ? 'Informacion jefe de calle' : 'Crear Jefe de Calle' }}
     </div>
     <q-separator color="negative" inset />
@@ -25,10 +25,10 @@
       error-message="Debe proporcionar una direccion"
       :error="$v._direccion.$invalid"
     />
-    <div class="text-h6 q-mt-md">
-      <q-icon name="group" class="q-mr-md" />Reasignar Sector
+    <div class="text-h5 q-ml-xs q-pt-md">
+      <q-icon name="place" class="q-mr-md" />Asignar Sector
     </div>
-    <q-separator />
+    <q-separator color="negative" inset />
     <q-select
       label="Sector"
       use-input

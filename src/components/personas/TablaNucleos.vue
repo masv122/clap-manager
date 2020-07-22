@@ -4,7 +4,7 @@
       :grid="$q.screen.xs"
       :visible-columns="visibleColumns"
       title="Nucleos"
-      :data="nucleos"
+      :data="_nucleos"
       :columns="columns"
       row-key="id"
       :filter="filter"
@@ -15,6 +15,7 @@
         <q-inner-loading showing color="negative" />
       </template>
       <template v-slot:top-right>
+        <sector-nucleo-select solo-sector inline />
         <q-select
           v-model="visibleColumns"
           multiple
@@ -46,7 +47,13 @@
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
           <q-td auto-width>
-            <q-btn flat round dense icon="more_vert" @click="updateTipoPersona({value: 'nucleo'});updateNucleo(props.row)">
+            <q-btn
+              flat
+              round
+              dense
+              icon="more_vert"
+              @click="updateTipoPersona({value: 'nucleo'});updateNucleo(props.row)"
+            >
               <q-menu>
                 <q-list style="min-width: 100px">
                   <q-item clickable v-close-popup @click="updateDetallesPersona">
@@ -84,10 +91,14 @@
 </template>
 
 <script>
+import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
 import { mapGetters, mapMutations } from "vuex";
 import * as API from "src/mixins/API";
 export default {
   name: "TablaNucleos",
+  components: {
+    SectorNucleoSelect
+  },
   data() {
     return {
       filter: "",
@@ -111,7 +122,7 @@ export default {
         {
           name: "sector",
           label: "Sector",
-          field: row => row.sector
+          field: row => this.buscarSector(row.sector).nombre
         },
         {
           name: "id",
@@ -145,12 +156,18 @@ export default {
       this.$q
         .dialog({
           title: "Confirme",
-          message: "¿Seguro que quiere eliminar este nucleo familiar",
+          message: !!this.nucleo.integrantes
+            ? "El nucleo posee integrantes registrados.\n Si lo elimina tambien se eliminaran los mismos.\n ¿Seguro que quiere eliminar este nucleo?"
+            : "¿Seguro que quiere eliminar este nucleo familiar",
           cancel: true,
           persistent: true
         })
         .onOk(async () => {
           try {
+            if (!!this.nucleo.integrantes) {
+              const result = await this.nucleo.getRegistrosAsociados();
+              await API.eliminarIntegrantes(result.integrantes);
+            }
             await API.eliminarNucleo(this.nucleo);
           } catch (error) {
             alert("error al eliminar el nucleo 101: " + error);
@@ -163,8 +180,10 @@ export default {
       "nucleos",
       "nucleo",
       "cargandoPersonas",
-      "buscarIntegrante"
+      "buscarIntegrante",
+      "nucleosSector"
     ]),
+    ...mapGetters("sectores", ["buscarSector", "sector"]),
     _nucleo: {
       get() {
         return this.nucleo;
@@ -172,6 +191,9 @@ export default {
       set(value) {
         this.updateNucleo(value);
       }
+    },
+    _nucleos() {
+      return !!this.sector ? this.nucleosSector(this.sector) : this.nucleos;
     }
   }
 };

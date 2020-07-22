@@ -123,7 +123,7 @@ export function modificarIntegrante(state, resultado) {
   state.integrantes[resultado.indice].telefono = resultado.objeto.telefono;
 }
 export function eliminarJefe(state, indice) {
-  state.jefes.slice(indice, 1);
+  state.jefes.splice(indice, 1);
 }
 export function insertarJefe(state, data) {
   const jefe = new JefeCalle(
