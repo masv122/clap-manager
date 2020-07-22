@@ -7,6 +7,6 @@ export default function() {
     municipios: [],
     parroquias: [],
     bancos: [],
-    version: "0.4.7-alpha.2"
+    version: "0.4.8-alpha.4"
   };
 }
