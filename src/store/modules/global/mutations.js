@@ -19,3 +19,9 @@ export function updateParroquias(state, value) {
 export function updateBancos(state, value) {
   state.bancos = value;
 }
+export function updateNucleoSelectInvalido(state, value) {
+  state.nucleoSelectInvalido = value;
+}
+export function updateSectorSelectInvalido(state, value) {
+  state.sectorSelectInvalido = value;
+}

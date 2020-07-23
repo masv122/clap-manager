@@ -1,6 +1,13 @@
 export function confirmacionEliminacion(state) {
   return state.confirmacionEliminacion;
 }
+export function nucleoSelectInvalido(state) {
+  return state.nucleoSelectInvalido;
+}
+export function sectorSelectInvalido(state) {
+  return state.sectorSelectInvalido;
+}
+
 export function leftDrawer(state) {
   return state.leftDrawer;
 }
@@ -13,24 +20,27 @@ export function estados(state) {
 export function municipios(state) {
   return state.municipios;
 }
-export const municipiosEnEstado = (state) => (id) => {
+export const municipiosEnEstado = state => id => {
   return state.municipios.filter(v => v.id_estado === id);
-}
+};
 export function parroquias(state) {
   return state.parroquias;
 }
-export const parroquiasEnMunicipio = (state) => (id) => {
+export const parroquiasEnMunicipio = state => id => {
   return state.parroquias.filter(v => v.id_municipio === id);
-}
+};
 export function bancos(state) {
   return state.bancos;
 }
-export const estadoPorNombre = (state) => (nombre) => {
-  return state.estados.find( e => e.nombre === nombre);
-}
-export const municipioPorNombre = (state) => (nombre) => {
-  return state.municipios.find( e => e.nombre === nombre);
-}
-export const parroquiasPorNombre = (state) => (nombre) => {
-  return state.parroquias.find( e => e.nombre === nombre);
-}
+export const buscarBanco = state => codigo => {
+  return state.bancos.find(e => e.codigo === codigo);
+};
+export const estadoPorNombre = state => nombre => {
+  return state.estados.find(e => e.nombre === nombre);
+};
+export const municipioPorNombre = state => nombre => {
+  return state.municipios.find(e => e.nombre === nombre);
+};
+export const parroquiasPorNombre = state => nombre => {
+  return state.parroquias.find(e => e.nombre === nombre);
+};

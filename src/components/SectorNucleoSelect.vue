@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row q-gutters-md">
     <div :class="soloSector ? ['col-12'] : isInline">
       <q-select
         label="Sector"
@@ -15,10 +15,12 @@
         @filter="filterSectores"
         label-color="negative"
         color="negative"
-        v-model="_sector"
+        v-model="$v._sector.$model"
         option-value="id"
         option-label="nombre"
         emit-value
+        error-message="Debe seleccionar un sector"
+        :error="sectorRequerido ? $v._sector.$invalid : false"
         map-options
         class="q-mr-md"
         clearable
@@ -41,7 +43,6 @@
     <div :class="isInline">
       <q-select
         label="Nucleo"
-        error-message="Debe seleccionar un nucleo"
         use-input
         dense
         options-dense
@@ -54,11 +55,13 @@
         @filter="filterNucleos"
         label-color="negative"
         color="negative"
-        v-model="_nucleo"
+        v-model="$v._nucleo.$model"
         option-value="id"
         option-label="nombre"
         emit-value
         map-options
+        error-message="Debe seleccionar un nucleo"
+        :error="nucleoRequerido ? $v._nucleo.$invalid : false"
         class="q-mr-md"
         v-if="!soloSector"
         clearable
@@ -84,7 +87,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-
+import { required } from "vuelidate/lib/validators";
 export default {
   name: "SectorNucleoSelect",
   props: {
@@ -95,6 +98,14 @@ export default {
     inline: {
       type: Boolean,
       default: false
+    },
+    nucleoRequerido: {
+      type: Boolean,
+      default: false
+    },
+    sectorRequerido: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -102,6 +113,14 @@ export default {
       sectoresOpt: [],
       nucleosOpt: []
     };
+  },
+  validations: {
+    _sector: {
+      required
+    },
+    _nucleo: {
+      required
+    }
   },
   computed: {
     ...mapGetters("personas", ["nucleos", "nucleo", "nucleosSector"]),
@@ -130,10 +149,22 @@ export default {
     async sector(newValue, oldValue) {
       if (newValue !== oldValue) this.nucleosOpt = this.nucleosSector(newValue);
       this.updateNucleo(null);
+    },
+    $v: {
+      immediate: true,
+      deep: true,
+      handler(newValue) {
+        this.updateNucleoSelectInvalido(newValue._nucleo.$invalid);
+        this.updateSectorSelectInvalido(newValue._sector.$invalid);
+      }
     }
   },
   methods: {
     ...mapMutations("personas", ["updateNucleo"]),
+    ...mapMutations("global", [
+      "updateNucleoSelectInvalido",
+      "updateSectorSelectInvalido"
+    ]),
     ...mapMutations("sectores", ["updateSector"]),
     filterSectores(val, update, abort) {
       let opciones = this.sectores;

@@ -1,6 +1,8 @@
 export default function() {
   return {
     confirmacionEliminacion: false,
+    nucleoSelectInvalido: true,
+    sectorSelectInvalido: true,
     leftDrawer: false,
     rightDrawer: false,
     estados: [],
