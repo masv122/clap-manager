@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-gutter-y-md">
+  <div class="fit row q-gutter-y-md">
     <q-toolbar class="col-sm-8">
       <sector-nucleo-select inline/>
     </q-toolbar>

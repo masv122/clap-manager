@@ -119,6 +119,7 @@ export default {
       "cargarIntegrantes",
       "cargarJefes"
     ]),
+    ...mapActions("pagos", ["cargarPagos"]),
     ...mapMutations("sectores", ["updateCargandoSectores"]),
     ...mapMutations("personas", ["updateCargandoPersonas"]),
     agregar() {
@@ -204,6 +205,7 @@ export default {
     await this.cargarJefes();
     this.updateCargandoPersonas;
     await this.loadData();
+    await this.cargarPagos();
   }
 };
 </script>

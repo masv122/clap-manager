@@ -1,12 +1,10 @@
 <template>
   <q-page :style-fn="myTweak" padding>
-    <div class="shadow-1 bg-white q-mt-md">
       <NavPagos v-if="!$q.screen.lt.sm"/>
       <ModificarPago />
       <DetallesPago />
       <ConfirmacionEliminacion />
       <TablaPagos />
-    </div>
     <FBA />
   </q-page>
 </template>

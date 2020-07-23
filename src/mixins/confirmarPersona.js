@@ -29,11 +29,7 @@ export default {
             );
             if (modo === "agregar") {
               resultadoAgregarIntegrante = await API.guardarIntegrante(persona); //si el modo es agregar
-              resultadoFinal = await API.actualizarIntegrantesNucleo(
-                //se guarda el integrante
-                resultadoAgregarIntegrante, //y se actualiza el nucleo
-                persona
-              );
+              resultadoFinal = await API.actualizarIntegrantesNucleo(persona);
             } else if (
               this.nucleo !== this.integrante.nucleo && //si el modo es modificar y el nucleo del integrante
               modo === "modificar" //y el nucleo seleccionado cambio es porque hay una
@@ -45,11 +41,7 @@ export default {
                 resultadoAgregarIntegrante,
                 this.integrante.nucleo
               );
-              resultadoFinal = await API.actualizarIntegrantesNucleo(
-                //y por ultimo se actualiza los
-                resultadoAgregarIntegrante, //integrantes del nuevo nucleo
-                persona
-              );
+              resultadoFinal = await API.actualizarIntegrantesNucleo(persona);
             } else if (!this.reasignar) {
               //si reasignar es negativo quiere decir que se selecciono crear un nuevo nucleo con el integrante
               resultadoCrearNucleo = await this.crearNucleo(modo);
@@ -69,6 +61,7 @@ export default {
                 this.direccion,
                 this.sector,
                 this.nucleo.integrantes,
+                this.nucleo.pagos,
                 this.nucleo.id,
                 this.nucleo.rev
               );

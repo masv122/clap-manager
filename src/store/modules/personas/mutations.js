@@ -69,6 +69,7 @@ export function insertarNucleo(state, data) {
     data.direccion,
     data.sector,
     data.integrantes,
+    data.pagos,
     data.id,
     data.rev
   );

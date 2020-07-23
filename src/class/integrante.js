@@ -20,6 +20,7 @@ export default class Integrante extends Persona {
           resultado.nucleos[indice].direccion,
           resultado.nucleos[indice].sector,
           resultado.nucleos[indice].integrantes,
+          resultado.nucleos[indice].pagos,
           resultado.nucleos[indice].id,
           resultado.nucleos[indice].rev
         );

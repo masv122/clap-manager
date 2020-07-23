@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <q-dialog v-model="_detallesPago" persistent>
+    <q-dialog v-model="_detallesPago" persistent v-if="!!pago">
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
           <q-toolbar-title shrink>
@@ -18,66 +17,44 @@
               <div class="text-h6 q-ml-xl">
                 <q-icon name="group" />Informacion del nucleo
               </div>
-              <q-field borderless label="Jefe(a) del nucleo" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Jefe(a) del nucleo</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Cedula" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Cedula</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Direccion" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Direccion</div>
-                </template>
-              </q-field>
+              <informacion-nucleo
+                :nombre-nucleo="buscarNucleo(pago.nucleo).nombre"
+                :nombre="!!buscarNucleo(pago.nucleo).cedula ? buscarIntegrante(buscarNucleo(pago.nucleo).cedula).nombre : 'Sin jefe familiar, asigne uno'"
+                :cedula="buscarNucleo(pago.nucleo).cedula"
+                :direccion="buscarNucleo(pago.nucleo).direccion"
+              />
             </div>
             <div class="col">
               <div class="text-h6 q-ml-xl">
                 <q-icon name="info" />Informacion detallada
               </div>
-              <q-field borderless label="Numero de referencia" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Numero de referencia</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Monto" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Monto</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Fecha" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Fecha</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Estado" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Estado</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Banco" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Banco</div>
-                </template>
-              </q-field>
+              <informacion-pago
+                :referencia="pago.id"
+                :monto="pago.monto"
+                :fecha="pago.fecha"
+                :estado="pago.estado"
+                :banco="pago.banco"
+              />
             </div>
           </div>
         </q-card-section>
       </q-card>
     </q-dialog>
-  </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-
+import InformacionNucleo from "components/personas/InformacionNucleo.vue";
+import InformacionPago from "components/pagos/InformacionPago.vue";
 export default {
   name: "DetallesPago",
+  components: {
+    InformacionNucleo,
+    InformacionPago
+  },
   computed: {
-    ...mapGetters("pagos", ["detallesPago"]),
+    ...mapGetters("pagos", ["detallesPago", "pago"]),
+    ...mapGetters("personas", ["buscarNucleo", "buscarIntegrante"]),
     _detallesPago: {
       get() {
         return this.detallesPago;
@@ -89,7 +66,7 @@ export default {
   },
   methods: {
     ...mapMutations("pagos", ["updateDetallesPago"])
-  }
+  },
 };
 </script>
 

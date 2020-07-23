@@ -35,7 +35,12 @@ let events = {
     name: "jefe",
     eliminar: "personas/eliminarJefe",
     guardar: "personas/guardarJefe"
-  }
+  },
+  pagos: {
+    name: "pago",
+    eliminar: "pagos/eliminarPago",
+    guardar: "pagos/guardarPago"
+  },
 };
 
 const db = new Database();

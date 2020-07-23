@@ -5,8 +5,9 @@
       persistent
       :full-height="$q.screen.lt.sm"
       :full-width="$q.screen.lt.sm"
+      @hide="resetear"
+      @show="resetear"
     >
-      <div class="q-pa-md"></div>
       <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
         <q-toolbar dark class="bg-negative text-white q-mb-md">
           <q-toolbar-title shrink>
@@ -21,54 +22,14 @@
         <q-card-section class="q-pt-none">
           <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
             <q-step :name="1" title="Seleccione un nucleo" icon="group" :done="step > 1">
-              <q-select
-                label="Sector"
-                label-color="negative"
-                color="negative"
-                :value="model"
-                use-input
-                behavior="menu"
-                hide-selected
-                fill-input
-                lazy-rules
-                input-debounce="0"
-                :options="options"
-                @filter="filterFn"
-                @input-value="setModel"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">No results</q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-              <q-select
-                label="Nucleo"
-                label-color="negative"
-                color="negative"
-                :value="model"
-                use-input
-                behavior="menu"
-                hide-selected
-                fill-input
-                lazy-rules
-                input-debounce="0"
-                :options="options"
-                @filter="filterFn"
-                @input-value="setModel"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">No results</q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              <sector-nucleo-select nucleo-requerido/>
               <q-stepper-navigation>
                 <q-btn
                   @click="step = 2"
                   color="primary"
                   icon-right="chevron_right"
                   label="Siguiente"
+                  :disable="nucleoSelectInvalido"
                 />
               </q-stepper-navigation>
             </q-step>
@@ -80,64 +41,7 @@
               icon="info"
               :done="step > 2"
             >
-              <q-input
-                v-model="text"
-                type="number"
-                color="negative"
-                label-color="negative"
-                label="Numero de referencia"
-              />
-              <q-input
-                v-model="text"
-                type="number"
-                label-color="negative"
-                color="negative"
-                label="Monto"
-              />
-              <q-input
-                label-color="negative"
-                color="negative"
-                v-model="date"
-                mask="date"
-                :rules="['date']"
-                label="Seleccione fecha"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" color="negative" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-              <q-select
-                label="Banco"
-                label-color="negative"
-                color="negative"
-                :value="model"
-                use-input
-                behavior="menu"
-                hide-selected
-                fill-input
-                lazy-rules
-                input-debounce="0"
-                :options="options"
-                @filter="filterFn"
-                @input-value="setModel"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">No results</q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-              <q-option-group
-                v-model="estado"
-                label-color="negative"
-                color="negative"
-                :options="estados"
-                inline
-              />
+              <formulario-datos-pago />
               <q-stepper-navigation>
                 <q-btn
                   flat
@@ -152,36 +56,28 @@
                   color="primary"
                   icon-right="chevron_right"
                   label="Siguiente"
+                  :disabled="formularioPagoInvalido"
                 />
               </q-stepper-navigation>
             </q-step>
-
             <q-step :name="3" title="Confirme la informacion" icon="check">
-              <q-field borderless label="Nucleo" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Nucleo</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Numero de referencia" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Numero de referencia</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Banco" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Banco</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Monto" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Monto</div>
-                </template>
-              </q-field>
-              <q-field borderless label="Estado" stack-label>
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline">Estado</div>
-                </template>
-              </q-field>
+              <div class="row" v-if="step === 3">
+                <informacion-pago
+                  :referencia="referencia"
+                  :monto="monto"
+                  :fecha="fecha"
+                  :estado="estado"
+                  :banco="banco.nombre"
+                  class="col"
+                />
+                <informacion-nucleo
+                  :nombre-nucleo="buscarNucleo(nucleo).nombre"
+                  :nombre="!!buscarNucleo(nucleo).cedula ? buscarIntegrante(buscarNucleo(nucleo).cedula).nombre : 'Sin jefe familiar, asigne uno'"
+                  :cedula="buscarNucleo(nucleo).cedula"
+                  :direccion="buscarNucleo(nucleo).direccion"
+                  class="col"
+                />
+              </div>
               <q-stepper-navigation>
                 <q-btn
                   flat
@@ -191,7 +87,13 @@
                   label="Regresar"
                   class="q-ml-sm"
                 />
-                <q-btn color="primary" icon-right="add" label="Agregar" />
+                <q-btn
+                  :loading="guardando"
+                  color="positive"
+                  icon-right="check"
+                  label="Agregar"
+                  @click="confirmarPago"
+                />
               </q-stepper-navigation>
             </q-step>
           </q-stepper>
@@ -202,64 +104,82 @@
 </template>
 
 <script>
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle"
-].reduce((acc, opt) => {
-  for (let i = 1; i <= 5; i++) {
-    acc.push(opt + " " + i);
-  }
-  return acc;
-}, []);
-
+import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
+import InformacionNucleo from "components/personas/InformacionNucleo.vue";
+import FormularioDatosPago from "components/pagos/FormularioDatosPago.vue";
+import InformacionPago from "components/pagos/InformacionPago.vue";
+import * as API from "src/mixins/API";
 import { mapGetters, mapMutations } from "vuex";
+import Pago from "src/class/pago";
 export default {
   name: "AgregarIntegrante",
-  components: {},
+  components: {
+    SectorNucleoSelect,
+    InformacionNucleo,
+    FormularioDatosPago,
+    InformacionPago
+  },
   data() {
     return {
-      model: null,
-      stringOptions,
-      options: stringOptions,
-      text: "",
-      estado: "pendiente",
-      estados: [
-        { label: "Pendiente", value: "pendiente" },
-        { label: "Confirmado", value: "confirmado" }
-      ],
       step: 1,
-      date: ""
+      guardando: false
     };
   },
   computed: {
-    ...mapGetters("pagos", ["agregarPago"]),
+    ...mapGetters("global", ["nucleoSelectInvalido"]),
+    ...mapGetters("pagos", [
+      "agregarPago",
+      "monto",
+      "banco",
+      "estado",
+      "fecha",
+      "referencia",
+      "formularioPagoInvalido"
+    ]),
+    ...mapGetters("personas", ["nucleo", "buscarNucleo", "buscarIntegrante"]),
     _agregarPago: {
       get() {
         return this.agregarPago;
       },
-      set(value) {
-        this.updateAgregarPago(value);
+      set() {
+        this.updateAgregarPago();
       }
     }
   },
   methods: {
-    ...mapMutations("pagos", ["updateAgregarPago"]),
-    filterFn(val, update, abort) {
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.options = stringOptions.filter(
-          v => v.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
+    ...mapMutations("pagos", [
+      "updateAgregarPago",
+      "updateMonto",
+      "updateBanco",
+      "updateEstado",
+      "updateFecha",
+      "updateReferencia"
+    ]),
+    ...mapMutations("personas", ["updateNucleo"]),
+    ...mapMutations("sectores", ["updateSector"]),
+    async confirmarPago() {
+      this.guardando = true;
+      let pago = new Pago(
+        this.monto,
+        this.banco.codigo,
+        this.estado,
+        this.fecha,
+        this.nucleo,
+        this.referencia
+      );
+      const resultado = await API.guardarPago(pago);
+      await API.actualizarPagosNucleo(pago);
+      this.guardando = false;
+      this.updateAgregarPago();
     },
-    setModel(val) {
-      this.model = val;
-    },
-    onReset() {
-      this.model = null;
+    resetear() {
+      this.updateMonto(null);
+      this.updateBanco(null);
+      this.updateEstado("pendiente");
+      this.updateFecha("");
+      this.updateReferencia(null);
+      this.updateNucleo(null);
+      this.updateSector(null);
     }
   }
 };

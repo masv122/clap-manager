@@ -33,6 +33,7 @@ export async function cargarNucleos({ commit }) {
           resultado.nucleos[i].direccion,
           resultado.nucleos[i].sector,
           resultado.nucleos[i].integrantes,
+          resultado.nucleos[i].pagos,
           resultado.nucleos[i].id,
           resultado.nucleos[i].rev
         );

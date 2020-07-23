@@ -3,7 +3,7 @@ import { db } from "boot/pouchdb/index";
 import Sector from "src/class/sector";
 
 export default class Nucleo extends Base {
-  constructor(cedula, nombre, direccion, sector, integrantes, id, rev) {
+  constructor(cedula, nombre, direccion, sector, integrantes, pagos, id, rev) {
     super(id, rev);
     this.cedula = cedula;
     this.nombre = nombre;
@@ -11,6 +11,8 @@ export default class Nucleo extends Base {
     this.sector = sector;
     if (!!integrantes) this.integrantes = integrantes;
     else this.integrantes = [];
+    if (!!pagos) this.pagos = pagos;
+    else this.pagos = [];
   }
   agregarIntegrante(id) {
     this.integrantes.push(id);
@@ -18,6 +20,13 @@ export default class Nucleo extends Base {
   eliminarIntegrante(id) {
     const indice = this.integrantes.indexOf(id);
     this.integrantes.splice(indice, 1);
+  }
+  agregarPago(id) {
+    this.pagos.push(id);
+  }
+  eliminarPago(id) {
+    const indice = this.pagos.indexOf(id);
+    this.pagos.splice(indice, 1);
   }
   async getSector() {
     try {

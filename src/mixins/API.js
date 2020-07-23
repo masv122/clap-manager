@@ -39,6 +39,24 @@ export async function eliminarSector(sector) {
   }
 }
 
+export async function eliminarPago(pago) {
+  try {
+    const resultado = await db.local.rel.del("pago", pago);
+    const mensaje = !!resultado.deleted
+      ? "Pago eliminado"
+      : "No se pudo eliminar el pago";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al eliminar el pago: " + error);
+    return false;
+  }
+}
+
 export async function eliminarIntegrantes(integrantes) {
   try {
     integrantes.forEach(async integrante => {
@@ -235,10 +253,10 @@ export async function actualizarJefeFamiliarNucleo(newCedula, oldCedula) {
   }
 }
 
-export async function actualizarIntegrantesNucleo(data, integrante) {
+export async function actualizarIntegrantesNucleo(integrante) {
   try {
     let nucleo = await integrante.getNucleo();
-    nucleo.agregarIntegrante(data.id);
+    nucleo.agregarIntegrante(integrante.id);
     const resultado = await db.local.rel.save("nucleo", nucleo);
     const mensaje = !!resultado
       ? "Integrantes del nucleo actualizados"
@@ -255,6 +273,26 @@ export async function actualizarIntegrantesNucleo(data, integrante) {
   }
 }
 
+export async function actualizarPagosNucleo(pago) {
+  try {
+    let nucleo = await pago.getNucleo();
+    nucleo.agregarPago(pago.id);
+    const resultado = await db.local.rel.save("nucleo", nucleo);
+    const mensaje = !!resultado
+      ? "Pagos del nucleo actualizados"
+      : "No se pudo actualizar los pagos del nucleo";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al actualizar los pagos del nucleo: " + error);
+    return false;
+  }
+}
+
 export async function eliminarIntegrantesNucleo(data, id) {
   try {
     let resultado = await db.local.rel.find("nucleo");
@@ -266,6 +304,7 @@ export async function eliminarIntegrantesNucleo(data, id) {
         resultado.nucleos[indice].direccion,
         resultado.nucleos[indice].sector,
         resultado.nucleos[indice].integrantes,
+        resultado.nucleos[indice].pagos,
         resultado.nucleos[indice].id,
         resultado.nucleos[indice].rev
       );
@@ -283,6 +322,39 @@ export async function eliminarIntegrantesNucleo(data, id) {
     } else return null;
   } catch (error) {
     alert("error al eliminar los integrantes del nucleo: " + error);
+    return false;
+  }
+}
+
+export async function eliminarPagosNucleo(pago) {
+  try {
+    let resultado = await db.local.rel.find("nucleo");
+    const indice = resultado.nucleos.findIndex(nucleo => nucleo.id === pago.nucleo);
+    if (indice >= 0) {
+      const nucleo = new Nucleo(
+        resultado.nucleos[indice].cedula,
+        resultado.nucleos[indice].nombre,
+        resultado.nucleos[indice].direccion,
+        resultado.nucleos[indice].sector,
+        resultado.nucleos[indice].integrantes,
+        resultado.nucleos[indice].pagos,
+        resultado.nucleos[indice].id,
+        resultado.nucleos[indice].rev
+      );
+      nucleo.eliminarPago(pago.id);
+      resultado = await db.local.rel.save("nucleo", nucleo);
+      const mensaje = !!resultado
+        ? "Pago del nucleo eliminado"
+        : "No se pudo eliminar el pago del nucleo";
+      const icon = !!resultado ? "check" : "close";
+      Notify.create({
+        message: mensaje,
+        icon: icon
+      });
+      return resultado;
+    } else return null;
+  } catch (error) {
+    alert("error al eliminar los pagos del nucleo: " + error);
     return false;
   }
 }
@@ -385,3 +457,20 @@ export async function eliminarJefeSector(sector) {
   }
 }
 
+export async function guardarPago(pago) {
+  try {
+    const resultado = await db.local.rel.save("pago", pago);
+    const mensaje = !!resultado
+      ? "Pago guardado"
+      : "No se pudo guardar el pago";
+    const icon = !!resultado ? "check" : "close";
+    Notify.create({
+      message: mensaje,
+      icon: icon
+    });
+    return resultado;
+  } catch (error) {
+    alert("error al guardarel pago: " + error);
+    return false;
+  }
+}
