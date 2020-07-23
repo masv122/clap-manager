@@ -1,6 +1,6 @@
 <template>
   <q-page :style-fn="myTweak" padding>
-    <div class="shadow-1 bg-white">
+    <div>
       <NavSectores v-if="!$q.screen.lt.sm" />
       <ModificarSector />
       <DetallesSector />

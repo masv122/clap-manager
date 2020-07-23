@@ -1,12 +1,10 @@
 <template>
   <q-page :style-fn="myTweak" padding>
-    <div class="shadow-1 bg-white q-mt-md">
       <NavPersonas />
       <ModificarPersona />
       <ConfirmacionEliminacion />
       <DetallesPersona />
       <router-view />
-    </div>
     <FBA />
   </q-page>
 </template>
