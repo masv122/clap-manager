@@ -21,7 +21,7 @@
         <q-card-section class="q-pt-none">
           <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
             <q-step :name="1" title="Complete los datos" icon="info" :done="step > 1">
-              <DatosPersonales />
+              <formulario-datos-personales />
               <q-stepper-navigation>
                 <q-btn
                   @click="step = 2"
@@ -40,10 +40,16 @@
               icon="perm_identity"
               :done="step > 2"
             >
-              <TipoPersona />
-              <AsignarNucleo v-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'integrante'" />
-              <CrearNucleo v-else-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'nucleo'" />
-              <CrearJefeCalle v-else-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'jefe'" />
+              <tipo-persona />
+              <AsignarNucleo
+                v-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'integrante'"
+              />
+              <CrearNucleo
+                v-else-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'nucleo'"
+              />
+              <CrearJefeCalle
+                v-else-if="!!tipoPersona && tipoPersona && tipoPersona.value === 'jefe'"
+              />
               <q-stepper-navigation>
                 <q-btn
                   flat
@@ -105,7 +111,7 @@
 <script>
 import confirmarPersona from "src/mixins/confirmarPersona";
 import { mapGetters, mapMutations } from "vuex";
-import DatosPersonales from "components/personas/DatosPersonales.vue";
+import FormularioDatosPersonales from "components/personas/FormularioDatosPersonales.vue";
 import TipoPersona from "components/personas/TipoPersona.vue";
 import AsignarNucleo from "components/personas/AsignarNucleo.vue";
 import CrearNucleo from "components/personas/CrearNucleo.vue";
@@ -116,7 +122,7 @@ import DatosJefeConfirmacion from "components/personas/DatosJefeConfirmacion.vue
 export default {
   name: "AgregarPersona",
   components: {
-    DatosPersonales,
+    FormularioDatosPersonales,
     TipoPersona,
     AsignarNucleo,
     CrearNucleo,
@@ -196,7 +202,7 @@ export default {
       "updateDireccion",
       "updateCodigo"
     ]),
-    confirmar(){
+    confirmar() {
       this.confirmarPersona();
     },
     reset() {

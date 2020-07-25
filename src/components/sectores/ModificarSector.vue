@@ -23,19 +23,11 @@
           <q-form @submit.prevent class="q-gutter-md">
             <div class="text-h6 q-mt-md">
               <q-icon name="info" class="q-mr-md" />Datos del sector
-              <q-btn
-                class="float-right"
-                color="negative"
-                icon="redo"
-                @click="cargarSector"
-                label="Restablecer"
-              />
             </div>
             <q-separator />
             <DatosBasicosSector modificar />
             <div class="text-h6 q-mt-md">
               <q-icon name="supervised_user_circle" class="q-mr-md" />Reasignar jefe de calle
-              <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
             </div>
             <q-separator />
             <TablaJefesDeCalleGrid />
@@ -48,9 +40,10 @@
             icon="save"
             type="submit"
             color="primary"
-            class="q-ml-sm full-width"
+            class="q-ml-sm"
             @click="confirmacion"
           />
+          <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
         </q-card-actions>
       </q-card>
     </q-dialog>

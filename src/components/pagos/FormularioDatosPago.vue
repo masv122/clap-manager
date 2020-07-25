@@ -75,8 +75,8 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, numeric } from "vuex";
-import { required, minValue, minLength } from "vuelidate/lib/validators";
+import { mapGetters, mapMutations } from "vuex";
+import { required, minValue, minLength, numeric } from "vuelidate/lib/validators";
 export default {
   name: "FormularioDatosPago",
   props: {

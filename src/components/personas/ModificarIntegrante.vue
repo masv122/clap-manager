@@ -6,7 +6,7 @@
         <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
-      <datos-personales modificar />
+      <formulario-datos-personales modificar />
       <div class="row">
         <div class="col-6 text-h6">
           <q-icon name="group" class="q-mr-md" />
@@ -20,11 +20,9 @@
             :label="reasignar ? 'Crear Nucleo ': 'Reasignar Nucleo'"
             @click="reasignar = !reasignar"
           >
-            <q-tooltip
-              content-class="bg-negative"
-              content-style="font-size: 14px"
-              v-if="reasignar"
-            ><q-icon name="info" size="sm"/> Esta accion creara un nuevo nucleo con este integrante</q-tooltip>
+            <q-tooltip content-class="bg-negative" content-style="font-size: 14px" v-if="reasignar">
+              <q-icon name="info" size="sm" />Esta accion creara un nuevo nucleo con este integrante
+            </q-tooltip>
           </q-btn>
         </div>
       </div>
@@ -51,14 +49,14 @@
 </template>
 
 <script>
-import DatosPersonales from "components/personas/DatosPersonales.vue";
+import FormularioDatosPersonales from "components/personas/FormularioDatosPersonales.vue";
 import SeleccionarNucleo from "components/personas/SeleccionarNucleo.vue";
 import CrearNucleo from "components/personas/CrearNucleo.vue";
 import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "ModificarIntegrante",
   components: {
-    DatosPersonales,
+    FormularioDatosPersonales,
     SeleccionarNucleo,
     CrearNucleo
   },
