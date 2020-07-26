@@ -1,26 +1,31 @@
-# CLAP Manager APP (clap-manager)
+ploy# CLAP Manager APP (clap-manager)
 
-A Quasar Framework app
+Sistema Multiplataforma para la gestion de los concejos comunales creado con Quasar
 
-## Install the dependencies
+## Instala las dependencias
 ```bash
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Inicia la aplicacion en modo de desarrollo (Recarga autoatica de codigo, reporte de error, etc.)
 ```bash
 quasar dev
 ```
 
-### Lint the files
+### List para los archivos
 ```bash
 npm run lint
 ```
 
-### Build the app for production
+### Construye la aplicacion para el despliegue
 ```bash
 quasar build
 ```
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+### Personaliza la configuracion
+mas informacion aqui: [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+
+
+### Creditos
+Desarrollado por LunarSoftware.
+Programador principal: Marcel Salazar
