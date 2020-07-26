@@ -53,6 +53,10 @@ export default class Sector extends Base {
     const result = await db.local.rel.find("nucleo", this.nucleos);
     return result.integrantes;
   }
+   async getPagos() {
+    const result = await db.local.rel.find("pago", this.pagos);
+    return result.pagos;
+  }
   async getRegistrosAsociados(){
     return await db.local.rel.find("sector", this.id);
   }
