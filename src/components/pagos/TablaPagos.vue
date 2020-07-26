@@ -4,7 +4,7 @@
     class="q-mt-md"
     :visible-columns="visibleColumns"
     title="Pagos"
-    :data="pagos"
+    :data="_pagos"
     :columns="columns"
     row-key="id"
     :filter="filter"
@@ -14,6 +14,7 @@
       <q-inner-loading showing color="negative" />
     </template>
     <template v-slot:top-right>
+      <sector-nucleo-select inline v-if="!data" />
       <q-select
         v-model="visibleColumns"
         multiple
@@ -47,34 +48,7 @@
         <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
         <q-td auto-width>
           <q-btn flat round dense icon="more_vert" @click="updatePago(props.row)">
-            <q-menu>
-              <q-list style="min-width: 100px">
-                <q-item clickable v-close-popup @click="updateDetallesPago">
-                  <q-item-section avatar>
-                    <q-icon name="article" color="info" />
-                  </q-item-section>
-                  <q-item-section>Detalles</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup @click="updateModificarPago">
-                  <q-item-section avatar>
-                    <q-icon name="edit" color="amber" />
-                  </q-item-section>
-                  <q-item-section>Modificar</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup @click="confirmacion">
-                  <q-item-section avatar>
-                    <q-icon name="delete" color="negative" />
-                  </q-item-section>
-                  <q-item-section>Eliminar</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section avatar>
-                    <q-icon name="print" color="primary" />
-                  </q-item-section>
-                  <q-item-section>Imprimir</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
+            <menu-registros />
           </q-btn>
         </q-td>
       </q-tr>
@@ -87,34 +61,7 @@
         <q-card>
           <q-card-section>
             <q-btn flat round dense icon="more_horiz" @click="updatePago(props.row)">
-              <q-menu>
-                <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup @click="updateDetallesPago">
-                    <q-item-section avatar>
-                      <q-icon name="article" color="info" />
-                    </q-item-section>
-                    <q-item-section>Detalles</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="updateModificarPago">
-                    <q-item-section avatar>
-                      <q-icon name="edit" color="amber" />
-                    </q-item-section>
-                    <q-item-section>Modificar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="confirmacion">
-                    <q-item-section avatar>
-                      <q-icon name="delete" color="negative" />
-                    </q-item-section>
-                    <q-item-section>Eliminar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup>
-                    <q-item-section avatar>
-                      <q-icon name="print" color="primary" />
-                    </q-item-section>
-                    <q-item-section>Imprimir</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
+              <menu-registros />
             </q-btn>
           </q-card-section>
           <q-separator />
@@ -135,11 +82,22 @@
 </template>
 
 <script>
-import * as API from "src/mixins/API";
 import { mapGetters, mapMutations } from "vuex";
+import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
+import MenuRegistros from "components/MenuRegistros.vue";
 
 export default {
   name: "TablaPagos",
+  props: {
+    data: {
+      type: Array,
+      default: null
+    }
+  },
+  components: {
+    SectorNucleoSelect,
+    MenuRegistros
+  },
   data() {
     return {
       filter: "",
@@ -186,33 +144,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("pagos", ["pagos", "pago"]),
+    ...mapGetters("pagos", ["pagos"]),
     ...mapGetters("personas", ["buscarNucleo"]),
-    ...mapGetters("global", ["buscarBanco"])
+    ...mapGetters("global", ["buscarBanco"]),
+    _pagos() {
+      if (!!this.data) return this.data;
+      else return this.pagos;
+    }
   },
   methods: {
-    ...mapMutations("pagos", [
-      "updatePago",
-      "updateDetallesPago",
-      "updateModificarPago"
-    ]),
-    confirmacion() {
-      this.$q
-        .dialog({
-          title: "Confirme",
-          message: "¿Seguro que quiere eliminar este pago?",
-          cancel: true,
-          persistent: true
-        })
-        .onOk(async () => {
-          try {
-            await API.eliminarPago(this.pago);
-            await API.eliminarPagosNucleo(this.pago);
-          } catch (error) {
-            alert("error al eliminar el pago 101: " + error);
-          }
-        });
-    }
+    ...mapMutations("pagos", ["updatePago"])
   }
 };
 </script>

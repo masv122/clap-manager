@@ -48,34 +48,7 @@
         <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
         <q-td auto-width>
           <q-btn flat round dense icon="more_vert" @click="updateSector(props.row)">
-            <q-menu>
-              <q-list style="min-width: 100px">
-                <q-item clickable v-close-popup @click="updateDetalles">
-                  <q-item-section avatar>
-                    <q-icon name="article" color="info" />
-                  </q-item-section>
-                  <q-item-section>Detalles</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup @click="updateModificar">
-                  <q-item-section avatar>
-                    <q-icon name="edit" color="amber" />
-                  </q-item-section>
-                  <q-item-section>Modificar</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup @click="confirmacion">
-                  <q-item-section avatar>
-                    <q-icon name="delete" color="negative" />
-                  </q-item-section>
-                  <q-item-section>Eliminar</q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup>
-                  <q-item-section avatar>
-                    <q-icon name="print" color="primary" />
-                  </q-item-section>
-                  <q-item-section>Imprimir</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
+            <menu-registros />
           </q-btn>
         </q-td>
       </q-tr>
@@ -88,34 +61,7 @@
         <q-card>
           <q-card-section>
             <q-btn flat round dense icon="more_horiz" @click="updateSector(props.row)">
-              <q-menu>
-                <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup @click="updateDetalles">
-                    <q-item-section avatar>
-                      <q-icon name="article" color="info" />
-                    </q-item-section>
-                    <q-item-section>Detalles</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="updateModificar">
-                    <q-item-section avatar>
-                      <q-icon name="edit" color="amber" />
-                    </q-item-section>
-                    <q-item-section>Modificar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="confirmacion">
-                    <q-item-section avatar>
-                      <q-icon name="delete" color="negative" />
-                    </q-item-section>
-                    <q-item-section>Eliminar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup>
-                    <q-item-section avatar>
-                      <q-icon name="print" color="primary" />
-                    </q-item-section>
-                    <q-item-section>Imprimir</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
+              <menu-registros />
             </q-btn>
           </q-card-section>
           <q-separator />
@@ -137,9 +83,12 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import * as API from "src/mixins/API";
+import MenuRegistros from "components/MenuRegistros.vue";
 export default {
   name: "TablaSectores",
+  components: {
+    MenuRegistros
+  },
   data() {
     return {
       filter: "",
@@ -196,36 +145,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("sectores", [
-      "updateSector",
-      "updateDetalles",
-      "updateModificar"
-    ]),
-    confirmacion() {
-      this.$q
-        .dialog({
-          title: "Confirme",
-          message: !!this.sector.nucleos
-            ? "El sector posee nucleos e integrantes registrados.\n Si lo elimina tambien se eliminaran los mismos.\n ¿Seguro que quiere eliminar este sector?"
-            : "¿Seguro que quiere eliminar este sector?",
-          cancel: true,
-          persistent: true
-        })
-        .onOk(async () => {
-          try {
-            if (!!this.sector.nucleos) {
-              const result = await this.sector.getRegistrosAsociados();
-              await API.eliminarIntegrantes(result.integrantes);
-              await API.eliminarNucleos(result.nucleos);
-            }
-            if (!!this.sector.jefe)
-              await API.eliminarSectorJefe(await this.sector.getJefe());
-            await API.eliminarSector(this.sector);
-          } catch (error) {
-            alert("error al eliminar el sector 101: " + error);
-          }
-        });
-    }
+    ...mapMutations("sectores", ["updateSector"])
   },
   computed: {
     ...mapGetters("sectores", ["sectores", "sector", "cargandoSectores"]),

@@ -53,37 +53,41 @@
               icon="more_vert"
               @click="updateTipoPersona({value: 'jefe'});updateJefe(props.row)"
             >
-              <q-menu>
-                <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup @click="updateDetallesPersona">
-                    <q-item-section avatar>
-                      <q-icon name="article" color="info" />
-                    </q-item-section>
-                    <q-item-section>Detalles</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="updateModificarPersona">
-                    <q-item-section avatar>
-                      <q-icon name="edit" color="amber" />
-                    </q-item-section>
-                    <q-item-section>Modificar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="confirmacion">
-                    <q-item-section avatar>
-                      <q-icon name="delete" color="negative" />
-                    </q-item-section>
-                    <q-item-section>Eliminar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup>
-                    <q-item-section avatar>
-                      <q-icon name="print" color="primary" />
-                    </q-item-section>
-                    <q-item-section>Imprimir</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
+              <menu-registros />
             </q-btn>
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+        <div
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+          :style="props.selected ? 'transform: scale(0.95);' : ''"
+        >
+          <q-card>
+            <q-card-section>
+              <q-btn
+                flat
+                round
+                dense
+                icon="more_horiz"
+                @click="updateTipoPersona({value: 'jefe'});updateJefe(props.row)"
+              >
+                <menu-registros />
+              </q-btn>
+            </q-card-section>
+            <q-separator />
+            <q-list dense>
+              <q-item v-for="col in props.cols.filter(col => col.name !== 'desc')" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label caption>{{ col.value }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
   </div>
@@ -91,9 +95,12 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-import * as API from "src/mixins/API";
+import MenuRegistros from "components/MenuRegistros.vue";
 export default {
   name: "TablaJefesCalle",
+  components: {
+    MenuRegistros
+  },
   data() {
     return {
       filter: "",
@@ -152,35 +159,12 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("personas", [
-      "updateJefe",
-      "updateAgregarPersona",
-      "updateModificarPersona",
-      "updateDetallesPersona",
-      "updateTipoPersona"
-    ]),
-    confirmacion() {
-      this.$q
-        .dialog({
-          title: "Confirme",
-          message: "¿Seguro que quiere eliminar este Jefe de calle",
-          cancel: true,
-          persistent: true
-        })
-        .onOk(async () => {
-          try {
-            if (!!this.jefe.sector)
-              await API.eliminarJefeSector(await this.jefe.getSector());
-            await API.eliminarJefe(this.jefe);
-          } catch (error) {
-            alert("error al eliminar el jefe de calle 101: " + error);
-          }
-        });
+    ...mapMutations("personas", ["updateJefe", "updateTipoPersona"]),
+    confirmacion() {},
+    computed: {
+      ...mapGetters("personas", ["jefes", "jefe", "cargandoPersonas"]),
+      ...mapGetters("sectores", ["buscarSector"])
     }
-  },
-  computed: {
-    ...mapGetters("personas", ["jefes", "jefe", "cargandoPersonas"]),
-    ...mapGetters("sectores", ["buscarSector"])
   }
 };
 </script>

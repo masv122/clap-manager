@@ -15,7 +15,7 @@
         <q-inner-loading showing color="negative" />
       </template>
       <template v-slot:top-right>
-        <sector-nucleo-select solo-sector inline />
+        <sector-nucleo-select solo-sector inline v-if="!data" />
         <q-select
           v-model="visibleColumns"
           multiple
@@ -54,37 +54,41 @@
               icon="more_vert"
               @click="updateTipoPersona({value: 'nucleo'});updateNucleo(props.row)"
             >
-              <q-menu>
-                <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup @click="updateDetallesPersona">
-                    <q-item-section avatar>
-                      <q-icon name="article" color="info" />
-                    </q-item-section>
-                    <q-item-section>Detalles</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="updateModificarPersona">
-                    <q-item-section avatar>
-                      <q-icon name="edit" color="amber" />
-                    </q-item-section>
-                    <q-item-section>Modificar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="confirmacion">
-                    <q-item-section avatar>
-                      <q-icon name="delete" color="negative" />
-                    </q-item-section>
-                    <q-item-section>Eliminar</q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup>
-                    <q-item-section avatar>
-                      <q-icon name="print" color="primary" />
-                    </q-item-section>
-                    <q-item-section>Imprimir</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
+              <menu-registros />
             </q-btn>
           </q-td>
         </q-tr>
+      </template>
+      <template v-slot:item="props">
+        <div
+          class="q-pa-xs col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition"
+          :style="props.selected ? 'transform: scale(0.95);' : ''"
+        >
+          <q-card>
+            <q-card-section>
+              <q-btn
+                flat
+                round
+                dense
+                icon="more_horiz"
+                @click="updateTipoPersona({value: 'nucleo'});updateNucleo(props.row)"
+              >
+                <menu-registros />
+              </q-btn>
+            </q-card-section>
+            <q-separator />
+            <q-list dense>
+              <q-item v-for="col in props.cols.filter(col => col.name !== 'desc')" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label caption>{{ col.value }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </template>
     </q-table>
   </div>
@@ -92,12 +96,19 @@
 
 <script>
 import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
+import MenuRegistros from "components/MenuRegistros.vue";
 import { mapGetters, mapMutations } from "vuex";
-import * as API from "src/mixins/API";
 export default {
   name: "TablaNucleos",
   components: {
-    SectorNucleoSelect
+    SectorNucleoSelect,
+    MenuRegistros
+  },
+  props: {
+    data: {
+      type: Array,
+      default: null
+    }
   },
   data() {
     return {
@@ -147,33 +158,9 @@ export default {
   methods: {
     ...mapMutations("personas", [
       "updateNucleo",
-      "updateAgregarPersona",
-      "updateModificarPersona",
-      "updateDetallesPersona",
       "updateTipoPersona"
     ]),
-    confirmacion() {
-      this.$q
-        .dialog({
-          title: "Confirme",
-          message: !!this.nucleo.integrantes
-            ? "El nucleo posee integrantes registrados.\n Si lo elimina tambien se eliminaran los mismos.\n ¿Seguro que quiere eliminar este nucleo?"
-            : "¿Seguro que quiere eliminar este nucleo familiar",
-          cancel: true,
-          persistent: true
-        })
-        .onOk(async () => {
-          try {
-            if (!!this.nucleo.integrantes) {
-              const result = await this.nucleo.getRegistrosAsociados();
-              await API.eliminarIntegrantes(result.integrantes);
-            }
-            await API.eliminarNucleo(this.nucleo);
-          } catch (error) {
-            alert("error al eliminar el nucleo 101: " + error);
-          }
-        });
-    }
+
   },
   computed: {
     ...mapGetters("personas", [
@@ -193,7 +180,9 @@ export default {
       }
     },
     _nucleos() {
-      return !!this.sector ? this.nucleosSector(this.sector) : this.nucleos;
+      if (!!this.data) return this.data;
+      else if (!!this.sector) return this.nucleosSector(this.sector);
+      else return this.nucleos;
     }
   }
 };
