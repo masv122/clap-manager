@@ -14,8 +14,36 @@ const routes = [
       },
       {
         path: "/sectores",
-        name: "Sectores",
-        component: () => import("pages/Sectores.vue")
+        component: () => import("pages/Sectores.vue"),
+        children: [
+          {
+            path: "",
+            name: "Sectores",
+            redirect: { name: "Registros sectores" }
+          },
+          {
+            path: "registros",
+            name: "Registros sectores",
+            component: () => import("components/sectores/Registros.vue")
+          },
+          {
+            path: "agregar",
+            name: "Agregar sector",
+            component: () => import("components/sectores/AgregarSector.vue")
+          },
+          {
+            path: "detalles/:id",
+            name: "Detalles sector",
+            component: () => import("components/sectores/DetallesSector.vue"),
+            props: true
+          },
+          {
+            path: "modificar/:id",
+            name: "Modificar sector",
+            component: () => import("components/sectores/ModificarSector.vue"),
+            props: true
+          }
+        ]
       },
       {
         path: "/personas",
@@ -27,20 +55,47 @@ const routes = [
             redirect: { name: "integrantes" }
           },
           {
-            path: "integrantes",
-            name: "integrantes",
-            component: () => import("components/personas/TablaIntegrantes.vue")
+            path: "registros",
+            name: "Registros personas",
+            component: () => import("components/sectores/Registros.vue"),
+            children: [
+              {
+                path: "integrantes",
+                name: "integrantes",
+                component: () =>
+                  import("components/personas/TablaIntegrantes.vue")
+              },
+              {
+                path: "nucleos",
+                name: "nucleos",
+                component: () => import("components/personas/TablaNucleos.vue")
+              },
+              {
+                path: "jefes-de-calle",
+                name: "jefes de calle",
+                component: () =>
+                  import("components/personas/TablaJefesCalle.vue")
+              }
+            ]
+          },
+
+          {
+            path: "agregar",
+            name: "Agregar persona",
+            component: () => import("components/personas/AgregarPersona.vue")
           },
           {
-            path: "nucleos",
-            name: "nucleos",
-            component: () => import("components/personas/TablaNucleos.vue")
+            path: "detalles/:tipo/:id",
+            name: "Detalles persona",
+            component: () => import("components/personas/DetallesPersona.vue"),
+            props: true
           },
           {
-            path: "jefes-de-calle",
-            name: "jefes de calle",
-            component: () => import("components/personas/TablaJefesCalle.vue")
-          },
+            path: "modificar/:tipo/:id",
+            name: "Modificar persona",
+            component: () => import("components/personas/ModificarPersona.vue"),
+            props: true
+          }
         ]
       },
       {
