@@ -1,41 +1,22 @@
 <template>
-  <div>
-    <q-dialog
-      v-model="_modificarPersona"
-      persistent
-      :full-height="$q.screen.lt.sm"
-      :full-width="$q.screen.lt.sm"
-    >
-      <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
-        <q-toolbar dark class="bg-negative text-white q-mb-md">
-          <q-toolbar-title shrink>
-            <div class="text-h6">
-              <q-icon name="add" />Modificar Persona
-            </div>
-          </q-toolbar-title>
-          <q-btn dense flat icon="close" v-close-popup class="q-ml-auto">
-            <q-tooltip content-class="bg-dark text-white">Cerrar</q-tooltip>
-          </q-btn>
-        </q-toolbar>
-        <q-card-section class="q-ma-md">
-          <ModificarIntegrante v-if="!!tipoPersona && tipoPersona.value === 'integrante'" />
-          <ModificarNucleo v-if="!!tipoPersona && tipoPersona.value === 'nucleo'" />
-          <ModificarJefe v-if="!!tipoPersona && tipoPersona.value === 'jefe'" />
-        </q-card-section>
-        <q-separator />
-        <q-card-actions class="q-ma-md" align="center">
-          <q-btn
-            label="Guardar"
-            icon="save"
-            type="submit"
-            color="primary"
-            @click="confirmarPersona('modificar')"
-            class="q-ml-sm full-width"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-  </div>
+  <q-card>
+    <q-card-section>
+      <ModificarIntegrante v-if="!!tipoPersona && tipoPersona.value === 'integrante'" />
+      <ModificarNucleo v-if="!!tipoPersona && tipoPersona.value === 'nucleo'" />
+      <ModificarJefe v-if="!!tipoPersona && tipoPersona.value === 'jefe'" />
+    </q-card-section>
+    <q-separator />
+    <q-card-actions align="center">
+      <q-btn
+        label="Guardar"
+        icon="save"
+        type="submit"
+        color="primary"
+        @click="confirmarPersona('modificar')"
+        class="q-ml-sm full-width"
+      />
+    </q-card-actions>
+  </q-card>
 </template>
 
 <script>
@@ -58,7 +39,6 @@ export default {
   computed: {
     ...mapGetters("sectores", ["sector"]),
     ...mapGetters("personas", [
-      "modificarPersona",
       "nombre",
       "apellido",
       "cedula",
@@ -73,18 +53,7 @@ export default {
       "codigo",
       "tipoPersona",
       "esJefeFamiliar"
-    ]),
-    _modificarPersona: {
-      get() {
-        return this.modificarPersona;
-      },
-      set() {
-        this.updateModificarPersona();
-      }
-    }
-  },
-  methods: {
-    ...mapMutations("personas", ["updateModificarPersona"])
+    ])
   }
 };
 </script>

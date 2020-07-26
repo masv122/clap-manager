@@ -1,95 +1,63 @@
 <template>
-  <div>
-    <q-dialog
-      v-model="_agregarSector"
-      persistent
-      :full-height="$q.screen.lt.sm"
-      :full-width="$q.screen.lt.sm"
-      @hide="reset"
+  <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
+    <div class="column q-mr-md">
+      <q-btn color="red" class="col self-end" label="Restablecer" @click="reset" />
+    </div>
+    <q-step :name="1" title="Complete los datos" icon="info" :done="step > 1">
+      <datos-basicos-sector />
+      <q-stepper-navigation>
+        <q-btn
+          @click="step = 2"
+          color="primary"
+          :disable="datosBasicosSectorInvalidos"
+          icon-right="chevron_right"
+          label="Siguiente"
+        />
+      </q-stepper-navigation>
+    </q-step>
+
+    <q-step
+      :name="2"
+      title="Seleccione un jefe de calle"
+      caption="Optional"
+      icon="supervised_user_circle"
+      :done="step > 2"
     >
-      <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
-        <q-toolbar dark class="bg-negative text-white q-mb-md">
-          <q-toolbar-title shrink>
-            <div class="text-h6">
-              <q-icon name="add" />Agregar Sector
-            </div>
-          </q-toolbar-title>
-          <q-btn dense flat icon="close" v-close-popup class="q-ml-auto">
-            <q-tooltip content-class="bg-dark text-white">Cerrar</q-tooltip>
-          </q-btn>
-        </q-toolbar>
-        <q-card-section class="q-pt-none">
-          <q-stepper v-model="step" ref="stepper" vertical done-color="negative" animated>
-            <q-step :name="1" title="Complete los datos" icon="info" :done="step > 1">
-              <DatosBasicosSector />
-              <q-stepper-navigation>
-                <q-btn
-                  @click="step = 2"
-                  color="primary"
-                  :disable="datosBasicosSectorInvalidos"
-                  icon-right="chevron_right"
-                  label="Siguiente"
-                />
-              </q-stepper-navigation>
-            </q-step>
+      <tabla-jefes-de-calle-grid />
+      <q-stepper-navigation>
+        <q-btn
+          flat
+          @click="step = 1"
+          icon="chevron_left"
+          color="negative"
+          label="Regresar"
+          class="q-ml-sm"
+        />
+        <q-btn @click="step = 3" color="primary" icon-right="chevron_right" label="Siguiente" />
+      </q-stepper-navigation>
+    </q-step>
 
-            <q-step
-              :name="2"
-              title="Seleccione un jefe de calle"
-              caption="Optional"
-              icon="supervised_user_circle"
-              :done="step > 2"
-            >
-              <TablaJefesDeCalleGrid />
-              <q-stepper-navigation>
-                <q-btn
-                  flat
-                  @click="step = 1"
-                  icon="chevron_left"
-                  color="negative"
-                  label="Regresar"
-                  class="q-ml-sm"
-                />
-                <q-btn
-                  @click="step = 3"
-                  color="primary"
-                  icon-right="chevron_right"
-                  label="Siguiente"
-                />
-              </q-stepper-navigation>
-            </q-step>
-
-            <q-step :name="3" title="Confirme la informacion" icon="check">
-              <DatosBasicosSectorConfirmacion />
-              <q-stepper-navigation>
-                <q-btn
-                  flat
-                  @click="step = 2"
-                  icon="chevron_left"
-                  color="negative"
-                  label="Regresar"
-                  class="q-ml-sm"
-                />
-                <q-btn
-                  color="positive"
-                  icon-right="check"
-                  label="Confirmar"
-                  @click="confirmarSector"
-                />
-              </q-stepper-navigation>
-            </q-step>
-          </q-stepper>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-  </div>
+    <q-step :name="3" title="Confirme la informacion" icon="check">
+      <datos-basicos-sector-confirmacion />
+      <q-stepper-navigation>
+        <q-btn
+          flat
+          @click="step = 2"
+          icon="chevron_left"
+          color="negative"
+          label="Regresar"
+          class="q-ml-sm"
+        />
+        <q-btn color="positive" icon-right="check" label="Confirmar" @click="confirmarSector" />
+      </q-stepper-navigation>
+    </q-step>
+  </q-stepper>
 </template>
 
 <script>
 import Sector from "src/class/sector";
 import * as API from "src/mixins/API";
 import { mapGetters, mapMutations, mapActions } from "vuex";
-import { required, minLength, between } from "vuelidate/lib/validators";
 import TablaJefesDeCalleGrid from "components/TablaJefesDeCalleGrid.vue";
 import DatosBasicosSector from "components/sectores/DatosBasicosSector.vue";
 import DatosBasicosSectorConfirmacion from "components/sectores/DatosBasicosSectorConfirmacion.vue";
@@ -106,8 +74,6 @@ export default {
       step: 1
     };
   },
-  validations: {},
-  watch: {},
   computed: {
     ...mapGetters("sectores", [
       "agregar",
@@ -150,7 +116,11 @@ export default {
         );
         const resultado = await API.guardarSector(sector);
         if (!!sector.jefe) await API.actualizarSectorJefe(resultado, sector);
-        if (resultado) this.updateAgregar();
+        if (resultado) {
+          if (this.$q.screen.lt.sm)
+            this.$router.push({ name: "Registros sectores" });
+          else this.updateAgregar();
+        }
       } catch (error) {
         alert("error al confirmar el sector 101: " + error);
       }
@@ -163,6 +133,9 @@ export default {
       this.step = 1;
       this.updateJefeSector([]);
     }
+  },
+  destroyed() {
+    this.reset();
   }
 };
 </script>

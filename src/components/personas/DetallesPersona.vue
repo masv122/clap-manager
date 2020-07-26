@@ -1,29 +1,8 @@
 <template>
   <div>
-    <q-dialog
-      v-model="_detallesPersona"
-      persistent
-      :full-height="$q.screen.lt.sm"
-      :full-width="$q.screen.lt.sm"
-    >
-      <q-card class="bg-white text-dark" style="width: 700px; max-width: 80vw">
-        <q-toolbar dark class="bg-negative text-white q-mb-md">
-          <q-toolbar-title shrink>
-            <div class="text-h6">
-              <q-icon name="article" class="q-mr-md" />Detalles Persona
-            </div>
-          </q-toolbar-title>
-          <q-btn dense flat icon="close" v-close-popup class="q-ml-auto">
-            <q-tooltip content-class="bg-dark text-white">Cerrar</q-tooltip>
-          </q-btn>
-        </q-toolbar>
-        <q-card-section class="q-pt-none">
-          <DetallesIntegrante v-if="!!tipoPersona && tipoPersona.value === 'integrante'" />
-          <DetallesNucleo v-if="!!tipoPersona && tipoPersona.value === 'nucleo'" />
-          <DetallesJefeCalle v-if="!!tipoPersona && tipoPersona.value === 'jefe'" />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <DetallesIntegrante v-if="!!tipoPersona && tipoPersona.value === 'integrante'" />
+    <DetallesNucleo v-if="!!tipoPersona && tipoPersona.value === 'nucleo'" />
+    <DetallesJefeCalle v-if="!!tipoPersona && tipoPersona.value === 'jefe'" />
   </div>
 </template>
 
@@ -40,24 +19,7 @@ export default {
     DetallesJefeCalle
   },
   computed: {
-    ...mapGetters("personas", [
-      "detallesPersona",
-      "integrante",
-      "nucleo",
-      "jefe",
-      "tipoPersona"
-    ]),
-    _detallesPersona: {
-      get() {
-        return this.detallesPersona;
-      },
-      set(value) {
-        this.updateDetallesPersona(value);
-      }
-    }
-  },
-  methods: {
-    ...mapMutations("personas", ["updateDetallesPersona"])
+    ...mapGetters("personas", ["tipoPersona"])
   }
 };
 </script>
