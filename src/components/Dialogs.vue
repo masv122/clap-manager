@@ -2,23 +2,22 @@
   <div>
     <dialog-agregar-sector />
     <dialog-agregar-persona />
-    <AgregarPago />
+    <dialog-agregar-pago />
   </div>
 </template>
 
 <script>
-import DialogAgregarSector from "components/sectores/DialogAgregarSector.vue";
-import DialogAgregarPersona from "components/personas/DialogAgregarPersona.vue";
-import AgregarPago from "components/pagos/AgregarPago.vue";
-export default {
-  name: "Dialogs",
-  components: {
-    DialogAgregarSector,
-    DialogAgregarPersona,
-    AgregarPago
-  }
-};
+  import DialogAgregarSector from "components/sectores/DialogAgregarSector.vue";
+  import DialogAgregarPersona from "components/personas/DialogAgregarPersona.vue";
+  import DialogAgregarPago from "components/pagos/DialogAgregarPago.vue";
+  export default {
+    name: "Dialogs",
+    components: {
+      DialogAgregarSector,
+      DialogAgregarPersona,
+      DialogAgregarPago,
+    },
+  };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
