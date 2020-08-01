@@ -1,42 +1,29 @@
 <template>
-  <div>
-    <div class="column">
-      <div class="col">
-        <div class="text-h6 q-ml-xl">
-          <q-icon name="info" />Informacion personal
-        </div>
-        <InformacionPersonal
-          :nombre="jefe.nombre"
-          :apellido="jefe.apellido"
-          :cedula="jefe.id"
-          :telefono="jefe.telefono"
-        />
-        <div class="text-h6 q-ml-xl">
-          <q-icon name="supervised_user_circle" />Informacion del jefe
-        </div>
-        <q-field borderless label="Codigo" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">{{ jefe.codigo }}</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Direccion" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">{{ jefe.direccion }}</div>
-          </template>
-        </q-field>
-      </div>
-      <div class="col">
-        <div class="text-h6 q-ml-xl">
-          <q-icon name="place" />Sector
-        </div>
-        <informacion-sector
-          :nombre="!!jefe.sector ? buscarSector(jefe.sector).nombre : 'Sin sector asignado'"
-          :estado="!!jefe.sector ? buscarSector(jefe.sector).estado : 'Sin sector asignado'"
-          :municipio="!!jefe.sector ? buscarSector(jefe.sector).municipio : 'Sin sector asignado'"
-          :parroquia="!!jefe.sector ? buscarSector(jefe.sector).parroquia : 'Sin sector asignado'"
-        />
-      </div>
-    </div>
+  <div class="column">
+    <informacion-personal
+      modificar
+      :nombre="jefe.nombre"
+      :apellido="jefe.apellido"
+      :cedula="jefe.id"
+      :telefono="jefe.telefono"
+      class="q-mt-xl col"
+    />
+
+    <informacion-jefe
+      v-if="!!sector"
+      :nombre="!!sector.jefe ? buscarJefe(sector.jefe).nombre : 'sin jefe de calle asignado'"
+      :cedula="!!sector.jefe ? buscarJefe(sector.jefe).cedula : null "
+      :codigo="!!sector.jefe ? buscarJefe(sector.jefe).codigo : 'sin jefe de calle asignado'"
+      :direccion="!!sector.jefe ? buscarJefe(sector.jefe).direccion : 'sin jefe de calle asignado'"
+      class="q-mt-xl col"
+    />
+    <informacion-sector
+      :nombre="!!jefe.sector ? buscarSector(jefe.sector).nombre : 'Sin sector asignado'"
+      :estado="!!jefe.sector ? buscarSector(jefe.sector).estado : 'Sin sector asignado'"
+      :municipio="!!jefe.sector ? buscarSector(jefe.sector).municipio : 'Sin sector asignado'"
+      :parroquia="!!jefe.sector ? buscarSector(jefe.sector).parroquia : 'Sin sector asignado'"
+      class="q-mt-xl col"
+    />
   </div>
 </template>
 
@@ -44,15 +31,17 @@
 import { mapGetters } from "vuex";
 import InformacionPersonal from "components/personas/InformacionPersonal.vue";
 import InformacionSector from "components/sectores/InformacionSector.vue";
+import InformacionJefe from "components/personas/InformacionJefe.vue";
 export default {
   name: "DetallesJefeCalle",
   components: {
     InformacionPersonal,
-    InformacionSector
+    InformacionSector,
+    InformacionJefe
   },
   computed: {
     ...mapGetters("personas", ["jefe"]),
-    ...mapGetters("sectores", ["buscarSector"])
+    ...mapGetters("sectores", ["sector", "buscarSector"])
   }
 };
 </script>

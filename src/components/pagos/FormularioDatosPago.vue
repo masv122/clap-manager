@@ -36,8 +36,16 @@
     >
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
-          <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-            <q-date v-model="_fecha" color="negative" @input="() => $refs.qDateProxy.hide()" />
+          <q-popup-proxy
+            ref="qDateProxy"
+            transition-show="scale"
+            transition-hide="scale"
+          >
+            <q-date
+              v-model="_fecha"
+              color="negative"
+              @input="() => $refs.qDateProxy.hide()"
+            />
           </q-popup-proxy>
         </q-icon>
       </template>
@@ -46,7 +54,7 @@
       label="Banco"
       label-color="negative"
       color="negative"
-      v-model="$v._banco.$model"
+      v-model="_banco"
       use-input
       behavior="menu"
       hide-selected
@@ -75,147 +83,152 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { required, minValue, minLength, numeric } from "vuelidate/lib/validators";
-export default {
-  name: "FormularioDatosPago",
-  props: {
-    modificar: {
-      type: Boolean,
-      default: false
-    }
-  },
-  validations: {
-    _monto: {
-      required,
-      minValue: minValue(1),
-      minLength: minLength(1),
-      numeric
-    },
-    _estado: {
-      required
-    },
-    _fecha: {
-      required
-    },
-    _referencia: {
-      required,
-      minLength: minLength(4),
-      numeric
-    }
-  },
-  data() {
-    return {
-      bancosOpt: [],
-      estados: [
-        { label: "Pendiente", value: "pendiente" },
-        { label: "Confirmado", value: "confirmado" }
-      ],
-      step: 1,
-      date: ""
-    };
-  },
-  watch: {
-    async sector(newValue, oldValue) {
-      if (newValue !== oldValue) this.nucleosOpt = this.nucleosSector(newValue);
-      this.updateNucleo(null);
-    },
-    $v: {
-      immediate: true,
-      deep: true,
-      handler(newValue) {
-        this.updateFormularioModificarPagoInvalido(
-          newValue._monto.$invalid &&
-            newValue._estado.$invalid &&
-            newValue._fecha.$invalid
-        );
-        this.updateFormularioPagoInvalido(newValue.$invalid);
-      }
-    }
-  },
-  computed: {
-    ...mapGetters("pagos", [
-      "pago",
-      "monto",
-      "banco",
-      "estado",
-      "fecha",
-      "referencia"
-    ]),
-    ...mapGetters("global", ["bancos", "buscarBanco"]),
-    ...mapGetters("personas", ["nucleo"]),
-    _monto: {
-      get() {
-        return this.monto;
+  import { mapGetters, mapMutations } from "vuex";
+  import {
+    required,
+    minValue,
+    minLength,
+    numeric,
+  } from "vuelidate/lib/validators";
+  export default {
+    name: "FormularioDatosPago",
+    props: {
+      modificar: {
+        type: Boolean,
+        default: false,
       },
-      set(value) {
-        this.updateMonto(value);
+    },
+    validations: {
+      _monto: {
+        required,
+        minValue: minValue(1),
+        minLength: minLength(1),
+        numeric,
+      },
+      _estado: {
+        required,
+      },
+      _fecha: {
+        required,
+      },
+      _referencia: {
+        required,
+        minLength: minLength(4),
+        numeric,
+      },
+    },
+    data() {
+      return {
+        bancosOpt: [],
+        estados: [
+          { label: "Pendiente", value: "pendiente" },
+          { label: "Confirmado", value: "confirmado" },
+        ],
+        step: 1,
+        date: "",
+      };
+    },
+    watch: {
+      async sector(newValue, oldValue) {
+        if (newValue !== oldValue)
+          this.nucleosOpt = this.nucleosSector(newValue);
+        this.updateNucleo(null);
+      },
+      $v: {
+        immediate: true,
+        deep: true,
+        handler(newValue) {
+          this.updateFormularioModificarPagoInvalido(
+            newValue._monto.$invalid &&
+              newValue._estado.$invalid &&
+              newValue._fecha.$invalid
+          );
+          this.updateFormularioPagoInvalido(newValue.$invalid);
+        },
+      },
+    },
+    computed: {
+      ...mapGetters("pagos", [
+        "pago",
+        "monto",
+        "banco",
+        "estado",
+        "fecha",
+        "referencia",
+      ]),
+      ...mapGetters("global", ["bancos", "buscarBanco"]),
+      ...mapGetters("personas", ["nucleo"]),
+      _monto: {
+        get() {
+          return this.monto;
+        },
+        set(value) {
+          this.updateMonto(value);
+        },
+      },
+      _banco: {
+        get() {
+          return this.banco;
+        },
+        set(value) {
+          this.updateBanco(value);
+        },
+      },
+      _estado: {
+        get() {
+          return this.estado;
+        },
+        set(value) {
+          this.updateEstado(value);
+        },
+      },
+      _fecha: {
+        get() {
+          return this.fecha;
+        },
+        set(value) {
+          this.updateFecha(value);
+        },
+      },
+      _referencia: {
+        get() {
+          return this.referencia;
+        },
+        set(value) {
+          this.updateReferencia(value);
+        },
+      },
+    },
+    methods: {
+      ...mapMutations("pagos", [
+        "updateMonto",
+        "updateBanco",
+        "updateEstado",
+        "updateFecha",
+        "updateReferencia",
+        "updateFormularioPagoInvalido",
+        "updateFormularioModificarPagoInvalido",
+      ]),
+      filterBancos(val, update, abort) {
+        let opciones = this.bancos;
+        update(() => {
+          const needle = val.toLocaleLowerCase();
+          this.bancosOpt = opciones.filter(
+            (v) => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+          );
+        });
+      },
+    },
+    created() {
+      this.bancosOpt = this.bancos;
+      if (this.modificar) {
+        this.updateMonto(this.pago.monto);
+        this.updateBanco(this.buscarBanco(this.pago.banco));
+        this.updateEstado(this.pago.estado);
+        this.updateFecha(this.pago.fecha);
       }
     },
-    _banco: {
-      get() {
-        return this.banco;
-      },
-      set(value) {
-        this.updateBanco(value);
-      }
-    },
-    _estado: {
-      get() {
-        return this.estado;
-      },
-      set(value) {
-        this.updateEstado(value);
-      }
-    },
-    _fecha: {
-      get() {
-        return this.fecha;
-      },
-      set(value) {
-        this.updateFecha(value);
-      }
-    },
-    _referencia: {
-      get() {
-        return this.referencia;
-      },
-      set(value) {
-        this.updateReferencia(value);
-      }
-    }
-  },
-  methods: {
-    ...mapMutations("pagos", [
-      "updateMonto",
-      "updateBanco",
-      "updateEstado",
-      "updateFecha",
-      "updateReferencia",
-      "updateFormularioPagoInvalido",
-      "updateFormularioModificarPagoInvalido"
-    ]),
-    filterBancos(val, update, abort) {
-      let opciones = this.bancos;
-      update(() => {
-        const needle = val.toLocaleLowerCase();
-        this.bancosOpt = opciones.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
-        );
-      });
-    }
-  },
-  created() {
-    this.bancosOpt = this.bancos;
-    if (this.modificar) {
-      this.updateMonto(this.pago.monto);
-      this.updateBanco(this.buscarBanco(this.pago.banco));
-      this.updateEstado(this.pago.estado);
-      this.updateFecha(this.pago.fecha);
-    }
-  }
-};
+  };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

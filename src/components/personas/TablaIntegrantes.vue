@@ -31,7 +31,13 @@
         style="min-width: 150px"
         class="q-mr-md"
       />
-      <q-input color="negative" dense debounce="300" v-model="filter" placeholder="Buscar">
+      <q-input
+        color="negative"
+        dense
+        debounce="300"
+        v-model="filter"
+        placeholder="Buscar"
+      >
         <template v-slot:append>
           <q-icon name="search" />
         </template>
@@ -39,20 +45,27 @@
     </template>
     <template v-slot:header="props">
       <q-tr :props="props">
-        <q-th v-for="col in props.cols" :key="col.name" :props="props">{{ col.label }}</q-th>
+        <q-th v-for="col in props.cols" :key="col.name" :props="props">{{
+          col.label
+        }}</q-th>
         <q-th auto-width />
       </q-tr>
     </template>
     <template v-slot:body="props">
       <q-tr :props="props">
-        <q-td v-for="col in props.cols" :key="col.name" :props="props">{{ col.value }}</q-td>
+        <q-td v-for="col in props.cols" :key="col.name" :props="props">{{
+          col.value
+        }}</q-td>
         <q-td auto-width>
           <q-btn
             flat
             round
             dense
             icon="more_vert"
-            @click="updateTipoPersona({value: 'integrante'});updateIntegrante(props.row)"
+            @click="
+              updateTipoPersona({ value: 'integrante' });
+              updateIntegrante(props.row);
+            "
           >
             <menu-registros />
           </q-btn>
@@ -71,14 +84,20 @@
               round
               dense
               icon="more_horiz"
-              @click="updateTipoPersona({value: 'integrante'});updateIntegrante(props.row)"
+              @click="
+                updateTipoPersona({ value: 'integrante' });
+                updateIntegrante(props.row);
+              "
             >
               <menu-registros />
             </q-btn>
           </q-card-section>
           <q-separator />
           <q-list dense>
-            <q-item v-for="col in props.cols.filter(col => col.name !== 'desc')" :key="col.name">
+            <q-item
+              v-for="col in props.cols.filter((col) => col.name !== 'desc')"
+              :key="col.name"
+            >
               <q-item-section>
                 <q-item-label>{{ col.label }}</q-item-label>
               </q-item-section>
@@ -94,90 +113,96 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
-import MenuRegistros from "components/MenuRegistros.vue";
-export default {
-  name: "TablaIntegrantes",
-  props: {
-    data: {
-      type: Array,
-      default: null
-    }
-  },
-  components: {
-    SectorNucleoSelect,
-    MenuRegistros
-  },
-  data() {
-    return {
-      filter: "",
-      visibleColumns: [
-        "nombre",
-        "apellido",
-        "cedula",
-        "telefono",
+  import { mapGetters, mapMutations } from "vuex";
+  import SectorNucleoSelect from "components/SectorNucleoSelect.vue";
+  import MenuRegistros from "components/MenuRegistros.vue";
+  export default {
+    name: "TablaIntegrantes",
+    props: {
+      data: {
+        type: Array,
+        default: null,
+      },
+    },
+    components: {
+      SectorNucleoSelect,
+      MenuRegistros,
+    },
+    data() {
+      return {
+        filter: "",
+        visibleColumns: [
+          "nombre",
+          "apellido",
+          "cedula",
+          "telefono",
+          "nucleo",
+          "fechaNacimiento",
+        ],
+        columns: [
+          {
+            name: "nombre",
+            label: "Nombre(s)",
+            field: "nombre",
+          },
+          {
+            name: "apellido",
+            label: "Apellido(s)",
+            field: "apellido",
+          },
+          {
+            name: "cedula",
+            label: "Cedula",
+            field: "id",
+          },
+          {
+            name: "telefono",
+            label: "Telefono",
+            field: "telefono",
+          },
+          {
+            name: "nucleo",
+            label: "Nucleo",
+            field: (row) => this.buscarNucleo(row.nucleo).nombre,
+          },
+          {
+            name: "fechaNacimiento",
+            label: "Nacimiento",
+            field: "fechaNacimiento",
+          },
+        ],
+      };
+    },
+    methods: {
+      ...mapMutations("personas", [
+        "updateIntegrante",
+        "updateCargandoPersonas",
+        "updateNucleo",
+        "updateTipoPersona",
+      ]),
+      ...mapMutations("sectores", ["updateSector"]),
+    },
+    computed: {
+      ...mapGetters("personas", [
+        "integrantes",
+        "cargandoPersonas",
+        "integrantesNucleo",
         "nucleo",
-        "fechaNacimiento"
-      ],
-      columns: [
-        {
-          name: "nombre",
-          label: "Nombre(s)",
-          field: "nombre"
-        },
-        {
-          name: "apellido",
-          label: "Apellido(s)",
-          field: "apellido"
-        },
-        {
-          name: "cedula",
-          label: "Cedula",
-          field: "id"
-        },
-        {
-          name: "telefono",
-          label: "Telefono",
-          field: "telefono"
-        },
-        {
-          name: "nucleo",
-          label: "Nucleo",
-          field: row => this.buscarNucleo(row.nucleo).nombre
-        },
-        {
-          name: "fechaNacimiento",
-          label: "Nacimiento",
-          field: "fechaNacimiento"
-        }
-      ]
-    };
-  },
-  methods: {
-    ...mapMutations("personas", [
-      "updateIntegrante",
-      "updateCargandoPersonas",
-      "updateTipoPersona",
-    ]),
-  },
-  computed: {
-    ...mapGetters("personas", [
-      "integrantes",
-      "cargandoPersonas",
-      "integrantesNucleo",
-      "nucleo",
-      "buscarNucleo"
-    ]),
-    ...mapGetters("sectores", ["sectores", "buscarSector", "sector"]),
-    _integrantes() {
-      if (!!this.data) return this.data;
-      else if (!!this.nucleo) return this.integrantesNucleo(this.nucleo);
-      else return this.integrantes;
-    }
-  },
-  destroyed() {
-    this.updateIntegrante(null);
-  }
-};
+        "buscarNucleo",
+      ]),
+      ...mapGetters("sectores", ["sectores", "buscarSector", "sector"]),
+      _integrantes() {
+        if (!!this.data) return this.data;
+        else if (!!this.nucleo) return this.integrantesNucleo(this.nucleo);
+        else return this.integrantes;
+      },
+    },
+    mounted() {
+      this.updateNucleo(null);
+      this.updateSector(null);
+    },
+    destroyed() {
+      this.updateIntegrante(null);
+    },
+  };
 </script>

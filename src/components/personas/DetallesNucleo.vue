@@ -1,63 +1,75 @@
 <template>
-  <div>
-    <div class="column">
-      <div class="col">
-        <div class="text-h6 q-ml-xl">
-          <q-icon name="group" />Informacion del nucleo
-        </div>
-        <InformacionNucleo
-          :nombreNucleo="nucleo.nombre"
-          :nombre="!!nucleo.cedula ? buscarIntegrante(nucleo.cedula).nombre : 'Sin jefe familiar, asigne uno'"
-          :cedula="nucleo.cedula"
-          :direccion="nucleo.direccion"
-        />
-      </div>
-      <div class="col">
-        <div class="text-h6 q-ml-xl">
-          <q-icon name="place" />Sector
-        </div>
-        <informacion-sector
-          :nombre="buscarSector(nucleo.sector).nombre"
-          :estado="buscarSector(nucleo.sector).estado"
-          :municipio="buscarSector(nucleo.sector).municipio"
-          :parroquia="buscarSector(nucleo.sector).parroquia"
-        />
-      </div>
-      <div class="col">
-        <div class="text-h6 q-ml-xl">
-          <q-icon name="info" />Informacion de control
-        </div>
-        <q-field borderless label="Integrantes registrados" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">{{ nucleo.integrantes.length }}</div>
-          </template>
-        </q-field>
-        <q-field borderless label="Pagos registrados" stack-label>
-          <template v-slot:control>
-            <div class="self-center full-width no-outline">Pagos registrados</div>
-          </template>
-        </q-field>
-      </div>
-    </div>
+  <div class="column">
+    <informacion-nucleo
+      modificar
+      :nombre-nucleo="!!nucleo ? nucleo.nombre : ''"
+      :nombre="
+        !!nucleo
+          ? !!nucleo.cedula
+            ? buscarIntegrante(nucleo.cedula).nombre
+            : 'Sin jefe familiar, asigne uno'
+          : ''
+      "
+      :cedula="!!nucleo ? nucleo.cedula : 0"
+      :direccion="!!nucleo ? nucleo.direccion : ''"
+      :id="!!nucleo ? nucleo.id : ''"
+      class="col q-mt-lg"
+    />
+    <informacion-sector
+      :nombre="!!nucleo ? buscarSector(nucleo.sector).nombre : ''"
+      :estado="!!nucleo ? buscarSector(nucleo.sector).estado : ''"
+      :municipio="!!nucleo ? buscarSector(nucleo.sector).municipio : ''"
+      :parroquia="!!nucleo ? buscarSector(nucleo.sector).parroquia : ''"
+      :id="!!nucleo ? buscarSector(nucleo.sector).id : ''"
+      class="col q-mt-xl"
+    />
+    <informacion-detallada
+      :integrantes="integrantes"
+      :pagos="pagos"
+      class="col q-mt-xl"
+      v-if="!!nucleo"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import InformacionNucleo from "components/personas/InformacionNucleo.vue";
-import InformacionSector from "components/sectores/InformacionSector.vue";
-export default {
-  name: "DetallesNucleo",
-  components: {
-    InformacionNucleo,
-    InformacionSector
-  },
-  computed: {
-    ...mapGetters("personas", ["nucleo", "buscarIntegrante"]),
-    ...mapGetters("sectores", ["buscarSector"])
-  }
-};
+  import { mapGetters, mapMutations } from "vuex";
+  import InformacionNucleo from "components/personas/InformacionNucleo.vue";
+  import InformacionSector from "components/sectores/InformacionSector.vue";
+  import InformacionDetallada from "components/InformacionDetallada.vue";
+  export default {
+    name: "DetallesNucleo",
+    components: {
+      InformacionNucleo,
+      InformacionSector,
+      InformacionDetallada,
+    },
+    props: {
+      id: {
+        type: [String, Number],
+        default: null,
+      },
+    },
+    data() {
+      return {
+        integrantes: [],
+        pagos: [],
+      };
+    },
+    computed: {
+      ...mapGetters("personas", ["nucleo", "buscarIntegrante", "buscarNucleo"]),
+      ...mapGetters("sectores", ["buscarSector"]),
+    },
+    methods: {
+      ...mapMutations("personas", ["updateNucleo"]),
+    },
+    async mounted() {
+      if (!!this.id) this.updateNucleo(this.buscarNucleo(this.id));
+      const result = await this.nucleo.getRegistrosAsociados();
+      this.integrantes = result.integrantes;
+      this.pagos = result.pagos;
+    },
+  };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

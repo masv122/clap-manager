@@ -5,12 +5,12 @@ const routes = [
     children: [
       {
         path: "",
-        redirect: { name: "Inicio" }
+        redirect: { name: "Inicio" },
       },
       {
         path: "/inicio",
         name: "Inicio",
-        component: () => import("pages/Inicio.vue")
+        component: () => import("pages/Inicio.vue"),
       },
       {
         path: "/sectores",
@@ -19,31 +19,31 @@ const routes = [
           {
             path: "",
             name: "Sectores",
-            redirect: { name: "Registros sectores" }
+            redirect: { name: "Registros sectores" },
           },
           {
             path: "registros",
             name: "Registros sectores",
-            component: () => import("components/sectores/Registros.vue")
+            component: () => import("components/sectores/Registros.vue"),
           },
           {
             path: "agregar",
             name: "Agregar sector",
-            component: () => import("components/sectores/AgregarSector.vue")
+            component: () => import("components/sectores/AgregarSector.vue"),
           },
           {
             path: "detalles/:id",
             name: "Detalles sector",
             component: () => import("components/sectores/DetallesSector.vue"),
-            props: true
+            props: true,
           },
           {
             path: "modificar/:id",
             name: "Modificar sector",
             component: () => import("components/sectores/ModificarSector.vue"),
-            props: true
-          }
-        ]
+            props: true,
+          },
+        ],
       },
       {
         path: "/personas",
@@ -52,58 +52,86 @@ const routes = [
           {
             path: "",
             name: "Personas",
-            redirect: { name: "integrantes" }
+            redirect: { name: "integrantes" },
           },
           {
             path: "registros",
             name: "Registros personas",
-            component: () => import("components/sectores/Registros.vue"),
+            component: () => import("components/personas/Registros.vue"),
             children: [
               {
                 path: "integrantes",
                 name: "integrantes",
                 component: () =>
-                  import("components/personas/TablaIntegrantes.vue")
+                  import("components/personas/TablaIntegrantes.vue"),
               },
               {
                 path: "nucleos",
                 name: "nucleos",
-                component: () => import("components/personas/TablaNucleos.vue")
+                component: () => import("components/personas/TablaNucleos.vue"),
               },
               {
                 path: "jefes-de-calle",
                 name: "jefes de calle",
                 component: () =>
-                  import("components/personas/TablaJefesCalle.vue")
-              }
-            ]
+                  import("components/personas/TablaJefesCalle.vue"),
+              },
+            ],
           },
 
           {
             path: "agregar",
             name: "Agregar persona",
-            component: () => import("components/personas/AgregarPersona.vue")
+            component: () => import("components/personas/AgregarPersona.vue"),
           },
           {
             path: "detalles/:tipo/:id",
             name: "Detalles persona",
             component: () => import("components/personas/DetallesPersona.vue"),
-            props: true
+            props: true,
           },
           {
             path: "modificar/:tipo/:id",
             name: "Modificar persona",
             component: () => import("components/personas/ModificarPersona.vue"),
-            props: true
-          }
-        ]
+            props: true,
+          },
+        ],
       },
       {
         path: "/pagos",
-        name: "Pagos",
-        component: () => import("pages/Pagos.vue")
-      }
-    ]
+        component: () => import("pages/Pagos.vue"),
+        children: [
+          {
+            path: "",
+            name: "Pagos",
+            redirect: { name: "Registros pagos" },
+          },
+          {
+            path: "registros",
+            name: "Registros pagos",
+            component: () => import("components/pagos/Registros.vue"),
+          },
+          {
+            path: "agregar",
+            name: "Agregar pago",
+            component: () => import("components/pagos/AgregarPago.vue"),
+          },
+          {
+            path: "detalles/:id",
+            name: "Detalles pago",
+            component: () => import("components/pagos/DetallesPago.vue"),
+            props: true,
+          },
+          {
+            path: "modificar/:id",
+            name: "Modificar pago",
+            component: () => import("components/pagos/ModificarPago.vue"),
+            props: true,
+          },
+        ],
+      },
+    ],
   },
   {
     path: "/ingreso",
@@ -113,14 +141,14 @@ const routes = [
       {
         path: "/ingreso/login",
         name: "Login",
-        component: () => import("pages/Login.vue")
+        component: () => import("pages/Login.vue"),
       },
       {
         path: "/ingreso/registro",
         name: "Registro",
-        component: () => import("pages/Registro.vue")
-      }
-    ]
+        component: () => import("pages/Registro.vue"),
+      },
+    ],
   },
   {
     path: "/usuario",
@@ -130,17 +158,17 @@ const routes = [
       {
         path: "/usuario/inicio",
         name: "InicioUsuario",
-        component: () => import("pages/usuario/Inicio.vue")
-      }
-    ]
+        component: () => import("pages/usuario/Inicio.vue"),
+      },
+    ],
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: "*",
-    component: () => import("pages/Error404.vue")
-  }
+    component: () => import("pages/Error404.vue"),
+  },
 ];
 
 export default routes;

@@ -40,17 +40,17 @@ export default {
   name: "ModificarSector",
   components: {
     TablaJefesDeCalleGrid,
-    DatosBasicosSector
+    DatosBasicosSector,
   },
   props: {
     id: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   data() {
     return {
-      carga: false
+      carga: false,
     };
   },
   computed: {
@@ -59,7 +59,8 @@ export default {
       "estadoMod",
       "municipioMod",
       "parroquiaMod",
-      "nombreMod"
+      "nombreMod",
+      "buscarSector",
     ]),
     ...mapGetters("personas", ["jefeSector", "buscarJefe"]),
     ...mapGetters("global", [
@@ -70,18 +71,19 @@ export default {
       "parroquiasEnMunicipio",
       "estadoPorNombre",
       "municipioPorNombre",
-      "parroquiasPorNombre"
-    ])
+      "parroquiasPorNombre",
+    ]),
   },
   methods: {
     ...mapMutations("personas", ["updateJefeSector"]),
+    ...mapMutations("sectores", ["updateSector"]),
     confirmacion() {
       this.$q
         .dialog({
           title: "Confirme",
           message: "¿Seguro que quiere modificar este sector",
           cancel: true,
-          persistent: true
+          persistent: true,
         })
         .onOk(() => {
           this.guardarSector();
@@ -109,14 +111,14 @@ export default {
       } finally {
         this.carga = false;
       }
-    }
+    },
   },
   async created() {
     this.estadosOpt = this.estados;
     this.municipiosOpt = this.municipios;
     this.parroquiasOpt = this.parroquias;
     if (!!this.id) this.updateSector(this.buscarSector(this.id));
-  }
+  },
 };
 </script>
 

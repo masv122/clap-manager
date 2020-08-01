@@ -29,7 +29,7 @@ import { mapGetters, mapMutations } from "vuex";
 import AgregarPersona from "components/personas/AgregarPersona.vue";
 export default {
   name: "DialogAgregarPersona",
-  coponents: {
+  components: {
     AgregarPersona
   },
   computed: {

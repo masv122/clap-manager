@@ -68,7 +68,6 @@
       </q-select>
       <div class="text-h6 q-mt-md">
         <q-icon name="info" class="q-mr-md" />Datos del nucleo
-        <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
       <datos-basicos-nucleo modificar />

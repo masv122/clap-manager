@@ -3,7 +3,6 @@
     <q-form class="q-gutter-md">
       <div class="text-h6 q-mt-md">
         <q-icon name="info" class="q-mr-md" />Datos Personales
-        <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
       <formulario-datos-personales modificar />

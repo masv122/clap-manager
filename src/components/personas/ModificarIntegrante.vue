@@ -3,7 +3,6 @@
     <q-form class="q-gutter-md">
       <div class="text-h6 q-mt-md">
         <q-icon name="info" class="q-mr-md" />Datos Personales
-        <q-btn class="float-right" color="negative" icon="redo" label="Restablecer" />
       </div>
       <q-separator />
       <formulario-datos-personales modificar />
@@ -28,7 +27,7 @@
       </div>
       <div class="text-h6 q-mt-md"></div>
       <q-banner
-        v-show="esJefeFamiliar(integrante.id) >= 0 && !reasignar"
+        v-show="!!integrante && esJefeFamiliar(integrante.id) >= 0 && !reasignar"
         dense
         inline-actions
         class="text-white bg-red alerta"

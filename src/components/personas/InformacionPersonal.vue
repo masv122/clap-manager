@@ -30,9 +30,12 @@
       <div class="text-subtitle1">Telefono</div>
       <div class="text-caption text-grey">{{ telefono }}</div>
     </q-card-section>
-    <q-card-actions align="right">
+    <q-card-actions v-if="modificar" align="right">
       <q-btn flat round icon="edit" color="warning" @click="modificarPersona" />
       <q-btn flat round icon="delete" color="red" @click="eliminar" />
+    </q-card-actions>
+    <q-card-actions v-else align="right">
+      <q-btn flat round icon="launch" color="primary" @click="detallesPersona" />
     </q-card-actions>
   </q-card>
 </template>
@@ -60,15 +63,30 @@ export default {
     telefono: {
       type: String,
       default: ""
+    },
+    modificar: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
-    ...mapGetters("personas", ["persona"])
+    ...mapGetters("personas", ["integrante", "nucleo", "jefe", "tipoPersona"])
   },
   methods: {
-    eliminar() {
-      this.elminarSector();
-      this.$router.push({ name: "sectores" });
+     eliminar() {
+      switch (this.tipoPersona.value) {
+        case "integrante":
+          this.eliminarIntegrante();
+          break;
+        case "nucleo":
+          this.eliminarNucleo();
+          break;
+        case "jefe":
+          this.eliminarJefe();
+          break;
+        default:
+          break;
+      }
     }
   }
 };

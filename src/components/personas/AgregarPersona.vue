@@ -102,12 +102,12 @@ export default {
     CrearJefeCalle,
     DatosPersonalesConfirmacion,
     DatosNucleoConfirmacion,
-    DatosJefeConfirmacion
+    DatosJefeConfirmacion,
   },
   mixins: [confirmarPersona],
   data() {
     return {
-      step: 1
+      step: 1,
     };
   },
   computed: {
@@ -124,7 +124,7 @@ export default {
       "datosPersonalesInvalidos",
       "datosTipoPersonaInvalidos",
       "buscarNucleo",
-      "nucleo"
+      "nucleo",
     ]),
     ...mapGetters("sectores", ["sectores", "sector", "buscarSector"]),
     _nombreNucleo() {
@@ -149,7 +149,7 @@ export default {
             : this.sector
         ).nombre;
       else return "";
-    }
+    },
   },
   methods: {
     ...mapMutations("sectores", ["updateSector"]),
@@ -163,11 +163,8 @@ export default {
       "updateNucleo",
       "updateNombreNucleo",
       "updateDireccion",
-      "updateCodigo"
+      "updateCodigo",
     ]),
-    confirmar() {
-      this.confirmarPersona();
-    },
     reset() {
       this.step = 1;
       this.updateTipoPersona(null);
@@ -181,11 +178,14 @@ export default {
       this.updateCedula(null);
       this.updateTelefono(null);
       this.updateFechaNacimiento(null);
-    }
+    },
+  },
+  created() {
+    this.reset();
   },
   destroyed() {
     this.reset();
-  }
+  },
 };
 </script>
 

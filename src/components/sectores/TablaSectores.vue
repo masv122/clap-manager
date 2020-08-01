@@ -150,6 +150,6 @@ export default {
   computed: {
     ...mapGetters("sectores", ["sectores", "sector", "cargandoSectores"]),
     ...mapGetters("personas", ["buscarJefe", "buscarNucleo"])
-  }
+  },
 };
 </script>

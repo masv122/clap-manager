@@ -55,17 +55,17 @@ import DatosBasicosNucleo from "components/personas/DatosBasicosNucleo.vue";
 export default {
   name: "CrearNucleo",
   components: {
-    DatosBasicosNucleo
+    DatosBasicosNucleo,
   },
   props: {
     modificar: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      opciones: []
+      opciones: [],
     };
   },
   watch: {
@@ -74,12 +74,12 @@ export default {
       deep: true,
       handler(newValue) {
         this.updateDatosTipoPersonaInvalido(newValue.$invalid);
-      }
-    }
+      },
+    },
   },
   validations: {
     _sector: {
-      required
+      required,
     },
   },
   computed: {
@@ -90,26 +90,24 @@ export default {
       },
       set(value) {
         this.updateSector(value);
-      }
+      },
     },
   },
   methods: {
     ...mapMutations("sectores", ["updateSector"]),
-    ...mapMutations("personas", [
-      "updateDatosTipoPersonaInvalido",
-    ]),
+    ...mapMutations("personas", ["updateDatosTipoPersonaInvalido"]),
     filterFn(val, update, abort) {
       update(() => {
         const needle = val.toLocaleLowerCase();
         this.opciones = this.sectores.filter(
-          v => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
+          (v) => v.nombre.toLocaleLowerCase().indexOf(needle) > -1
         );
       });
-    }
+    },
   },
   created() {
     this.opciones = this.sectores;
-  }
+  },
 };
 </script>
 

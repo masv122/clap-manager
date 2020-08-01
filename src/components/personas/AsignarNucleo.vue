@@ -1,11 +1,11 @@
 <template>
   <div class="q-gutter-md">
-    <q-form @submit.prevent class="q-gutter-md shadow-1 round q-px-md q-pb-md">
+    <q-form @submit.prevent class="q-gutter-md q-pb-md">
       <div class="text-h5 q-ml-xs q-pt-md">
         <q-icon name="group" />Asignacion de nucleo
       </div>
       <q-separator color="negative" inset />
-      <seleccionar-nucleo/>
+      <seleccionar-nucleo />
       <div class="text-h5 q-ml-xs q-pt-xs">
         <q-icon name="info" />Datos del nucleo
       </div>
@@ -45,10 +45,7 @@ export default {
     SeleccionarNucleo,
   },
   computed: {
-    ...mapGetters("personas", [
-      "nucleo",
-      "buscarNucleo"
-    ]),
+    ...mapGetters("personas", ["nucleo", "buscarNucleo"]),
   },
 };
 </script>
