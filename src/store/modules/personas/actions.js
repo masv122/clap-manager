@@ -40,6 +40,7 @@ export async function cargarNucleos({ commit }) {
         nucleos.push(nucleo);
       }
       commit("cargarNucleos", nucleos);
+      return resultado;
     }
   } catch (error) {
     alert("error al cargar los nucleos " + error);
@@ -141,7 +142,7 @@ export async function cargarJefes({ commit }) {
           resultado.jefes[i].direccion,
           resultado.jefes[i].sector,
           resultado.jefes[i].id,
-          resultado.jefes[i].rev,
+          resultado.jefes[i].rev
         );
         jefes.push(jefe);
       }
