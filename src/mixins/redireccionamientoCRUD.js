@@ -81,6 +81,20 @@ export default {
           params: { id: this.pago.id }
         });
       else this.updateModificarPago();
-    }
+    },
+    idPersona() {
+      if (!!this.tipoPersona)
+        switch (this.tipoPersona.value) {
+          case "integrante":
+            return this.integrante.id;
+          case "nucleo":
+            return this.nucleo.id;
+          case "jefe":
+            return this.jefe.id;
+          default:
+            return null;
+        }
+      else return null;
+    },
   }
 };

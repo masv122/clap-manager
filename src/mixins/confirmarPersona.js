@@ -105,9 +105,11 @@ export default {
           default:
             break;
         }
-        if (!!resultadoFinal && modo === "agregar") this.updateAgregarPersona();
-        if (!!resultadoFinal && modo === "modificar")
-          this.updateModificarPersona();
+        if (!!resultadoFinal) {
+          if (this.$q.screen.lt.sm) this.$router.push({ name: "Personas" });
+          else if (modo === "agregar") this.updateAgregarPersona();
+          else if (modo === "modificar") this.updateModificarPersona();
+        }
       } catch (error) {
         alert("error al confirmar la persona 101: " + error);
       }
