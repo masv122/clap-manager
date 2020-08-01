@@ -1,5 +1,5 @@
 <template>
-  <div class="fit row q-gutter-y-md">
+  <div class="fit row q-gutter-y-md q-my-sm bg-white shadow-1">
     <q-toolbar class="col-sm-8">
       <q-tabs v-model="tab" dense align="justify" class="q-mx-auto text-negative">
         <q-route-tab
