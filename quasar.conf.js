@@ -18,7 +18,7 @@ module.exports = function(/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: ["axios", "pouchdb/index", "vuelidate"],
+    boot: ["axios", "pouchdb/index", "vuelidate", "cargarData"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -91,9 +91,12 @@ module.exports = function(/* ctx */) {
       importStrategy: "auto",
 
       // Quasar plugins
-      plugins: ["Notify", "Dialog"],
+      plugins: ["Notify", "Dialog", "Loading"],
       config: {
         notify: {
+          /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
+        },
+        loading: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
         }
       }
@@ -149,31 +152,31 @@ module.exports = function(/* ctx */) {
         ]
       },
       metaVariables: {
-        appleMobileWebAppCapable: 'yes',
-        appleMobileWebAppStatusBarStyle: 'default',
-        appleTouchIcon120: 'icons/apple-icon-120x120.png',
-        appleTouchIcon180: 'icons/apple-icon-180x180.png',
-        appleTouchIcon152: 'icons/apple-icon-152x152.png',
-        appleTouchIcon167: 'icons/apple-icon-167x167.png',
-        appleSafariPinnedTab: 'icons/safari-pinned-tab.svg',
-        msapplicationTileImage: 'icons/ms-icon-144x144.png',
-        msapplicationTileColor: '#000000'
+        appleMobileWebAppCapable: "yes",
+        appleMobileWebAppStatusBarStyle: "default",
+        appleTouchIcon120: "icons/apple-icon-120x120.png",
+        appleTouchIcon180: "icons/apple-icon-180x180.png",
+        appleTouchIcon152: "icons/apple-icon-152x152.png",
+        appleTouchIcon167: "icons/apple-icon-167x167.png",
+        appleSafariPinnedTab: "icons/safari-pinned-tab.svg",
+        msapplicationTileImage: "icons/ms-icon-144x144.png",
+        msapplicationTileColor: "#000000"
       },
 
       // (@quasar/app v1.6.2+)
       // Optional, overrides metaVariables above;
       // Use this OR metaVariables, but not both;
-      metaVariablesFn (manifest) {
+      metaVariablesFn(manifest) {
         // ...
         return [
           {
             // this entry will generate:
             // <meta name="theme-color" content="ff0">
 
-            tagName: 'meta',
+            tagName: "meta",
             attributes: {
-              name: 'theme-color',
-              content: '#ff0'
+              name: "theme-color",
+              content: "#ff0"
             }
           },
 
@@ -182,17 +185,17 @@ module.exports = function(/* ctx */) {
             // <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
             // references /public/icons/icon-180.png
 
-            tagName: 'link',
+            tagName: "link",
             attributes: {
-              rel: 'apple-touch-icon',
-              sizes: '180x180',
-              href: 'icons/icon-180.png'
+              rel: "apple-touch-icon",
+              sizes: "180x180",
+              href: "icons/icon-180.png"
             },
             closeTag: false // this is optional;
-                            // specifies if tag also needs an explicit closing tag;
-                            // it's Boolean false by default
+            // specifies if tag also needs an explicit closing tag;
+            // it's Boolean false by default
           }
-        ]
+        ];
       }
     },
 
