@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js,.vue ./",
     "build": "quasar build -T pwa",
     "start": "node server.js",
-    "heroku-postbuild": "yarn install --production=false && quasar build -T pwa"
+    "heroku-postbuild": "yarn && yarn build"
   },
   "dependencies": {
     "@quasar/cli": "^1.4.0",
